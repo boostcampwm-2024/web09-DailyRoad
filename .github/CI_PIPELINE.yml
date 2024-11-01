@@ -1,0 +1,52 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    name: Lint, Build and Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [frontend, backend]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Check for changes in ${{ matrix.project }}
+        id: changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.project }}/"; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
+
+      - name: Install Dependencies for ${{ matrix.project }}
+        if: env.changed == 'true'
+        run: yarn install
+        working-directory: ${{ matrix.project }}
+
+      - name: Lint ${{ matrix.project }}
+        if: env.changed == 'true'
+        run: yarn format-check
+        working-directory: ${{ matrix.project }}
+
+#      - name: Build ${{ matrix.project }}
+#        if: env.changed == 'true'
+#        run: yarn build
+#        working-directory: ${{ matrix.project }}
+
+      # - name: Test ${{ matrix.project }}
+      #   if: env.changed == 'true'
+      #   run: yarn test
+      #   working-directory: ${{ matrix.project }}
