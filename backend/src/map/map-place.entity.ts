@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { BaseEntity } from './BaseEntity';
-import { Place } from './place.entity';
+import { BaseEntity } from '../common/BaseEntity';
+import { Place } from '../place/place.entity';
 import { Map } from './map.entity';
 
 @Entity()

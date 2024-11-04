@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { BaseEntity } from './BaseEntity';
-import { User } from './user.entity';
-import { Place } from './place.entity';
+import { BaseEntity } from '../common/BaseEntity';
+import { User } from '../user/user.entity';
+import { Place } from '../place/place.entity';
 import { CoursePlace } from './course-place.entity';
 
 @Entity()

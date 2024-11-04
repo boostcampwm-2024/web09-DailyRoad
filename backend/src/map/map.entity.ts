@@ -1,8 +1,8 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { BaseEntity } from './BaseEntity';
-import { User } from './user.entity';
+import { BaseEntity } from '../common/BaseEntity';
+import { User } from '../user/user.entity';
 import { MapPlace } from './map-place.entity';
-import { Place } from './place.entity';
+import { Place } from '../place/place.entity';
 
 @Entity()
 export class Map extends BaseEntity {
