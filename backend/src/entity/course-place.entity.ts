@@ -12,9 +12,9 @@ export class CoursePlace extends BaseEntity {
   @JoinColumn({ name: 'place_id' })
   place: Place;
 
-  course: Course;
   @ManyToOne(() => Course, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'course_id' })
+  course: Promise<Course>;
 
   @Column('text', { nullable: true })
   description: string;
