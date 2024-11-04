@@ -1,7 +1,11 @@
 name: Deploy Frontend
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'frontend/**'
 
 jobs:
   deploy:
