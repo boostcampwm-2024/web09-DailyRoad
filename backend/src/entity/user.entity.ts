@@ -1,9 +1,9 @@
-import {Entity, Column, OneToMany} from 'typeorm';
-import {BaseEntity} from './base.entity';
-import {Course} from "./course.entity";
-import {Map} from "./map.entity";
+import { Entity, Column, OneToMany } from 'typeorm';
+import { BaseEntity } from './BaseEntity';
+import { Course } from './course.entity';
+import { Map } from './map.entity';
 
-@Entity('USER')
+@Entity()
 export class User extends BaseEntity {
   @Column()
   provider: string;
@@ -11,13 +11,13 @@ export class User extends BaseEntity {
   @Column()
   nickname: string;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   oauthId: string;
 
   @Column()
   role: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   profileImage: string;
 
   @OneToMany(() => Map, (map) => map.user)

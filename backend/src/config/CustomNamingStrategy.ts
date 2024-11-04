@@ -1,15 +1,24 @@
-import {DefaultNamingStrategy, NamingStrategyInterface} from 'typeorm';
-import {snakeCase} from 'typeorm/util/StringUtils';
+import { DefaultNamingStrategy, NamingStrategyInterface } from 'typeorm';
+import { snakeCase } from 'typeorm/util/StringUtils';
 
-export class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
-  // 테이블 이름 규칙 (PascalCase 사용)
+export class CustomNamingStrategy
+  extends DefaultNamingStrategy
+  implements NamingStrategyInterface
+{
+  // 테이블 이름 규칙 (대문자 + 언더바 사용)
   tableName(className: string, customName: string): string {
-    return customName ? customName : className;
+    return (customName ? customName : snakeCase(className)).toUpperCase();
   }
 
   // 컬럼 이름 규칙 (snake_case 사용)
-  columnName(propertyName: string, customName: string, embeddedPrefixes: string[]): string {
-    return snakeCase(embeddedPrefixes.join('_') + (customName ? customName : propertyName));
+  columnName(
+    propertyName: string,
+    customName: string,
+    embeddedPrefixes: string[],
+  ): string {
+    return snakeCase(
+      embeddedPrefixes.join('_') + (customName ? customName : propertyName),
+    );
   }
 
   // 관계 컬럼 이름 규칙 (snake_case 사용)
