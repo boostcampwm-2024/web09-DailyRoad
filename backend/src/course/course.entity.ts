@@ -11,13 +11,13 @@ export class Course extends BaseEntity {
   user: User;
 
   @Column({ nullable: true })
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
 
   @Column()
   title: string;
 
   @Column('text', { nullable: true })
-  description: string;
+  description?: string;
 
   @OneToMany(() => CoursePlace, (coursePlace) => coursePlace.course)
   private coursePlaces: Promise<CoursePlace[]>;

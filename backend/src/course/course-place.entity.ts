@@ -17,5 +17,5 @@ export class CoursePlace extends BaseEntity {
   course: Promise<Course>;
 
   @Column('text', { nullable: true })
-  description: string;
+  description?: string;
 }

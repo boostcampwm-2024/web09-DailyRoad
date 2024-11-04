@@ -14,5 +14,5 @@ export class MapPlace extends BaseEntity {
   map: Promise<Map>;
 
   @Column('text', { nullable: true })
-  description: string;
+  description?: string;
 }
