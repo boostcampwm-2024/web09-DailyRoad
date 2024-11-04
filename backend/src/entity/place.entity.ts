@@ -1,32 +1,32 @@
-import {Entity, Column} from 'typeorm';
-import {BaseEntity} from './base.entity';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from './BaseEntity';
 
-@Entity('PLACE')
+@Entity()
 export class Place extends BaseEntity {
-  @Column({unique: true})
+  @Column({ unique: true })
   googlePlaceId: string;
 
   @Column()
   name: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   thumbnail: string;
 
-  @Column('float', {nullable: true})
+  @Column('float', { nullable: true })
   rating: number;
 
-  @Column('decimal', {precision: 10, scale: 7})
+  @Column('decimal', { precision: 10, scale: 7 })
   longitude: number;
 
-  @Column('decimal', {precision: 10, scale: 7})
+  @Column('decimal', { precision: 10, scale: 7 })
   latitude: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   formattedAddress: string;
 
-  @Column('text', {nullable: true})
+  @Column('text', { nullable: true })
   description: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   detailPageUrl: string;
 }
