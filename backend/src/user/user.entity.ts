@@ -18,7 +18,7 @@ export class User extends BaseEntity {
   role: string;
 
   @Column({ nullable: true })
-  profileImageUrl: string;
+  profileImageUrl?: string;
 
   @OneToMany(() => Map, (map) => map.user)
   maps: Promise<Map[]>;

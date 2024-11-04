@@ -11,13 +11,13 @@ export class Map extends BaseEntity {
   user: User;
 
   @Column({ nullable: true })
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
 
   @Column()
   title: string;
 
   @Column('text', { nullable: true })
-  description: string;
+  description?: string;
 
   @OneToMany(() => MapPlace, (mapPlace) => mapPlace.map)
   private mapPlaces: Promise<MapPlace[]>;

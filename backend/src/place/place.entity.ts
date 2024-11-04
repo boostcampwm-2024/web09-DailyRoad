@@ -10,10 +10,10 @@ export class Place extends BaseEntity {
   name: string;
 
   @Column({ nullable: true })
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
 
   @Column('float', { nullable: true })
-  rating: number;
+  rating?: number;
 
   @Column('decimal', { precision: 10, scale: 7 })
   longitude: number;
@@ -22,11 +22,11 @@ export class Place extends BaseEntity {
   latitude: number;
 
   @Column({ nullable: true })
-  formattedAddress: string;
+  formattedAddress?: string;
 
   @Column('text', { nullable: true })
-  description: string;
+  description?: string;
 
   @Column({ nullable: true })
-  detailPageUrl: string;
+  detailPageUrl?: string;
 }
