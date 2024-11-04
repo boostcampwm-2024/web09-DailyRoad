@@ -1,12 +1,11 @@
-import {TypeOrmModuleOptions, TypeOrmOptionsFactory} from '@nestjs/typeorm';
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {CustomNamingStrategy} from "./CustomNamingStrategy";
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { CustomNamingStrategy } from './CustomNamingStrategy';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) {
-  }
+  constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
