@@ -32,4 +32,9 @@ module.exports = {
     eqeqeq: 'error',
     'no-console': 'warn',
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
 };

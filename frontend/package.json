@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "echo \"No test specified\"",
     "preview": "vite preview",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier": "prettier --write **/*.{ts,tsx}",
