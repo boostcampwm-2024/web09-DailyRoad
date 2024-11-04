@@ -25,7 +25,7 @@ jobs:
       - name: Check for changes in ${{ matrix.project }}
         id: changes
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.project }}/"; then
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -q "^${{ matrix.project }}/"; then
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
