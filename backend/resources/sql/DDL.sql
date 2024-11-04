@@ -1,24 +1,24 @@
 -- USER 테이블
 CREATE TABLE USER
 (
-    id            INT PRIMARY KEY AUTO_INCREMENT,
-    provider      VARCHAR(255)        NOT NULL,
-    nickname      VARCHAR(255)        NOT NULL,
-    oauth_id      VARCHAR(255) UNIQUE NOT NULL,
-    role          VARCHAR(50)         NOT NULL,
-    profile_image VARCHAR(255),
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at    TIMESTAMP           NULL
+    id                INT PRIMARY KEY AUTO_INCREMENT,
+    provider          VARCHAR(255)        NOT NULL,
+    nickname          VARCHAR(255)        NOT NULL,
+    oauth_id          VARCHAR(255) UNIQUE NOT NULL,
+    role              VARCHAR(50)         NOT NULL,
+    profile_image_url VARCHAR(255),
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at        TIMESTAMP           NULL
 );
 
 -- PLACE 테이블
 CREATE TABLE PLACE
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
-    name              VARCHAR(255)        NOT NULL,
-    thumbnail         VARCHAR(255),
     google_place_id   CHAR(50) UNIQUE NOT NULL,
+    name              VARCHAR(255)    NOT NULL,
+    thumbnail_url     VARCHAR(255),
     rating            FLOAT,
     longitude         DECIMAL(10, 7), -- 경도
     latitude          DECIMAL(10, 7), -- 위도
@@ -27,20 +27,20 @@ CREATE TABLE PLACE
     detail_page_url   VARCHAR(255),
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at        TIMESTAMP           NULL
+    deleted_at        TIMESTAMP       NULL
 );
 
 -- MAP 테이블
 CREATE TABLE MAP
 (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
-    user_id     INT          NOT NULL,
-    thumbnail   VARCHAR(255),
-    title       VARCHAR(255) NOT NULL,
-    description TEXT,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at  TIMESTAMP    NULL,
+    id            INT PRIMARY KEY AUTO_INCREMENT,
+    user_id       INT          NOT NULL,
+    thumbnail_url VARCHAR(255),
+    title         VARCHAR(255) NOT NULL,
+    description   TEXT,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at    TIMESTAMP    NULL,
     FOREIGN KEY (user_id) REFERENCES USER (id) ON DELETE CASCADE
 );
 
@@ -61,14 +61,14 @@ CREATE TABLE MAP_PLACE
 -- COURSE 테이블
 CREATE TABLE COURSE
 (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
-    user_id     INT          NOT NULL,
-    thumbnail   VARCHAR(255),
-    title       VARCHAR(255) NOT NULL,
-    description TEXT,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at  TIMESTAMP    NULL,
+    id            INT PRIMARY KEY AUTO_INCREMENT,
+    user_id       INT          NOT NULL,
+    thumbnail_url VARCHAR(255),
+    title         VARCHAR(255) NOT NULL,
+    description   TEXT,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at    TIMESTAMP    NULL,
     FOREIGN KEY (user_id) REFERENCES USER (id) ON DELETE CASCADE
 );
 
