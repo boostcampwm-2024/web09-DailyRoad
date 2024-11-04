@@ -1,0 +1,28 @@
+name: Auto Close and Reopen Issues on Project Board Column Change
+
+on:
+  project_card:
+    types: [ moved ]
+
+jobs:
+  handle_issue:
+    runs-on: ubuntu-latest
+    if: github.event.project_card.content_url != null
+    steps:
+      - name: Close issue when moved to Done
+        if: contains(github.event.project_card.column_name, 'Done')
+        run: |
+          ISSUE_URL="${{ github.event.project_card.content_url }}"
+          curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "$ISSUE_URL" \
+               -d '{"state": "closed"}'
+
+      - name: Reopen issue when moved out of Done
+        if: "! contains(github.event.project_card.column_name, 'Done')"
+        run: |
+          ISSUE_URL="${{ github.event.project_card.content_url }}"
+          curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "$ISSUE_URL" \
+               -d '{"state": "open"}'
