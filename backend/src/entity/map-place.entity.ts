@@ -9,9 +9,9 @@ export class MapPlace extends BaseEntity {
   @JoinColumn({ name: 'place_id' })
   place: Place;
 
-  map: Map;
   @ManyToOne(() => Map, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'map_id' })
+  map: Promise<Map>;
 
   @Column('text', { nullable: true })
   description: string;

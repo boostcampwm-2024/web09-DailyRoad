@@ -18,4 +18,12 @@ export class Map extends BaseEntity {
 
   @Column('text', { nullable: true })
   description: string;
+
+  @OneToMany(() => MapPlace, (mapPlace) => mapPlace.map)
+  private mapPlaces: Promise<MapPlace[]>;
+
+  async getPlaces(): Promise<Place[]> {
+    const mapPlaces = await this.mapPlaces;
+    return await Promise.all(mapPlaces.map((mapPlace) => mapPlace.place));
+  }
 }

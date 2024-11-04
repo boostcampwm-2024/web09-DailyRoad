@@ -18,4 +18,12 @@ export class Course extends BaseEntity {
 
   @Column('text', { nullable: true })
   description: string;
+
+  @OneToMany(() => CoursePlace, (coursePlace) => coursePlace.course)
+  private coursePlaces: Promise<CoursePlace[]>;
+
+  async getPlaces(): Promise<Place[]> {
+    const mapPlaces = await this.coursePlaces;
+    return await Promise.all(mapPlaces.map((coursePlace) => coursePlace.place));
+  }
 }
