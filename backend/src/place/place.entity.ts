@@ -10,7 +10,7 @@ export class Place extends BaseEntity {
   name: string;
 
   @Column({ nullable: true })
-  thumbnail: string;
+  thumbnailUrl: string;
 
   @Column('float', { nullable: true })
   rating: number;
