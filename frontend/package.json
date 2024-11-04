@@ -22,6 +22,7 @@
     "@googlemaps/react-wrapper": "^1.1.42",
     "@tanstack/react-query-devtools": "^5.59.16",
     "@types/google.maps": "^3.58.1",
+    "@types/googlemaps": "^3.43.3",
     "@types/node": "^16.18.115",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
