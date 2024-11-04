@@ -1,0 +1,57 @@
+name: Deploy on development branch merge
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches:
+      - develop
+  push:
+    branches:
+      - test-cd
+
+jobs:
+  deploy:
+    #if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set environment variables from secret
+        uses: Miensoap/extract-env-action@v0.0.3
+        with:
+          env_file_content: ${{ secrets.ENV_FILE_CONTENT }}
+
+      - name: Log in to NCP Container Registry
+        run: |
+          set +x
+          echo "${NCP_SECRET_KEY}" | docker login -u "${NCP_ACCESS_KEY}" https://${NCP_REGISTRY_URL} --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          cd ${{ github.workspace }}/backend
+          echo ${{ secrets.DOT_ENV_PROD }} >> .env.prod
+          set +x
+          docker build -t ${NCP_REGISTRY_URL}/${DOCKER_IMAGE_NAME} .
+
+      - name: Push Docker Image to NCP Container Registry
+        run: |
+          set +x
+          docker push ${NCP_REGISTRY_URL}/${DOCKER_IMAGE_NAME}
+
+      - name: Log out from Docker Registry
+        run: docker logout https://${NCP_REGISTRY_URL}
+
+      - name: SSH and deploy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          set +x
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${NCP_SERVER_USER}@${NCP_SERVER_HOST} \
+          "export NCP_ACCESS_KEY=${NCP_ACCESS_KEY} \
+                  NCP_SECRET_KEY=${NCP_SECRET_KEY} \
+                  NCP_REGISTRY_URL=${NCP_REGISTRY_URL} \
+                  DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}  && \
+           /home/${NCP_SERVER_USER}/deploy.sh"
