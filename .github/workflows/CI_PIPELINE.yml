@@ -2,7 +2,7 @@ name: CI Pipeline
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
     branches:
       - develop
       - main
@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        project: [frontend, backend]
+        project: [ frontend, backend ]
 
     steps:
       - name: Checkout Repository
@@ -41,12 +41,12 @@ jobs:
         run: yarn format-check
         working-directory: ${{ matrix.project }}
 
-#      - name: Build ${{ matrix.project }}
-#        if: env.changed == 'true'
-#        run: yarn build
-#        working-directory: ${{ matrix.project }}
+      - name: Build ${{ matrix.project }}
+        if: env.changed == 'true'
+        run: yarn build
+        working-directory: ${{ matrix.project }}
 
-      # - name: Test ${{ matrix.project }}
-      #   if: env.changed == 'true'
-      #   run: yarn test
-      #   working-directory: ${{ matrix.project }}
+      - name: Test ${{ matrix.project }}
+        if: env.changed == 'true'
+        run: yarn test
+        working-directory: ${{ matrix.project }}
