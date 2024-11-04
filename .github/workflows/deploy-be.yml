@@ -1,19 +1,14 @@
-name: Deploy on development branch merge
+name: Deploy Backend
 
 on:
-  pull_request:
-    types: [ closed ]
-    branches:
-      - develop
+  workflow_call:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to NCP Container Registry
         run: |
@@ -24,26 +19,23 @@ jobs:
         run: |
           cd ${{ github.workspace }}/backend
           echo "${{ secrets.DOT_ENV_PROD }}" >> .env.prod
-          set +x
           docker build -t ${{ secrets.NCP_REGISTRY_URL }}/${{ secrets.DOCKER_IMAGE_NAME }} .
 
       - name: Push Docker Image to NCP Container Registry
         run: |
-          set +x
           docker push ${{ secrets.NCP_REGISTRY_URL }}/${{ secrets.DOCKER_IMAGE_NAME }}
 
       - name: Log out from Docker Registry
         run: docker logout https://${{ secrets.NCP_REGISTRY_URL }}
 
-      - name: SSH and deploy
+      - name: SSH and deploy backend
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          set +x
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.NCP_SERVER_USER }}@${{ secrets.NCP_SERVER_HOST }} \
           "export NCP_ACCESS_KEY=${{ secrets.NCP_ACCESS_KEY }} \
-                  NCP_SECRET_KEY=${{ secrets.NCP_SECRET_KEY }} \
-                  NCP_REGISTRY_URL=${{ secrets.NCP_REGISTRY_URL }} \
-                  DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}  && \
-           /home/${{ secrets.NCP_SERVER_USER }}/deploy.sh"
+          NCP_SECRET_KEY=${{ secrets.NCP_SECRET_KEY }} \
+          NCP_REGISTRY_URL=${{ secrets.NCP_REGISTRY_URL }} \
+          DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}  && \
+          /home/${{ secrets.NCP_SERVER_USER }}/deploy-backend.sh"
