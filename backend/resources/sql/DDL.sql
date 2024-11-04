@@ -16,9 +16,9 @@ CREATE TABLE USER
 CREATE TABLE PLACE
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
-    google_place_id   VARCHAR(255) UNIQUE NOT NULL,
     name              VARCHAR(255)        NOT NULL,
     thumbnail         VARCHAR(255),
+    google_place_id   CHAR(50) UNIQUE NOT NULL,
     rating            FLOAT,
     longitude         DECIMAL(10, 7), -- 경도
     latitude          DECIMAL(10, 7), -- 위도
