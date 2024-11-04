@@ -11,7 +11,7 @@ export class Map extends BaseEntity {
   user: User;
 
   @Column({ nullable: true })
-  thumbnail: string;
+  thumbnailUrl: string;
 
   @Column()
   title: string;
