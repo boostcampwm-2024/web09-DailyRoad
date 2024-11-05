@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { CreatePlaceDto } from './dto/CreatePlaceDto';
 
@@ -14,5 +14,10 @@ export class PlaceController {
   @Get()
   async getPlaces() {
     return this.placeService.getPlaces();
+  }
+
+  @Get('/:id')
+  async getPlace(@Param('id') id: number) {
+    return this.placeService.getPlace(id);
   }
 }
