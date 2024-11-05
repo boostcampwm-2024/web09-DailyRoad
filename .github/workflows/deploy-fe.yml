@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - 'frontend/**'
+      - "frontend/**"
 
 jobs:
   deploy:
@@ -15,6 +15,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build React App
+        env:
+          VITE_AXIOS_PROD_BASE_URL: ${{ secrets.VITE_AXIOS_PROD_BASE_URL }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
+          VITE_GOOGLE_MAPS_ID: ${{ secrets.VITE_GOOGLE_MAPS_ID }}
         run: |
           cd ${{ github.workspace }}/frontend
           yarn install
