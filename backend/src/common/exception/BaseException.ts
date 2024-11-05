@@ -8,4 +8,12 @@ export class BaseException extends HttpException {
     super(exceptionType.message, exceptionType.status);
     this.code = exceptionType.code;
   }
+
+  getCode(): number {
+    return this.code;
+  }
+
+  getMessage(): string {
+    return this.message;
+  }
 }
