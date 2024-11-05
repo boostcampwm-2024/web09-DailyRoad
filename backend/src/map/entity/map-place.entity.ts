@@ -5,13 +5,13 @@ import { Map } from './map.entity';
 
 @Entity()
 export class MapPlace extends BaseEntity {
-  @ManyToOne(() => Place, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Place, { onDelete: 'CASCADE', lazy: true })
   @JoinColumn({ name: 'place_id' })
-  place: Place;
+  place: Promise<Place>;
 
-  @ManyToOne(() => Map, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Map, (map) => map.mapPlaces, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'map_id' })
-  map: Promise<Map>;
+  map: Map;
 
   @Column('text', { nullable: true })
   description?: string;
