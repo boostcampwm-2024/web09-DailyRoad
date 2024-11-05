@@ -26,6 +26,7 @@ module.exports = {
         ignore: ['css'],
       },
     ],
+    'react/react-in-jsx-scope': 'off',
     'no-non-null-assertion': 'off',
     'no-unused-vars': 'off',
     'no-nested-ternary': 'error',
