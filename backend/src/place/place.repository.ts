@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { Place } from './place.entity';
 
 @Injectable()
@@ -24,5 +24,11 @@ export class PlaceRepository {
 
   async findByGooglePlaceId(googlePlaceId: string) {
     return this.placeRepository.findOne({ where: { googlePlaceId } });
+  }
+
+  async searchNameByQuery(query: string) {
+    return this.placeRepository.find({
+      where: { name: Like(`%${query}%`) },
+    });
   }
 }

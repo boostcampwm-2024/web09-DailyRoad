@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PlaceRepository } from './place.repository';
 import { CreatePlaceDto } from './dto/CreatePlaceDto';
 import { Place } from './place.entity';
@@ -38,7 +42,14 @@ export class PlaceService {
     return { id: savedPlace.id };
   }
 
-  async getPlaces() {
+  async getPlaces(query: string) {
+    if (query) {
+      const result = await this.placeRepository.searchNameByQuery(query);
+      if (result.length === 0) {
+        throw new NotFoundException(`검색 결과가 없습니다: ${query}`);
+      }
+      return result;
+    }
     return this.placeRepository.findAll();
   }
 
