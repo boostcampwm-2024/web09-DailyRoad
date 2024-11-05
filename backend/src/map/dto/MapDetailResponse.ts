@@ -3,11 +3,10 @@ import { UserIconResponse } from '../../user/dto/UserIconResponse';
 import { PlaceResponse } from '../../place/dto/PlaceResponse';
 import { DEFAULT_THUMBNAIL_URL } from './MapListResponse';
 
-
 export class MapDetailResponse {
   constructor(
     readonly id: number,
-    readonly user: { id: number, nickname: string, profileImageUrl: string },
+    readonly user: { id: number; nickname: string; profileImageUrl: string },
     readonly title: string,
     readonly isPublic: boolean,
     readonly thumbnailUrl: string,
@@ -16,8 +15,7 @@ export class MapDetailResponse {
     readonly places: PlaceResponse[],
     readonly createdAt: Date,
     readonly updatedAt: Date,
-  ) {
-  }
+  ) {}
 
   static async from(map: Map) {
     const places = (await map.getPlaces()).map((place) => {

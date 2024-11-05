@@ -3,7 +3,6 @@ import { BaseEntity } from '../../common/BaseEntity';
 import { User } from '../../user/user.entity';
 import { MapPlace } from './map-place.entity';
 import { Place } from '../../place/place.entity';
-import { map } from 'rxjs';
 
 @Entity()
 export class Map extends BaseEntity {
@@ -46,9 +45,10 @@ export class Map extends BaseEntity {
   }
 
   async getPlaces(): Promise<Place[]> {
-    return Promise.all(this.mapPlaces.map(async (mapPlace) => {
-      console.log(mapPlace);
-      return await mapPlace.place;
-    }));
+    return Promise.all(
+      this.mapPlaces.map(async (mapPlace) => {
+        return await mapPlace.place;
+      }),
+    );
   }
 }

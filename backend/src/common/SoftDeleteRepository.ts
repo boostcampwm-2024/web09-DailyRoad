@@ -5,7 +5,10 @@ import { SoftDeletableEntity } from './SoftDeletableEntity.interface';
  * Soft Delete 를 지원
  * 기본적으로 deletedAt 이 null 인 것만 조회
  */
-export abstract class SoftDeleteRepository<T extends SoftDeletableEntity<K>, K> extends Repository<T> {
+export abstract class SoftDeleteRepository<
+  T extends SoftDeletableEntity<K>,
+  K,
+> extends Repository<T> {
   find(options: FindManyOptions<T> = {}) {
     return super.find({
       ...options,
