@@ -1,11 +1,9 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PlaceRepository } from './place.repository';
 import { CreatePlaceDto } from './dto/CreatePlaceDto';
 import { Place } from './place.entity';
+import { PlaceException } from './exception/PlaceException';
+import { PlaceExceptionType } from './exception/PlaceExceptionType';
 
 @Injectable()
 export class PlaceService {
@@ -35,7 +33,7 @@ export class PlaceService {
     place.detailPageUrl = detailPageUrl;
 
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {
-      throw new ConflictException(`이미 등록된 장소입니다: ${googlePlaceId}`);
+      throw new PlaceException(PlaceExceptionType.ALREADY_EXISTS);
     }
 
     const savedPlace = await this.placeRepository.save(place);
@@ -46,7 +44,7 @@ export class PlaceService {
     if (query) {
       const result = await this.placeRepository.searchNameByQuery(query);
       if (result.length === 0) {
-        throw new NotFoundException(`검색 결과가 없습니다: ${query}`);
+        throw new PlaceException(PlaceExceptionType.SEARCH_NOT_FOUND);
       }
       return result;
     }
