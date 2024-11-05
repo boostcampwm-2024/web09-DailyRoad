@@ -14,4 +14,8 @@ export class PlaceService {
   async getPlaces() {
     return this.placeRepository.findAll();
   }
+
+  async getPlace(id: number) {
+    return this.placeRepository.findById(id);
+  }
 }
