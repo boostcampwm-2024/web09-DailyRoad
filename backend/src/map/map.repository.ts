@@ -1,57 +1,18 @@
-import { Repository, DataSource, ILike, FindManyOptions } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-
+import { ILike, DataSource } from 'typeorm';
 import { Map } from './entity/map.entity';
+import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
 @Injectable()
-export class MapRepository extends Repository<Map> {
+export class MapRepository extends SoftDeleteRepository<Map, number> {
   constructor(private dataSource: DataSource) {
     super(Map, dataSource.createEntityManager());
-  }
-
-  find(options: FindManyOptions<Map> = {}) {
-    return super.find({
-      ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
-    });
   }
 
   findAll(page: number, pageSize: number) {
     return this.find({
       skip: (page - 1) * pageSize,
       take: pageSize,
-    });
-  }
-
-  findAndCount(options: FindManyOptions<Map> = {}) {
-    return super.findAndCount({
-      ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
-    });
-  }
-
-  count(options: FindManyOptions<Map> = {}): Promise<number> {
-    return super.count({
-      ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
-    });
-  }
-
-  findById(id: number) {
-    return this.findOne({
-      where: {
-        id,
-        deletedAt: null,
-      },
     });
   }
 
@@ -69,9 +30,5 @@ export class MapRepository extends Repository<Map> {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-  }
-
-  softDelete(id: number) {
-    return super.update(id, { deletedAt: new Date() });
   }
 }
