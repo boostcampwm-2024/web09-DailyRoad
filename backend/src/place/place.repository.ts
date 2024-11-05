@@ -40,4 +40,8 @@ export class PlaceRepository {
   async findAll() {
     return this.placeRepository.find();
   }
+
+  async findById(id: number) {
+    return this.placeRepository.findOne({ where: { id } });
+  }
 }
