@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getGoogleMapStore, useGoogleMapStore } from './store/googleMapState';
 import { createMarkerInstance } from './marker';
+import NewPlaceSearchBar from './NewPlaceSearchBar';
 
 const Dashboard = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -58,6 +59,7 @@ const Dashboard = () => {
 
   return (
     <div className={'absolute left-0 top-0 h-72 w-36 bg-white'}>
+      <NewPlaceSearchBar />
       <div>
         <label>
           Latitude:
