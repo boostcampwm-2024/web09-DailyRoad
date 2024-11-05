@@ -10,4 +10,8 @@ export class PlaceService {
     const savedPlace = await this.placeRepository.save(createPlaceDto);
     return { id: savedPlace.id };
   }
+
+  async getPlaces() {
+    return this.placeRepository.findAll();
+  }
 }
