@@ -10,6 +10,6 @@ export const PlaceExceptionType = {
   SEARCH_NOT_FOUND: {
     code: 1002,
     message: '검색 결과가 없습니다.',
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
   },
 };
