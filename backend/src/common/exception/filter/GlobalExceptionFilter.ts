@@ -17,9 +17,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (exception instanceof BaseException) {
       return this.sendErrorResponse(
         response,
-        exception.code,
+        exception.getCode(),
         exception.getStatus(),
-        exception.message,
+        exception.getMessage(),
       );
     }
 
