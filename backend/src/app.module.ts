@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmConfigService } from './config/TypeOrmConfigService';
+import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
 
 @Module({
@@ -14,8 +15,10 @@ import { PlaceModule } from './place/place.module';
       useClass: TypeOrmConfigService,
     }),
     PlaceModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

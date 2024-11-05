@@ -54,3 +54,15 @@ export class MapService {
     return this.mapRepository.findById(id);
   }
 
+  async createMap(userId: number, createMapForm: CreateMapForm) {
+    const user = { id: userId } as User;
+    const map = createMapForm.toEntity(user);
+
+    return { id: (await this.mapRepository.save(map)).id };
+  }
+
+  async deleteMap(id: number) {
+    await this.mapRepository.softDelete(id);
+    return { id };
+  }
+}

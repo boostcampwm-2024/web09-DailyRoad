@@ -47,3 +47,33 @@ describe('MapController', () => {
       .expect(200)
       .expect([]);
   });
+
+  it('/POST maps - success', () => {
+    const createMapFormData = {
+      title: 'Test Map',
+      isPublic: true,
+      description: 'Test Description',
+      thumbnailUrl: 'http://example.com/thumbnail.jpg',
+    };
+
+    mapService.createMap.mockResolvedValue({ id: 1 });
+
+    return request(app.getHttpServer())
+      .post('/maps')
+      .send(createMapFormData)
+      .expect(201)
+      .expect({ id: 1 });
+  });
+
+  it('/POST maps - validation error', () => {
+    const invalidCreateMapForm = {
+      title: '',
+      isPublic: 'not-a-boolean',
+    };
+
+    return request(app.getHttpServer())
+      .post('/maps')
+      .send(invalidCreateMapForm)
+      .expect(400);
+  });
+});
