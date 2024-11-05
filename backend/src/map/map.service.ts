@@ -5,6 +5,7 @@ import { CreateMapForm } from './dto/CreateMapForm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MapListResponse } from './dto/MapListResponse';
+import { MapDetailResponse } from './dto/MapDetailResponse';
 
 @Injectable()
 export class MapService {
@@ -51,7 +52,10 @@ export class MapService {
   }
 
   async getMapById(id: number) {
-    return this.mapRepository.findById(id);
+    const map = await this.mapRepository.findById(id);
+    if (map) return await MapDetailResponse.from(map);
+
+    throw new Error("커스텀에러로수정예정 404")
   }
 
   async createMap(userId: number, createMapForm: CreateMapForm) {
