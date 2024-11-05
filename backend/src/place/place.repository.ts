@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Place } from './place.entity';
-import { CreatePlaceDto } from './dto/CreatePlaceDto';
 
 @Injectable()
 export class PlaceRepository {
@@ -11,29 +10,7 @@ export class PlaceRepository {
     this.placeRepository = this.datasource.getRepository(Place);
   }
 
-  async save(createPlaceDto: CreatePlaceDto) {
-    const {
-      googlePlaceId,
-      name,
-      thumbnailUrl,
-      rating,
-      location: { longitude, latitude },
-      formattedAddress,
-      description,
-      detailPageUrl,
-    } = createPlaceDto;
-
-    const place = new Place();
-    place.googlePlaceId = googlePlaceId;
-    place.name = name;
-    place.thumbnailUrl = thumbnailUrl;
-    place.rating = rating;
-    place.longitude = longitude;
-    place.latitude = latitude;
-    place.formattedAddress = formattedAddress;
-    place.description = description;
-    place.detailPageUrl = detailPageUrl;
-
+  async save(place: Place) {
     return this.placeRepository.save(place);
   }
 
@@ -43,5 +20,9 @@ export class PlaceRepository {
 
   async findById(id: number) {
     return this.placeRepository.findOne({ where: { id } });
+  }
+
+  async findByGooglePlaceId(googlePlaceId: string) {
+    return this.placeRepository.findOne({ where: { googlePlaceId } });
   }
 }
