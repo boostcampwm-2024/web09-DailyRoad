@@ -36,4 +36,8 @@ export class PlaceRepository {
 
     return this.placeRepository.save(place);
   }
+
+  async findAll() {
+    return this.placeRepository.find();
+  }
 }
