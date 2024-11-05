@@ -24,3 +24,4 @@ build
 *.sln
 *.sw?
 .env
+.package-lock.json
