@@ -6,7 +6,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 
 describe('MapController', () => {
   let app: INestApplication;
-  let mapService = {
+  const mapService = {
     searchMap: jest.fn(),
     getOwnMaps: jest.fn(),
     createMap: jest.fn(),
@@ -34,18 +34,12 @@ describe('MapController', () => {
 
   it('/GET maps', () => {
     mapService.searchMap.mockResolvedValue([]);
-    return request(app.getHttpServer())
-      .get('/maps')
-      .expect(200)
-      .expect([]);
+    return request(app.getHttpServer()).get('/maps').expect(200).expect([]);
   });
 
   it('/GET maps/my', () => {
     mapService.getOwnMaps.mockResolvedValue([]);
-    return request(app.getHttpServer())
-      .get('/maps/my')
-      .expect(200)
-      .expect([]);
+    return request(app.getHttpServer()).get('/maps/my').expect(200).expect([]);
   });
 
   it('/POST maps - success', () => {

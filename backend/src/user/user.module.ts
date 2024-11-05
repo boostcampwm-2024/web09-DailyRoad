@@ -7,5 +7,4 @@ import { Module } from '@nestjs/common';
   imports: [TypeOrmModule.forFeature([User])],
   exports: [TypeOrmModule.forFeature([User])],
 })
-export class UserModule {
-}
+export class UserModule {}

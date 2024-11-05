@@ -9,5 +9,4 @@ import { MapRepository } from './map.repository';
   controllers: [MapController],
   providers: [MapService, MapRepository],
 })
-export class MapModule {
-}
+export class MapModule {}
