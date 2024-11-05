@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PlaceRepository } from './place.repository';
 import { CreatePlaceDto } from './dto/CreatePlaceDto';
 import { Place } from './place.entity';
-import { PlaceException } from './exception/PlaceException';
-import { PlaceExceptionType } from './exception/PlaceExceptionType';
+import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
+import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
 
 @Injectable()
 export class PlaceService {
@@ -33,7 +33,7 @@ export class PlaceService {
     place.detailPageUrl = detailPageUrl;
 
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {
-      throw new PlaceException(PlaceExceptionType.ALREADY_EXISTS);
+      throw new PlaceAlreadyExistsException();
     }
 
     const savedPlace = await this.placeRepository.save(place);
@@ -44,7 +44,7 @@ export class PlaceService {
     if (query) {
       const result = await this.placeRepository.searchNameByQuery(query);
       if (result.length === 0) {
-        throw new PlaceException(PlaceExceptionType.SEARCH_NOT_FOUND);
+        throw new PlaceNotFoundException();
       }
       return result;
     }
