@@ -18,6 +18,11 @@ export class MapController {
     return await this.appService.getOwnMaps(userId);
   }
 
+  @Get('/:id')
+  async getMapDetail(@Param('id') id: number) {
+    return await this.appService.getMapById(id);
+  }
+
   @Post()
   async createMap(@Body() createMapForm: CreateMapForm) {
     const userId = 1; // Todo. 로그인 기능 완성 후 수정
