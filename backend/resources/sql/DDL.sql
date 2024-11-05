@@ -1,3 +1,17 @@
+-- 무결성 제약 조건 비활성화
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 기존 테이블 삭제
+DROP TABLE IF EXISTS COURSE_PLACE;
+DROP TABLE IF EXISTS COURSE;
+DROP TABLE IF EXISTS MAP_PLACE;
+DROP TABLE IF EXISTS MAP;
+DROP TABLE IF EXISTS PLACE;
+DROP TABLE IF EXISTS USER;
+
+-- 무결성 제약 조건 재활성화
+SET FOREIGN_KEY_CHECKS = 1;
+
 -- USER 테이블
 CREATE TABLE USER
 (
@@ -37,6 +51,7 @@ CREATE TABLE MAP
     user_id       INT          NOT NULL,
     thumbnail_url VARCHAR(255),
     title         VARCHAR(255) NOT NULL,
+    is_public     BOOLEAN      NOT NULL,
     description   TEXT,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -65,6 +80,7 @@ CREATE TABLE COURSE
     user_id       INT          NOT NULL,
     thumbnail_url VARCHAR(255),
     title         VARCHAR(255) NOT NULL,
+    is_public     BOOLEAN      NOT NULL,
     description   TEXT,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
