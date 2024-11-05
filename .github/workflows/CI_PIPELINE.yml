@@ -36,6 +36,21 @@ jobs:
             echo "changed=false" >> $GITHUB_ENV
           fi
 
+      - name: Set up Node.js
+        if: env.changed == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache dependencies for ${{ matrix.project }}
+        if: env.changed == 'true'
+        uses: actions/cache@v3
+        with:
+          path: ${{ matrix.project }}/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}/yarn.lock', matrix.project)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-          
+
       - name: Install Dependencies for ${{ matrix.project }}
         if: env.changed == 'true'
         run: yarn install
