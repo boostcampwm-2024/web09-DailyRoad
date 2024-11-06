@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Query, Delete, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Delete,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
@@ -35,13 +44,19 @@ export class MapController {
   }
 
   @Patch('/:id/info')
-  async updateMapInfo(@Param('id') id: number, @Body() updateMapForm: UpdateMapInfoRequest) {
+  async updateMapInfo(
+    @Param('id') id: number,
+    @Body() updateMapForm: UpdateMapInfoRequest,
+  ) {
     await this.appService.updateMapInfo(id, updateMapForm);
     return { id, ...updateMapForm };
   }
 
   @Patch('/:id/visibility')
-  async updateMapVisibility(@Param('id') id: number, @Body('isPublic') isPublic: boolean) {
+  async updateMapVisibility(
+    @Param('id') id: number,
+    @Body('isPublic') isPublic: boolean,
+  ) {
     await this.appService.updateMapVisibility(id, isPublic);
     return { id, isPublic };
   }
