@@ -1,19 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-
-type googleTokenResponse = {
-  access_token: string;
-  refresh_token: string;
-};
-
-type googleUserResponse = {
-  id: string;
-  picture: string;
-  name: string;
-};
-
-//
+import { googleTokenResponse, googleUserResponse } from './authType';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +20,7 @@ export class AuthService {
   async getGoogleToken(
     code: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
+    return fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -44,20 +32,20 @@ export class AuthService {
         redirect_uri: this.redirectUri,
         grant_type: 'authorization_code',
       }),
-    });
-    const data = await response.json();
-    const tokens = {
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
-    };
-    if (!this.validateTokenResponse(tokens)) {
-      throw new Error('Invalid Google Response');
-    } else {
-      return {
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-      };
-    }
+    })
+      .then((response: Response) => response.json())
+      .then((data) => {
+        const tokens = {
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
+        };
+        if (!this.validateTokenResponse(tokens))
+          throw new Error('Invalid Google Response');
+        return {
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+        };
+      });
   }
 
   private validateTokenResponse(
@@ -81,27 +69,29 @@ export class AuthService {
     );
   }
 
-  generateJwtToken(payload: any): string {
+  generateJwt(payload: any): string {
     return jwt.sign(payload, this.jwtSecretKey, {
-      expiresIn: '30m',
+      expiresIn: '24h',
     });
   }
 
   async getGoogleUserInfo(accessToken: string) {
     const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
-    const response = await fetch(url, {
+    return fetch(url, {
       headers: {
         authorization: `Bearer ${accessToken}`,
       },
-    });
-    const data = await response.json();
-    if (!this.validateUserInformationResponse(data)) {
-      throw new Error('Invalid Google User Information Response');
-    }
-    return {
-      oauthId: data?.id,
-      name: data?.name,
-      picture: data?.picture,
-    };
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!this.validateUserInformationResponse(data)) {
+          throw new Error('Invalid Google User Information Response');
+        }
+        return {
+          oauthId: data?.id,
+          name: data?.name,
+          picture: data?.picture,
+        };
+      });
   }
 }
