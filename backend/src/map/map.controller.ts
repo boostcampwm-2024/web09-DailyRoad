@@ -7,8 +7,10 @@ import {
   Delete,
   Param,
 } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Delete, Param, Patch } from '@nestjs/common';
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
+import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 
 @Controller('/maps')
 export class MapController {
@@ -39,5 +41,11 @@ export class MapController {
   @Delete('/:id')
   async deleteMap(@Param('id') id: number) {
     return await this.appService.deleteMap(id);
+  }
+
+  @Patch('/:id/info')
+  async updateMapInfo(@Param('id') id: number, @Body() updateMapForm: UpdateMapInfoRequest) {
+    await this.appService.updateMapInfo(id, updateMapForm);
+    return { id, ...updateMapForm };
   }
 }
