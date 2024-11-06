@@ -82,6 +82,13 @@ export class MapService {
     const { title, description } = updateMapForm;
     return this.mapRepository.update(id, { title, description });
   }
+
+  async updateMapVisibility(id: number, isPublic: boolean) {
+    await this.checkExists(id);
+
+    return this.mapRepository.update(id, { isPublic });
+  }
+
   private async checkExists(id: number) {
     if (!(await this.mapRepository.existById(id))) throw new MapNotFoundException(id);
   }
