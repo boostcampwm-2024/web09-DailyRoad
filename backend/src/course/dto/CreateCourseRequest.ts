@@ -1,6 +1,6 @@
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entity/user.entity';
 import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
-import { Course } from '../course.entity';
+import { Course } from '../entity/course.entity';
 
 export class CreateCourseRequest {
   @IsString()

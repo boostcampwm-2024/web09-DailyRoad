@@ -1,5 +1,5 @@
-import { User } from '../../user/user.entity';
-import { Map } from '../map.entity';
+import { User } from '../../user/entity/user.entity';
+import { Map } from '../entity/map.entity';
 import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
 
 export class CreateMapRequest {

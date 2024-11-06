@@ -1,23 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { MapRepository } from './map.repository';
-import { User } from '../user/user.entity';
+import { User } from '../user/entity/user.entity';
 import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
 import { UserRepository } from '../user/user.repository';
-import { DataSource } from 'typeorm';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { MapNotFoundException } from './exception/MapNotFoundException';
 
 @Injectable()
 export class MapService {
-  private readonly userRepository: UserRepository;
-
   constructor(
     private readonly mapRepository: MapRepository,
-    private readonly dataSource: DataSource,
+    private readonly userRepository: UserRepository,
   ) {
-    this.userRepository = new UserRepository(this.dataSource);
     // Todo. 로그인 기능 완성 후 제거
     const testUser = new User('test', 'test', 'test', 'test');
     testUser.id = 1;
