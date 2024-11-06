@@ -1,5 +1,5 @@
 import { FindManyOptions, Repository, FindOptionsWhere } from 'typeorm';
-import { SoftDeletableEntity } from './SoftDeletableEntity.interface';
+import { SoftDeletableEntity, Key } from './SoftDeletableEntity.interface';
 
 /**
  * Soft Delete 를 지원
@@ -7,7 +7,7 @@ import { SoftDeletableEntity } from './SoftDeletableEntity.interface';
  */
 export abstract class SoftDeleteRepository<
   T extends SoftDeletableEntity<K>,
-  K,
+  K extends Key,
 > extends Repository<T> {
   find(options: FindManyOptions<T> = {}) {
     return super.find({
@@ -43,8 +43,14 @@ export abstract class SoftDeleteRepository<
     });
   }
 
-  softDelete(id: number) {
+  softDelete(id: K) {
     return super.update(id, { deletedAt: new Date() } as any);
+  }
+
+  existById(id: K) {
+    return this.count({ where: { id } as FindOptionsWhere<T> }).then(
+      (count) => count > 0,
+    );
   }
 
   private applyDeletedAtCondition(where: any) {
