@@ -2,7 +2,7 @@ import { User } from '../../user/user.entity';
 import { Map } from '../entity/map.entity';
 import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
 
-export class CreateMapForm {
+export class CreateMapRequest {
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -18,7 +18,7 @@ export class CreateMapForm {
   thumbnailUrl?: string;
 
   static from({ title, isPublic, description, thumbnailUrl }) {
-    const form = new CreateMapForm();
+    const form = new CreateMapRequest();
     form.title = title;
     form.isPublic = isPublic;
     form.description = description;

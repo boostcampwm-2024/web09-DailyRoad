@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MapRepository } from './map.repository';
 import { User } from '../user/user.entity';
-import { CreateMapForm } from './dto/CreateMapForm';
+import { CreateMapRequest } from './dto/CreateMapRequest';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MapListResponse } from './dto/MapListResponse';
@@ -65,7 +65,7 @@ export class MapService {
     throw new MapNotFoundException(id);
   }
 
-  async createMap(userId: number, createMapForm: CreateMapForm) {
+  async createMap(userId: number, createMapForm: CreateMapRequest) {
     const user = { id: userId } as User;
     const map = createMapForm.toEntity(user);
 
