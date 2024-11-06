@@ -46,7 +46,11 @@ export class MapService {
       where: { user: { id: userId } },
     });
 
-    const ownMaps = await this.mapRepository.findByUserId(userId, page, pageSize);
+    const ownMaps = await this.mapRepository.findByUserId(
+      userId,
+      page,
+      pageSize,
+    );
 
     return {
       maps: await Promise.all(ownMaps.map(MapListResponse.from)),
@@ -90,6 +94,7 @@ export class MapService {
   }
 
   private async checkExists(id: number) {
-    if (!(await this.mapRepository.existById(id))) throw new MapNotFoundException(id);
+    if (!(await this.mapRepository.existById(id)))
+      throw new MapNotFoundException(id);
   }
 }
