@@ -4,17 +4,20 @@ import { User } from '../user/user.entity';
 import { CreateMapForm } from './dto/CreateMapForm';
 import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
+// <<<<<<< HEAD
 import { UserRepository } from '../user/user.repository';
 import { DataSource } from 'typeorm';
+import { MapNotFoundException } from './exception/MapNotFoundException';
 
 @Injectable()
 export class MapService {
   private readonly userRepository: UserRepository;
 
+  // Todo. 작성자명 등 ... 검색 조건 추가
+
   constructor(
     private readonly mapRepository: MapRepository,
     private readonly dataSource: DataSource,
-    // @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
     this.userRepository = new UserRepository(this.dataSource);
     // Todo. 로그인 기능 완성 후 제거
@@ -23,7 +26,6 @@ export class MapService {
     this.userRepository.upsert(testUser, { conflictPaths: ['id'] });
   }
 
-  // Todo. 작성자명 등 ... 검색 조건 추가
   async searchMap(query?: string, page: number = 1, pageSize: number = 10) {
     const maps = query
       ? await this.mapRepository.searchByTitleQuery(query, page, pageSize)
@@ -64,8 +66,7 @@ export class MapService {
   async getMapById(id: number) {
     const map = await this.mapRepository.findById(id);
     if (map) return await MapDetailResponse.from(map);
-
-    throw new Error('커스텀에러로수정예정 404');
+    throw new MapNotFoundException(id);
   }
 
   async createMap(userId: number, createMapForm: CreateMapForm) {

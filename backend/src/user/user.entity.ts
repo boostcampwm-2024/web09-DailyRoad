@@ -26,10 +26,13 @@ export class User extends BaseEntity {
   @OneToMany(() => Course, (course) => course.user)
   courses: Promise<Course[]>;
 
-  constructor(provider: string,
-              nickname: string,
-              oauthId: string, role: string,
-              profileImageUrl?: string) {
+  constructor(
+    provider: string,
+    nickname: string,
+    oauthId: string,
+    role: string,
+    profileImageUrl?: string,
+  ) {
     super();
     this.provider = provider;
     this.nickname = nickname;

@@ -19,7 +19,6 @@ const render = (status: Status) => {
 };
 
 function App() {
-  const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&v=3.49&libraries=marker`;
   return (
     <Wrapper
       apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}
