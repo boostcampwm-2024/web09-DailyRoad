@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { CreatePlaceDto } from './dto/CreatePlaceDto';
+import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 
 @Controller('places')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
   @Post()
-  async addPlace(@Body() createPlaceDto: CreatePlaceDto) {
+  async addPlace(@Body() createPlaceDto: CreatePlaceRequest) {
     return this.placeService.addPlace(createPlaceDto);
   }
 
