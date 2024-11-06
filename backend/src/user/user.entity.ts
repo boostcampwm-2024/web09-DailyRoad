@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from '../common/BaseEntity';
-import { Course } from '../course/entity/course.entity';
-import { Map } from '../map/entity/map.entity';
+import { Course } from '../course/course.entity';
+import { Map } from '../map/map.entity';
 
 @Entity()
 export class User extends BaseEntity {

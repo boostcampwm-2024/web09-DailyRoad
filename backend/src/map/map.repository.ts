@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ILike, DataSource } from 'typeorm';
-import { Map } from './entity/map.entity';
+import { Map } from './map.entity';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
 
   findByUserId(userId: number, page: number, pageSize: number) {
     return this.find({
-      where: { user: { id: userId }, deletedAt: null },
+      where: { user: { id: userId } },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

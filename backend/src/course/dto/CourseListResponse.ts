@@ -1,5 +1,5 @@
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
-import { Course } from '../entity/course.entity';
+import { Course } from '../course.entity';
 
 // Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
 export const DEFAULT_THUMBNAIL_URL =
