@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PlaceRepository } from './place.repository';
-import { CreatePlaceDto } from './dto/CreatePlaceDto';
+import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
 
@@ -8,13 +8,13 @@ import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsExcep
 export class PlaceService {
   constructor(private readonly placeRepository: PlaceRepository) {}
 
-  async addPlace(createPlaceDto: CreatePlaceDto) {
-    const { googlePlaceId } = createPlaceDto;
+  async addPlace(createPlaceRequest: CreatePlaceRequest) {
+    const { googlePlaceId } = createPlaceRequest;
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {
       throw new PlaceAlreadyExistsException();
     }
 
-    const place = createPlaceDto.toEntity();
+    const place = createPlaceRequest.toEntity();
     const savedPlace = await this.placeRepository.save(place);
     return { id: savedPlace.id };
   }

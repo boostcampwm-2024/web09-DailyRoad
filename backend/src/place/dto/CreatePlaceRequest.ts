@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 import { Place } from '../place.entity';
 
-export class CreatePlaceDto {
+export class CreatePlaceRequest {
   @IsString()
   @IsNotEmpty()
   googlePlaceId: string;
