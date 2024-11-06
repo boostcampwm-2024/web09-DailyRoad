@@ -5,8 +5,8 @@ import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
 import { UserRepository } from '../user/user.repository';
 import { DataSource } from 'typeorm';
-import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
+import { CreateMapRequest } from './dto/CreateMapRequest';
 import { MapNotFoundException } from './exception/MapNotFoundException';
 
 @Injectable()
