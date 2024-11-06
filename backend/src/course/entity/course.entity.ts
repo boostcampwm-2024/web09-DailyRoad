@@ -5,7 +5,7 @@ import { CoursePlace } from './course-place.entity';
 
 @Entity()
 export class Course extends BaseEntity {
-  @ManyToOne(() => User, (user) => user.courses)
+  @ManyToOne(() => User, (user) => user.courses, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -21,7 +21,9 @@ export class Course extends BaseEntity {
   @Column('text', { nullable: true })
   description?: string;
 
-  @OneToMany(() => CoursePlace, (coursePlace) => coursePlace.course)
+  @OneToMany(() => CoursePlace, (coursePlace) => coursePlace.course, {
+    eager: true,
+  })
   private coursePlaces: CoursePlace[];
 
   constructor(
