@@ -8,7 +8,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { MapService } from './map.service';
-import { CreateMapForm } from './dto/CreateMapForm';
+import { CreateMapRequest } from './dto/CreateMapRequest';
 
 @Controller('/maps')
 export class MapController {
@@ -31,7 +31,7 @@ export class MapController {
   }
 
   @Post()
-  async createMap(@Body() createMapForm: CreateMapForm) {
+  async createMap(@Body() createMapForm: CreateMapRequest) {
     const userId = 1; // Todo. 로그인 기능 완성 후 수정
     return await this.appService.createMap(userId, createMapForm);
   }
