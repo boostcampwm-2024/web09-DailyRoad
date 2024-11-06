@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
 import { MapNotFoundException } from './exception/MapNotFoundException';
+import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 
 @Injectable()
 export class MapService {
@@ -45,11 +46,7 @@ export class MapService {
       where: { user: { id: userId } },
     });
 
-    const ownMaps = await this.mapRepository.findByUserId(
-      userId,
-      page,
-      pageSize,
-    );
+    const ownMaps = await this.mapRepository.findByUserId(userId, page, pageSize);
 
     return {
       maps: await Promise.all(ownMaps.map(MapListResponse.from)),
@@ -73,7 +70,19 @@ export class MapService {
   }
 
   async deleteMap(id: number) {
+    await this.checkExists(id);
+
     await this.mapRepository.softDelete(id);
     return { id };
+  }
+
+  async updateMapInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
+    await this.checkExists(id);
+
+    const { title, description } = updateMapForm;
+    return this.mapRepository.update(id, { title, description });
+  }
+  private async checkExists(id: number) {
+    if (!(await this.mapRepository.existById(id))) throw new MapNotFoundException(id);
   }
 }
