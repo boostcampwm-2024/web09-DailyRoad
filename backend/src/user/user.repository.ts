@@ -2,6 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Injectable } from '@nestjs/common';
 import { UserIconResponse } from './dto/UserIconResponse';
+import { UpsertOptions } from 'typeorm/repository/UpsertOptions';
 
 @Injectable()
 export class UserRepository {
@@ -35,5 +36,9 @@ export class UserRepository {
 
   async save(user: User) {
     return this.repository.save(user);
+  }
+
+  async upsert(user: User, options: UpsertOptions<User>) {
+    await this.repository.upsert(user, options);
   }
 }
