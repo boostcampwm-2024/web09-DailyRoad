@@ -1,44 +1,38 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Injectable } from '@nestjs/common';
-import { UserIconResponse } from './dto/UserIconResponse';
-import { UpsertOptions } from 'typeorm/repository/UpsertOptions';
+import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
 @Injectable()
-export class UserRepository {
+export class UserRepository extends SoftDeleteRepository<User, number> {
   private readonly repository: Repository<User>;
 
   constructor(dataSource: DataSource) {
+    super(User, dataSource.createEntityManager());
     this.repository = dataSource.getRepository(User);
-  }
-
-  async findOne(id: number): Promise<UserIconResponse | undefined> {
-    const user = await this.repository.findOne({ where: { id } });
-    return UserIconResponse.from(user);
   }
 
   async findByProviderAndOauthId(
     provider: string,
     oauthId: string,
   ): Promise<User | undefined> {
-    return this.repository.findOne({ where: { provider, oauthId } });
+    return this.findOne({
+      where: {
+        provider,
+        oauthId,
+      } as FindOptionsWhere<User>,
+    });
   }
 
-  async create(userData: Partial<User>): Promise<User> {
-    return this.repository.create({
+  async createUser(userData: Partial<User>): Promise<User> {
+    const user = this.create();
+    Object.assign(user, {
       provider: userData.provider,
       oauthId: userData.oauthId,
       nickname: userData.nickname,
       role: userData.role,
       profileImageUrl: userData.profileImageUrl,
     });
-  }
-
-  async save(user: User) {
-    return this.repository.save(user);
-  }
-
-  async upsert(user: User, options: UpsertOptions<User>) {
-    await this.repository.upsert(user, options);
+    return this.save(user);
   }
 }
