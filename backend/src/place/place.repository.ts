@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, ILike } from 'typeorm';
-import { Place } from './place.entity';
+import { Place } from './entity/place.entity';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
 @Injectable()

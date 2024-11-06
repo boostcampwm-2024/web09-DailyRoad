@@ -1,4 +1,4 @@
-import { Place } from '../place.entity';
+import { Place } from '../entity/place.entity';
 
 export class PlaceResponse {
   constructor(

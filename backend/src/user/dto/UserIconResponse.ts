@@ -1,4 +1,4 @@
-import { User } from '../user.entity';
+import { User } from '../entity/user.entity';
 
 export const DEFAULT_PROFILE_IMAGE_URL =
   'https://avatars.githubusercontent.com/u/87180146?v=4';
