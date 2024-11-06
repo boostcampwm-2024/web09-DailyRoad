@@ -1,5 +1,5 @@
-import { DataSource } from 'typeorm';
-import { User } from './user.entity';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { User } from './entity/user.entity';
 import { Injectable } from '@nestjs/common';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 

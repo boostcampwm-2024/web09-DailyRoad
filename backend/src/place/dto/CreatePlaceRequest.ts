@@ -4,7 +4,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Place } from '../place.entity';
+import { Place } from '../entity/place.entity';
 
 export class CreatePlaceRequest {
   @IsString()
