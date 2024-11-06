@@ -18,8 +18,11 @@ export class MapDetailResponse {
   ) {}
 
   static async from(map: Map) {
-    const places = (await map.getPlaces()).map((place) => {
-      return PlaceResponse.from(place);
+    const places = (await map.getPlacesWithComment()).map((place) => {
+      return {
+        ...PlaceResponse.from(place.place),
+        comment: place.comment,
+      };
     });
 
     return new MapDetailResponse(
