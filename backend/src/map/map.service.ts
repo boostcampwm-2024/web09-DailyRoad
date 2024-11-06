@@ -64,9 +64,9 @@ export class MapService {
 
   async getMapById(id: number) {
     const map = await this.mapRepository.findById(id);
-    if (map) return await MapDetailResponse.from(map);
+    if (map) throw new MapNotFoundException(id);
 
-    throw new Error('커스텀에러로수정예정 404');
+    return await MapDetailResponse.from(map);
   }
 
   async createMap(userId: number, createMapForm: CreateMapRequest) {

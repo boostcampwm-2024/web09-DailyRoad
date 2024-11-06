@@ -1,6 +1,6 @@
 import { User } from '../../user/user.entity';
 import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
-import { Course } from '../entity/course.entity';
+import { Course } from '../course.entity';
 
 export class CreateCourseRequest {
   @IsString()
@@ -18,13 +18,13 @@ export class CreateCourseRequest {
   thumbnailUrl?: string;
 
   static from({ title, isPublic, description, thumbnailUrl }) {
-    const form = new CreateCourseRequest();
-    form.title = title;
-    form.isPublic = isPublic;
-    form.description = description;
-    form.thumbnailUrl = thumbnailUrl;
+    const request = new CreateCourseRequest();
+    request.title = title;
+    request.isPublic = isPublic;
+    request.description = description;
+    request.thumbnailUrl = thumbnailUrl;
 
-    return form;
+    return request;
   }
 
   toEntity(user: User) {

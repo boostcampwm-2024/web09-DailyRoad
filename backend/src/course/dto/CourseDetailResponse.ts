@@ -1,7 +1,7 @@
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
 import { PlaceResponse } from '../../place/dto/PlaceResponse';
 import { DEFAULT_THUMBNAIL_URL } from './CourseListResponse';
-import { Course } from '../entity/course.entity';
+import { Course } from '../course.entity';
 
 export class CourseDetailResponse {
   constructor(

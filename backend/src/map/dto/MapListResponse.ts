@@ -1,4 +1,4 @@
-import { Map } from '../entity/map.entity';
+import { Map } from '../map.entity';
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
 
 // Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
