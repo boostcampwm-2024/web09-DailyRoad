@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { BaseEntity } from '../common/BaseEntity';
-import { Place } from '../place/place.entity';
+import { BaseEntity } from '../../common/BaseEntity';
+import { Place } from '../../place/place.entity';
 import { Course } from './course.entity';
 
 @Entity()
@@ -8,9 +8,9 @@ export class CoursePlace extends BaseEntity {
   @Column()
   order: number;
 
-  @ManyToOne(() => Place, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Place, { onDelete: 'CASCADE', lazy: true })
   @JoinColumn({ name: 'place_id' })
-  place: Place;
+  place: Promise<Place>;
 
   @ManyToOne(() => Course, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'course_id' })
