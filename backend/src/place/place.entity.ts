@@ -29,4 +29,27 @@ export class Place extends BaseEntity {
 
   @Column({ nullable: true })
   detailPageUrl?: string;
+
+  constructor(
+    googlePlaceId: string,
+    name: string,
+    thumbnailUrl: string,
+    rating: number,
+    longitude: number,
+    latitude: number,
+    formattedAddress: string,
+    description: string,
+    detailPageUrl: string,
+  ) {
+    super();
+    this.googlePlaceId = googlePlaceId;
+    this.name = name;
+    this.thumbnailUrl = thumbnailUrl;
+    this.rating = rating;
+    this.longitude = longitude;
+    this.latitude = latitude;
+    this.formattedAddress = formattedAddress;
+    this.description = description;
+    this.detailPageUrl = detailPageUrl;
+  }
 }
