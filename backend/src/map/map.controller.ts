@@ -33,9 +33,9 @@ export class MapController {
   }
 
   @Post()
-  async createMap(@Body() createMapForm: CreateMapRequest) {
+  async createMap(@Body() createMapRequest: CreateMapRequest) {
     const userId = 1; // Todo. 로그인 기능 완성 후 수정
-    return await this.appService.createMap(userId, createMapForm);
+    return await this.appService.createMap(userId, createMapRequest);
   }
 
   @Delete('/:id')
@@ -46,10 +46,10 @@ export class MapController {
   @Patch('/:id/info')
   async updateMapInfo(
     @Param('id') id: number,
-    @Body() updateMapForm: UpdateMapInfoRequest,
+    @Body() updateMapInfoRequest: UpdateMapInfoRequest,
   ) {
-    await this.appService.updateMapInfo(id, updateMapForm);
-    return { id, ...updateMapForm };
+    await this.appService.updateMapInfo(id, updateMapInfoRequest);
+    return { id, ...updateMapInfoRequest };
   }
 
   @Patch('/:id/visibility')
