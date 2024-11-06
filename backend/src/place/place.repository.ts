@@ -1,34 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Like, Repository } from 'typeorm';
+import { DataSource, ILike } from 'typeorm';
 import { Place } from './place.entity';
+import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
 @Injectable()
-export class PlaceRepository {
-  private placeRepository: Repository<Place>;
-
+export class PlaceRepository extends SoftDeleteRepository<Place, number> {
   constructor(private readonly datasource: DataSource) {
-    this.placeRepository = this.datasource.getRepository(Place);
+    super(Place, datasource.createEntityManager());
   }
 
-  async save(place: Place) {
-    return this.placeRepository.save(place);
-  }
-
-  async findAll() {
-    return this.placeRepository.find();
-  }
-
-  async findById(id: number) {
-    return this.placeRepository.findOne({ where: { id } });
+  async findAll(page: number, pageSize: number) {
+    return this.find({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
   }
 
   async findByGooglePlaceId(googlePlaceId: string) {
-    return this.placeRepository.findOne({ where: { googlePlaceId } });
+    return this.findOne({ where: { googlePlaceId } });
   }
 
-  async searchNameByQuery(query: string) {
-    return this.placeRepository.find({
-      where: { name: Like(`%${query}%`) },
+  async searchByNameOrAddressQuery(
+    query: string,
+    page: number,
+    pageSize: number,
+  ) {
+    return this.find({
+      where: [
+        { formattedAddress: ILike(`%${query}%`) },
+        { name: ILike(`%${query}%`) },
+      ],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
   }
 }
