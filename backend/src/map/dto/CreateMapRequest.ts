@@ -1,5 +1,5 @@
 import { User } from '../../user/user.entity';
-import { Map } from '../entity/map.entity';
+import { Map } from '../map.entity';
 import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
 
 export class CreateMapRequest {
@@ -18,13 +18,13 @@ export class CreateMapRequest {
   thumbnailUrl?: string;
 
   static from({ title, isPublic, description, thumbnailUrl }) {
-    const form = new CreateMapRequest();
-    form.title = title;
-    form.isPublic = isPublic;
-    form.description = description;
-    form.thumbnailUrl = thumbnailUrl;
+    const request = new CreateMapRequest();
+    request.title = title;
+    request.isPublic = isPublic;
+    request.description = description;
+    request.thumbnailUrl = thumbnailUrl;
 
-    return form;
+    return request;
   }
 
   toEntity(user: User) {

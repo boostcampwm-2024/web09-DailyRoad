@@ -61,9 +61,9 @@ export class CourseService {
 
   async getCourseById(id: number) {
     const map = await this.courseRepository.findById(id);
-    if (map) return await CourseDetailResponse.from(map);
+    if (!map) throw new CourseNotFoundException(id);
 
-    throw new CourseNotFoundException(id);
+    return await CourseDetailResponse.from(map);
   }
 
   async createCourse(userId: number, createMapForm: CreateCourseRequest) {
