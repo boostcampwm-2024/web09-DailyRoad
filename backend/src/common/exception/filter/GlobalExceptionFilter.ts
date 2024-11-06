@@ -24,6 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof HttpException) {
+      console.log(exception);
       return this.sendErrorResponse(
         response,
         9999,
@@ -32,6 +33,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
     }
 
+    console.log(exception);
     return this.sendErrorResponse(
       response,
       -1,
