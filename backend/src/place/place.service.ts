@@ -37,7 +37,7 @@ export class PlaceService {
   async getPlace(id: number) {
     const place = await this.placeRepository.findById(id);
     if (!place) {
-      throw new PlaceNotFoundException();
+      throw new PlaceNotFoundException(id);
     }
     return place;
   }
