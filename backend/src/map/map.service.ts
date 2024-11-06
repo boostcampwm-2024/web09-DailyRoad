@@ -14,7 +14,6 @@ export class MapService {
   constructor(
     private readonly mapRepository: MapRepository,
     private readonly dataSource: DataSource,
-    // @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
     this.userRepository = new UserRepository(this.dataSource);
     // Todo. 로그인 기능 완성 후 제거
