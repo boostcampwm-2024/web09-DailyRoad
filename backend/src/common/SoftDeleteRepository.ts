@@ -12,53 +12,45 @@ export abstract class SoftDeleteRepository<
   find(options: FindManyOptions<T> = {}) {
     return super.find({
       ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
+      where: this.applyDeletedAtCondition(options.where),
     });
   }
 
   findById(id: K) {
     return this.findOne({
-      where: {
-        id,
-        deletedAt: null,
-      } as FindOptionsWhere<T>,
+      where: this.applyDeletedAtCondition({ id } as FindOptionsWhere<T>),
     });
   }
 
   findAndCount(options: FindManyOptions<T> = {}) {
     return super.findAndCount({
       ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
+      where: this.applyDeletedAtCondition(options.where),
     });
   }
 
   count(options: FindManyOptions<T> = {}): Promise<number> {
     return super.count({
       ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
+      where: this.applyDeletedAtCondition(options.where),
     });
   }
 
   findOne(options: FindManyOptions<T> = {}) {
     return super.findOne({
       ...options,
-      where: {
-        ...(options?.where || {}),
-        deletedAt: null,
-      },
+      where: this.applyDeletedAtCondition(options.where),
     });
   }
 
   softDelete(id: number) {
     return super.update(id, { deletedAt: new Date() } as any);
+  }
+
+  private applyDeletedAtCondition(where: any) {
+    if (Array.isArray(where)) {
+      return where.map((condition) => ({ ...condition, deletedAt: null }));
+    }
+    return { ...where, deletedAt: null };
   }
 }
