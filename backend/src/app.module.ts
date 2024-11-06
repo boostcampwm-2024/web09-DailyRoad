@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { TypeOrmConfigService } from './config/TypeOrmConfigService';
 import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
+import { CourseModule } from './course/course.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     PlaceModule,
     MapModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
