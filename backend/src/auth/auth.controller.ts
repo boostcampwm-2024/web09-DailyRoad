@@ -18,18 +18,14 @@ export class AuthController {
     );
     const user = {
       provider: 'google',
-      oauthId: userInfo.oauthId,
-      name: userInfo.name,
-      picture: userInfo.picture,
+      ...userInfo,
     };
     await this.userService.saveUser(user);
-    const token = this.authService.generateJwtToken({
-      provider: 'google',
-      name: user.name,
-      picture: user.picture,
-    });
     return {
-      token,
+      token: this.authService.generateJwt({
+        provider: 'google',
+        ...userInfo,
+      }),
     };
   }
 }
