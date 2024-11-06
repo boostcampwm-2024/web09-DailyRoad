@@ -1,24 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { MapRepository } from './map.repository';
 import { User } from '../user/user.entity';
-import { CreateMapRequest } from './dto/CreateMapRequest';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CreateMapForm } from './dto/CreateMapForm';
 import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
-import { MapNotFoundException } from './exception/MapNotFoundException';
-import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
+import { UserRepository } from '../user/user.repository';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class MapService {
+  private readonly userRepository: UserRepository;
+
   constructor(
     private readonly mapRepository: MapRepository,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
+    // @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
+    this.userRepository = new UserRepository(this.dataSource);
     // Todo. 로그인 기능 완성 후 제거
     const testUser = new User('test', 'test', 'test', 'test');
     testUser.id = 1;
-    userRepository.upsert(testUser, { conflictPaths: ['id'] });
+    this.userRepository.upsert(testUser, { conflictPaths: ['id'] });
   }
 
   // Todo. 작성자명 등 ... 검색 조건 추가
@@ -63,7 +65,7 @@ export class MapService {
     const map = await this.mapRepository.findById(id);
     if (map) return await MapDetailResponse.from(map);
 
-    throw new MapNotFoundException(id);
+    throw new Error('커스텀에러로수정예정 404');
   }
 
   async createMap(userId: number, createMapForm: CreateMapRequest) {
