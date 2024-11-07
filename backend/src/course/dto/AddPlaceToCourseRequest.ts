@@ -16,8 +16,6 @@ export class SetPlacesOfCourseRequestItem {
 
   @IsString()
   comment?: string;
-
-  order: number;
 }
 
 export class SetPlacesOfCourseRequest {
