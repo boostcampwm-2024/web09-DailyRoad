@@ -3,4 +3,5 @@ export type userInfoWithProvider = {
   name: string;
   oauthId: string;
   picture: string;
+  role: string;
 };

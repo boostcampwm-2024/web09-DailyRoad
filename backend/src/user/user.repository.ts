@@ -1,4 +1,4 @@
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Injectable } from '@nestjs/common';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
@@ -9,18 +9,17 @@ export class UserRepository extends SoftDeleteRepository<User, number> {
 
   constructor(dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
-    this.repository = dataSource.getRepository(User);
   }
 
   async findByProviderAndOauthId(
     provider: string,
     oauthId: string,
-  ): Promise<User | undefined> {
+  ): Promise<User> {
     return this.findOne({
       where: {
         provider,
         oauthId,
-      } as FindOptionsWhere<User>,
+      },
     });
   }
 
