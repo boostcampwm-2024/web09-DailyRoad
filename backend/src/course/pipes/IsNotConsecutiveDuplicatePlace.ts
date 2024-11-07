@@ -3,6 +3,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
+import { ConsecutivePlaceException } from '../exception/ConsecutivePlaceException';
 
 @ValidatorConstraint({ name: 'isNotConsecutiveDuplicatePlace', async: false })
 export class IsNotConsecutiveDuplicatePlace
@@ -11,7 +12,7 @@ export class IsNotConsecutiveDuplicatePlace
   validate(places: SetPlacesOfCourseRequestItem[]) {
     for (let i = 1; i < places.length; i++) {
       if (places[i].placeId === places[i - 1].placeId) {
-        return false;
+        throw new ConsecutivePlaceException();
       }
     }
     return true;
