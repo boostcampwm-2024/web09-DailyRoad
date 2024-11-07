@@ -21,7 +21,10 @@ export class Map extends BaseEntity {
   @Column('text', { nullable: true })
   description?: string;
 
-  @OneToMany(() => MapPlace, (mapPlace) => mapPlace.map, { eager: true })
+  @OneToMany(() => MapPlace, (mapPlace) => mapPlace.map, {
+    eager: true,
+    cascade: true,
+  })
   mapPlaces: MapPlace[];
 
   constructor(
