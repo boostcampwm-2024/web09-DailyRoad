@@ -12,7 +12,7 @@ import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 import { PlaceRepository } from '../place/place.repository';
 import { UserRepository } from '../user/user.repository';
-import { InvalidPlaceException } from './exception/InvalidPlaceException';
+import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
 
 @Injectable()
 export class CourseService {
@@ -133,6 +133,8 @@ export class CourseService {
     );
 
     const invalidIds = notExistsPlaceIds.filter((placeId) => placeId !== null);
-    if (invalidIds.length > 0) throw new InvalidPlaceException(invalidIds);
+    if (invalidIds.length > 0) {
+      throw new InvalidPlaceToCourseException(invalidIds);
+    }
   }
 }
