@@ -7,10 +7,12 @@ import {
   Delete,
   Param,
   Patch,
+  Put,
 } from '@nestjs/common';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { CourseService } from './course.service';
+import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 
 @Controller('/courses')
 export class CourseController {
@@ -38,9 +40,15 @@ export class CourseController {
     return await this.courseService.createCourse(userId, createCourseRequest);
   }
 
-  @Delete('/:id')
-  async deleteCourse(@Param('id') id: number) {
-    return await this.courseService.deleteCourse(id);
+  @Put('/:id/places')
+  async SetPlacesOfCourse(
+    @Param('id') id: number,
+    @Body() setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
+  ) {
+    return await this.courseService.setPlacesOfCourse(
+      id,
+      setPlacesOfCourseRequest,
+    );
   }
 
   @Patch('/:id/info')
@@ -59,5 +67,10 @@ export class CourseController {
   ) {
     await this.courseService.updateCourseVisibility(id, isPublic);
     return { id, isPublic };
+  }
+
+  @Delete('/:id')
+  async deleteCourse(@Param('id') id: number) {
+    return await this.courseService.deleteCourse(id);
   }
 }
