@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MapRepository } from './map.repository';
 import { User } from '../user/user.entity';
-import { CreateMapForm } from './dto/CreateMapForm';
 import { MapListResponse } from './dto/MapListResponse';
 import { MapDetailResponse } from './dto/MapDetailResponse';
 import { UserRepository } from '../user/user.repository';
 import { DataSource } from 'typeorm';
+import { CreateMapRequest } from './dto/CreateMapRequest';
+import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
+import { MapNotFoundException } from './exception/MapNotFoundException';
 
 @Injectable()
 export class MapService {
