@@ -3,12 +3,16 @@ import { CourseRepository } from './course.repository';
 import { User } from '../user/entity/user.entity';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
 import { CourseListResponse } from './dto/CourseListResponse';
-import { CourseDetailResponse } from './dto/CourseDetailResponse';
+import {
+  CourseDetailResponse,
+  getPlacesResponseOfCourseWithOrder,
+} from './dto/CourseDetailResponse';
 import { CourseNotFoundException } from './exception/CourseNotFoundException';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 import { PlaceRepository } from '../place/place.repository';
 import { UserRepository } from '../user/user.repository';
+import { InvalidPlaceException } from './exception/InvalidPlaceException';
 
 @Injectable()
 export class CourseService {
@@ -107,25 +111,28 @@ export class CourseService {
     const course = await this.courseRepository.findById(id);
     if (!course) throw new CourseNotFoundException(id);
 
-    const notExistsPlaceIds = [];
-    const validPlaces = [];
+    await this.checkPlacesExist(
+      setPlacesOfCourseRequest.places.map((p) => p.placeId),
+    );
 
-    await Promise.all(
-      setPlacesOfCourseRequest.places.map(async (place) => {
-        if (!(await this.placeRepository.existById(place.placeId))) {
-          notExistsPlaceIds.push(place.placeId);
-        } else {
-          validPlaces.push(place);
-        }
+    course.setPlaces(setPlacesOfCourseRequest.places);
+    await this.courseRepository.save(course); // Todo. Q.바로 장소 조회하면 장소 정보가 없음.. (장소 참조만 객체에 저장했기 때문)
+    const reloadedCourse = await this.courseRepository.findById(course.id);
+
+    return {
+      places: await getPlacesResponseOfCourseWithOrder(reloadedCourse),
+    };
+  }
+
+  private async checkPlacesExist(placeIds: number[]) {
+    const notExistsPlaceIds = await Promise.all(
+      placeIds.map(async (placeId) => {
+        const exists = await this.placeRepository.existById(placeId);
+        return exists ? null : placeId;
       }),
     );
 
-    course.setPlaces(validPlaces);
-    await this.courseRepository.save(course);
-
-    return {
-      places: course.getPlacesWithComment(),
-      failed: notExistsPlaceIds,
-    };
+    const invalidIds = notExistsPlaceIds.filter((placeId) => placeId !== null);
+    if (invalidIds.length > 0) throw new InvalidPlaceException(invalidIds);
   }
 }
