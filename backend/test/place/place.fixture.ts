@@ -1,4 +1,5 @@
-import { Place } from '../../src/place/place.entity';
+import { Place } from '../../src/place/entity/place.entity';
+import { PlaceFixtureType } from './place.fixture.type';
 
 export class PlaceFixture {
   static createPlace = ({
@@ -11,17 +12,7 @@ export class PlaceFixture {
     formattedAddress = 'New York, NY, USA',
     description = 'A large public park in New York City.',
     url = 'https://example.com/central_park',
-  }: {
-    googlePlaceId?: string;
-    name?: string;
-    imageUrl?: string;
-    rating?: number;
-    longitude?: number;
-    latitude?: number;
-    formattedAddress?: string;
-    description?: string;
-    url?: string;
-  }) => {
+  }: PlaceFixtureType) => {
     return new Place(
       googlePlaceId,
       name,
