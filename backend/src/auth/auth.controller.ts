@@ -1,6 +1,7 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
+import { CreateUserRequest } from '../user/dto/CreateUserRequest';
 
 @Controller('oauth')
 export class AuthController {
@@ -16,15 +17,16 @@ export class AuthController {
     const userInfo = await this.authService.getGoogleUserInfo(
       tokens.accessToken,
     );
-    const user = {
-      provider: 'google',
+    const user = new CreateUserRequest({
       ...userInfo,
-    };
-    await this.userService.saveUser(user);
+      provider: 'google',
+      role: 'member',
+    });
+    const { userId, role } = await this.userService.addUser(user);
     return {
       token: this.authService.generateJwt({
-        provider: 'google',
-        ...userInfo,
+        userId,
+        role,
       }),
     };
   }
