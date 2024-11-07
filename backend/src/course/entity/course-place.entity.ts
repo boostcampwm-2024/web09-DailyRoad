@@ -12,23 +12,27 @@ export class CoursePlace extends BaseEntity {
   @JoinColumn({ name: 'place_id' })
   place: Promise<Place>;
 
-  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'course_id' })
-  course: Promise<Course>;
+  course: Course;
 
   @Column('text', { nullable: true })
   description?: string;
 
-  constructor(
+  static of(
     order: number,
     placeId: number,
     course: Course,
     description?: string,
   ) {
-    super();
-    this.order = order;
-    this.place = Promise.resolve({ id: placeId } as Place);
-    this.course = Promise.resolve(course);
-    this.description = description;
+    const place = new CoursePlace();
+    place.course = course;
+    place.order = order;
+    place.place = Promise.resolve({ id: placeId } as Place);
+    place.description = description;
+    return place;
   }
 }
