@@ -58,8 +58,8 @@ export class Course extends BaseEntity {
   }
 
   setPlaces(coursePlaces: SetPlacesOfCourseRequestItem[]) {
-    this.coursePlaces = coursePlaces.map((item) => {
-      return new CoursePlace(item.order, item.placeId, this, item.comment);
+    this.coursePlaces = coursePlaces.map((item, index) => {
+      return CoursePlace.of(index + 1, item.placeId, this, item.comment);
     });
   }
 }
