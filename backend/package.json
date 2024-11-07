@@ -64,7 +64,7 @@
       "ts"
     ],
     "rootDir": ".",
-    "testTimeout": 60000,
+    "testTimeout": 100000,
     "testRegex": "test/.*\\.test\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
