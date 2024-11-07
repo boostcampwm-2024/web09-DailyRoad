@@ -26,9 +26,8 @@ export class JwtAuthGuard implements CanActivate {
     }
     try {
       request.user = jwt.verify(token, this.jwtSecretKey) as {
-        name: string;
-        picture: string;
-        provider: 'google';
+        userId: string;
+        role: string;
       };
       return true;
     } catch (error) {
