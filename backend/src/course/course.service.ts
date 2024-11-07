@@ -36,7 +36,7 @@ export class CourseService {
     const publicMaps = maps.filter((map) => map.isPublic);
 
     return {
-      maps: await Promise.all(publicMaps.map(CourseListResponse.from)),
+      courses: await Promise.all(publicMaps.map(CourseListResponse.from)),
       totalPages: Math.ceil(totalCount / pageSize),
       currentPage: page,
     };
@@ -55,7 +55,7 @@ export class CourseService {
     );
 
     return {
-      maps: await Promise.all(ownMaps.map(CourseListResponse.from)),
+      courses: await Promise.all(ownMaps.map(CourseListResponse.from)),
       totalPages: Math.ceil(totalCount / pageSize),
       currentPage: page,
     };
