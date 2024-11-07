@@ -46,6 +46,18 @@ export class Map extends BaseEntity {
     return this.mapPlaces.length;
   }
 
+  addPlace(placeId: number, description: string) {
+    this.mapPlaces.push(MapPlace.of(placeId, this, description));
+  }
+
+  async deletePlace(placeId: number) {
+    this.mapPlaces = this.mapPlaces.filter((p) => p.placeId !== placeId);
+  }
+
+  async hasPlace(placeId: number) {
+    return this.mapPlaces.some((p) => p.placeId === placeId);
+  }
+
   async getPlacesWithComment() {
     return await Promise.all(
       this.mapPlaces.map(async (mapPlace) => ({

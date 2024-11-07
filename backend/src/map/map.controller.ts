@@ -11,6 +11,7 @@ import {
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
+import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 
 @Controller('/maps')
 export class MapController {
@@ -36,6 +37,23 @@ export class MapController {
   async createMap(@Body() createMapRequest: CreateMapRequest) {
     const userId = 1; // Todo. 로그인 기능 완성 후 수정
     return await this.mapService.createMap(userId, createMapRequest);
+  }
+
+  @Post('/:id/places')
+  async addPlaceToMap(
+    @Param('id') id: number,
+    @Body() addPlaceToMapRequest: AddPlaceToMapRequest,
+  ) {
+    const { placeId, comment } = addPlaceToMapRequest;
+    return await this.mapService.addPlace(id, placeId, comment);
+  }
+
+  @Delete('/:id/places/:placeId')
+  async deletePlaceFromMap(
+    @Param('id') id: number,
+    @Param('placeId') placeId: number,
+  ) {
+    return await this.mapService.deletePlace(id, placeId);
   }
 
   @Patch('/:id/info')
