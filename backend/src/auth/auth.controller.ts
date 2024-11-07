@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { CreateUserRequest } from '../user/dto/CreateUserRequest';
@@ -11,7 +11,6 @@ export class AuthController {
   ) {}
 
   @Post('google/signIn')
-  @HttpCode(201)
   async googleCallback(@Body('code') code: string) {
     const tokens = await this.authService.getGoogleToken(code);
     const userInfo = await this.authService.getGoogleUserInfo(
