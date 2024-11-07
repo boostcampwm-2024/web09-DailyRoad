@@ -6,5 +6,6 @@ import { PlaceRepository } from './place.repository';
 @Module({
   controllers: [PlaceController],
   providers: [PlaceService, PlaceRepository],
+  exports: [PlaceRepository],
 })
 export class PlaceModule {}

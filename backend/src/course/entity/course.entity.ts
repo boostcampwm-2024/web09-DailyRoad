@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/BaseEntity';
 import { User } from '../../user/entity/user.entity';
 import { CoursePlace } from './course-place.entity';
+import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
 
 @Entity()
 export class Course extends BaseEntity {
@@ -54,5 +55,11 @@ export class Course extends BaseEntity {
         comment: coursePlace.description,
       })),
     );
+  }
+
+  setPlaces(coursePlaces: SetPlacesOfCourseRequestItem[]) {
+    this.coursePlaces = coursePlaces.map((item) => {
+      return new CoursePlace(item.order, item.placeId, this, item.comment);
+    });
   }
 }
