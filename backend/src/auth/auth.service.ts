@@ -9,12 +9,14 @@ export class AuthService {
   private readonly clientSecret: string;
   private readonly redirectUri: string;
   private readonly jwtSecretKey: string;
+  private readonly jwtExpiration: string;
 
   constructor(private configService: ConfigService) {
     this.clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
     this.redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
     this.jwtSecretKey = this.configService.get<string>('JWT_SECRET_KEY');
+    this.jwtExpiration = this.configService.get<string>('JWT_EXPIRATION');
   }
 
   async getGoogleToken(
@@ -74,7 +76,7 @@ export class AuthService {
 
   generateJwt(payload: any): string {
     return jwt.sign(payload, this.jwtSecretKey, {
-      expiresIn: '24h',
+      expiresIn: this.jwtExpiration,
     });
   }
 
