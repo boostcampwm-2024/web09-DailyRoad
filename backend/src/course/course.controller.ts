@@ -41,7 +41,7 @@ export class CourseController {
   }
 
   @Put('/:id/places')
-  async SetPlacesOfCourse(
+  async setPlacesOfCourse(
     @Param('id') id: number,
     @Body() setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
   ) {
