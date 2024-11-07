@@ -21,6 +21,7 @@ export class MapService {
   }
 
   // Todo. 작성자명 등 ... 검색 조건 추가
+  // Todo. fix : public 으로 조회해서 페이지마다 수 일정하게. (현재는 한 페이지에 10개 미만인 경우 존재)
   async searchMap(query?: string, page: number = 1, pageSize: number = 10) {
     const maps = query
       ? await this.mapRepository.searchByTitleQuery(query, page, pageSize)
@@ -60,7 +61,7 @@ export class MapService {
 
   async getMapById(id: number) {
     const map = await this.mapRepository.findById(id);
-    if (map) throw new MapNotFoundException(id);
+    if (!map) throw new MapNotFoundException(id);
 
     return await MapDetailResponse.from(map);
   }
