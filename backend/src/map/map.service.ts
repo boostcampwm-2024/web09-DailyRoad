@@ -7,12 +7,17 @@ import { UserRepository } from '../user/user.repository';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { MapNotFoundException } from './exception/MapNotFoundException';
+import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapException';
+import { PlaceRepository } from '../place/place.repository';
+import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
+import { Map } from './entity/map.entity';
 
 @Injectable()
 export class MapService {
   constructor(
     private readonly mapRepository: MapRepository,
     private readonly userRepository: UserRepository,
+    private readonly placeRepository: PlaceRepository,
   ) {
     // Todo. 로그인 기능 완성 후 제거
     const testUser = new User('test', 'test', 'test', 'test');
@@ -96,5 +101,39 @@ export class MapService {
   private async checkExists(id: number) {
     if (!(await this.mapRepository.existById(id)))
       throw new MapNotFoundException(id);
+  }
+
+  async addPlace(id: number, placeId: number, comment?: string) {
+    const map = await this.mapRepository.findById(id);
+    if (!map) throw new MapNotFoundException(id);
+    await this.checkPlaceCanAddToMap(placeId, map);
+
+    map.addPlace(placeId, comment);
+    await this.mapRepository.save(map);
+
+    return {
+      savedPlaceId: placeId,
+      comment: comment,
+    };
+  }
+
+  private async checkPlaceCanAddToMap(placeId: number, map: Map) {
+    if (!(await this.placeRepository.existById(placeId))) {
+      throw new InvalidPlaceToMapException(placeId);
+    }
+
+    if (await map.hasPlace(placeId)) {
+      throw new DuplicatePlaceToMapException(placeId);
+    }
+  }
+
+  async deletePlace(id: number, placeId: number) {
+    const map = await this.mapRepository.findById(id);
+    if (!map) throw new MapNotFoundException(id);
+
+    map.deletePlace(placeId);
+    await this.mapRepository.save(map);
+
+    return { deletedId: placeId };
   }
 }
