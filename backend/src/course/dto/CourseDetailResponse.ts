@@ -18,13 +18,7 @@ export class CourseDetailResponse {
   ) {}
 
   static async from(course: Course) {
-    const places = (await course.getPlacesWithComment()).map((place, index) => {
-      return {
-        ...PlaceResponse.from(place.place),
-        comment: place.comment,
-        order: index + 1,
-      };
-    });
+    const places = await getPlacesResponseOfCourseWithOrder(course);
 
     return new CourseDetailResponse(
       course.id,
@@ -39,4 +33,14 @@ export class CourseDetailResponse {
       course.updatedAt,
     );
   }
+}
+
+export async function getPlacesResponseOfCourseWithOrder(course: Course) {
+  return (await course.getPlacesWithComment()).map((place, index) => {
+    return {
+      ...PlaceResponse.from(place.place),
+      comment: place.comment,
+      order: index + 1,
+    };
+  });
 }
