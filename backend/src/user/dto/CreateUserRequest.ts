@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { User } from '../user.entity';
+import { User } from '../entity/user.entity';
 import { userInfoWithProvider } from '../userType';
 
 export class CreateUserRequest {
