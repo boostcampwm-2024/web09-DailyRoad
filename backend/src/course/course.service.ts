@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { CourseRepository } from './course.repository';
 import { User } from '../user/entity/user.entity';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CourseListResponse } from './dto/CourseListResponse';
 import { CourseDetailResponse } from './dto/CourseDetailResponse';
 import { CourseNotFoundException } from './exception/CourseNotFoundException';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
+import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
+import { PlaceRepository } from '../place/place.repository';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class CourseService {
   constructor(
     private readonly courseRepository: CourseRepository,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly placeRepository: PlaceRepository,
+    private readonly userRepository: UserRepository,
   ) {
     // Todo. 로그인 기능 완성 후 제거
     const testUser = new User('test', 'test', 'test', 'test');
@@ -96,5 +98,34 @@ export class CourseService {
   private async checkExists(id: number) {
     if (!(await this.courseRepository.existById(id)))
       throw new CourseNotFoundException(id);
+  }
+
+  async setPlacesOfCourse(
+    id: number,
+    setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
+  ) {
+    const course = await this.courseRepository.findById(id);
+    if (!course) throw new CourseNotFoundException(id);
+
+    const notExistsPlaceIds = [];
+    const validPlaces = [];
+
+    await Promise.all(
+      setPlacesOfCourseRequest.places.map(async (place) => {
+        if (!(await this.placeRepository.existById(place.placeId))) {
+          notExistsPlaceIds.push(place.placeId);
+        } else {
+          validPlaces.push(place);
+        }
+      }),
+    );
+
+    course.setPlaces(validPlaces);
+    await this.courseRepository.save(course);
+
+    return {
+      places: course.getPlacesWithComment(),
+      failed: notExistsPlaceIds,
+    };
   }
 }

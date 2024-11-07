@@ -18,4 +18,17 @@ export class CoursePlace extends BaseEntity {
 
   @Column('text', { nullable: true })
   description?: string;
+
+  constructor(
+    order: number,
+    placeId: number,
+    course: Course,
+    description?: string,
+  ) {
+    super();
+    this.order = order;
+    this.place = Promise.resolve({ id: placeId } as Place);
+    this.course = Promise.resolve(course);
+    this.description = description;
+  }
 }
