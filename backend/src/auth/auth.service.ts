@@ -45,6 +45,9 @@ export class AuthService {
           accessToken: tokens.access_token,
           refreshToken: tokens.refresh_token,
         };
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
   }
 
@@ -92,6 +95,9 @@ export class AuthService {
           name: data?.name,
           picture: data?.picture,
         };
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
   }
 }
