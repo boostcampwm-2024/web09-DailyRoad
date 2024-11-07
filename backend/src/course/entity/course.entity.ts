@@ -24,8 +24,9 @@ export class Course extends BaseEntity {
 
   @OneToMany(() => CoursePlace, (coursePlace) => coursePlace.course, {
     eager: true,
+    cascade: true,
   })
-  private coursePlaces: CoursePlace[];
+  coursePlaces: CoursePlace[];
 
   constructor(
     user: User,
@@ -48,7 +49,6 @@ export class Course extends BaseEntity {
 
   async getPlacesWithComment() {
     const coursePlaces = this.coursePlaces.sort((a, b) => a.order - b.order);
-
     return await Promise.all(
       coursePlaces.map(async (coursePlace) => ({
         place: await coursePlace.place,
