@@ -47,6 +47,12 @@ export class Course extends BaseEntity {
     return this.coursePlaces.length;
   }
 
+  setPlaces(coursePlaces: SetPlacesOfCourseRequestItem[]) {
+    this.coursePlaces = coursePlaces.map((item, index) => {
+      return CoursePlace.of(index + 1, item.placeId, this, item.comment);
+    });
+  }
+
   async getPlacesWithComment() {
     const coursePlaces = this.coursePlaces.sort((a, b) => a.order - b.order);
     return await Promise.all(
@@ -55,11 +61,5 @@ export class Course extends BaseEntity {
         comment: coursePlace.description,
       })),
     );
-  }
-
-  setPlaces(coursePlaces: SetPlacesOfCourseRequestItem[]) {
-    this.coursePlaces = coursePlaces.map((item, index) => {
-      return CoursePlace.of(index + 1, item.placeId, this, item.comment);
-    });
   }
 }

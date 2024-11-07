@@ -1,7 +1,7 @@
 import { BaseException } from '../../common/exception/BaseException';
 import { HttpStatus } from '@nestjs/common';
 
-export class InvalidPlaceException extends BaseException {
+export class InvalidPlaceToCourseException extends BaseException {
   constructor(invalidPlaceIds: number[]) {
     super({
       code: 903,
