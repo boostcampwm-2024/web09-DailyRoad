@@ -1,6 +1,6 @@
 import { Map } from '../entity/map.entity';
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
-import { PlaceResponse } from '../../place/dto/PlaceResponse';
+import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
 import { DEFAULT_THUMBNAIL_URL } from './MapListResponse';
 
 export class MapDetailResponse {
@@ -12,7 +12,7 @@ export class MapDetailResponse {
     readonly thumbnailUrl: string,
     readonly description: string,
     readonly pinCount: number,
-    readonly places: PlaceResponse[],
+    readonly places: PlaceListResponse[],
     readonly createdAt: Date,
     readonly updatedAt: Date,
   ) {}
@@ -20,7 +20,7 @@ export class MapDetailResponse {
   static async from(map: Map) {
     const places = (await map.getPlacesWithComment()).map((place) => {
       return {
-        ...PlaceResponse.from(place.place),
+        ...PlaceListResponse.from(place.place),
         comment: place.comment,
       };
     });

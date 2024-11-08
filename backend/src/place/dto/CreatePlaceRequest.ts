@@ -32,6 +32,9 @@ export class CreatePlaceRequest {
   formattedAddress?: string;
 
   @IsString()
+  category?: string;
+
+  @IsString()
   description?: string;
 
   @IsString()

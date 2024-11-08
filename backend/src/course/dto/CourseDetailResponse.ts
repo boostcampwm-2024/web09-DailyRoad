@@ -1,5 +1,5 @@
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
-import { PlaceResponse } from '../../place/dto/PlaceResponse';
+import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
 import { DEFAULT_THUMBNAIL_URL } from './CourseListResponse';
 import { Course } from '../entity/course.entity';
 
@@ -12,7 +12,7 @@ export class CourseDetailResponse {
     readonly thumbnailUrl: string,
     readonly description: string,
     readonly pinCount: number,
-    readonly places: PlaceResponse[],
+    readonly places: PlaceListResponse[],
     readonly createdAt: Date,
     readonly updatedAt: Date,
   ) {}
@@ -38,7 +38,7 @@ export class CourseDetailResponse {
 export async function getPlacesResponseOfCourseWithOrder(course: Course) {
   return (await course.getPlacesWithComment()).map((place, index) => {
     return {
-      ...PlaceResponse.from(place.place),
+      ...PlaceListResponse.from(place.place),
       comment: place.comment,
       order: index + 1,
     };
