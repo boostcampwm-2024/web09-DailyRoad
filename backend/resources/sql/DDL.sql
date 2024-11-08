@@ -64,7 +64,7 @@ CREATE TABLE MAP_PLACE
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     place_id    INT       NOT NULL,
-    map_id      INT,
+    map_id      INT       NOT NULL,
     description TEXT,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -94,7 +94,7 @@ CREATE TABLE COURSE_PLACE
     id          INT PRIMARY KEY AUTO_INCREMENT,
     `order`     INT       NOT NULL,
     place_id    INT       NOT NULL,
-    course_id   INT,
+    course_id   INT       NOT NULL,
     description TEXT,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
