@@ -1,30 +1,22 @@
-import './App.css';
-import { Status, Wrapper } from '@googlemaps/react-wrapper';
-import GoogleMap from './GoogleMap';
-import Dashboard from './Dashboard';
-const render = (status: Status) => {
-  switch (status) {
-    case Status.LOADING:
-      return <>로딩중...</>;
-    case Status.FAILURE:
-      return <>에러</>;
-    case Status.SUCCESS:
-      return (
-        <>
-          <GoogleMap />
-          <Dashboard />
-        </>
-      );
-  }
-};
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { worker } from './mocks/browser';
+import Homepage from './pages/Homepage/HomePage';
+import MapPage from './pages/MapCreation/MapPage';
+
+if (process.env.NODE_ENV === 'development') {
+  worker.start();
+}
 
 function App() {
   return (
-    <Wrapper
-      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}
-      render={render}
-      libraries={['marker', 'places']}
-    />
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/map" element={<MapPage />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
