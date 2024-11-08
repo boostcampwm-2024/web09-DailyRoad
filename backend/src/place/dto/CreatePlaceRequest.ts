@@ -3,6 +3,9 @@ import {
   IsNumber,
   IsString,
   ValidateNested,
+  Min,
+  Max,
+  IsUrl,
 } from 'class-validator';
 import { Place } from '../entity/place.entity';
 
@@ -15,10 +18,12 @@ export class CreatePlaceRequest {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
+  @IsUrl()
   thumbnailUrl?: string;
 
   @IsNumber()
+  @Min(0)
+  @Max(5)
   rating?: number;
 
   @ValidateNested()
@@ -37,7 +42,7 @@ export class CreatePlaceRequest {
   @IsString()
   description?: string;
 
-  @IsString()
+  @IsUrl()
   detailPageUrl?: string;
 
   toEntity() {

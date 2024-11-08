@@ -33,7 +33,7 @@ CREATE TABLE PLACE
     google_place_id   CHAR(50) UNIQUE NOT NULL,
     name              VARCHAR(255)    NOT NULL,
     thumbnail_url     VARCHAR(255),
-    rating            FLOAT,
+    rating            DECIMAL(3, 2),
     longitude         DECIMAL(10, 7), -- 경도
     latitude          DECIMAL(10, 7), -- 위도
     formatted_address VARCHAR(255),
