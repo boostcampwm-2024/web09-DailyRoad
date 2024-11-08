@@ -1,5 +1,6 @@
-import { BaseMapType } from '@/types';
+import { BaseMapType, CreateMapType } from '@/types';
 import { useState } from 'react';
+import ImageUploader from './ImageUploader';
 
 type FormWrapperProps = {
   header: string;
@@ -20,14 +21,30 @@ const FormWrapper = ({
     initialData?.thumbnailUrl || '',
   );
   const [isPublic, setIsPublic] = useState(initialData?.isPublic || false);
+  const [mode, setMode] = useState<CreateMapType>('MAP');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmitHandler({ title, description, thumbnailUrl, isPublic });
+    onSubmitHandler({ title, description, isPublic });
   };
+
+  const navigateByMode = (mode: CreateMapType) => {};
+
   return (
     <div className="form-container rounded bg-white p-4 shadow-md">
       <h2 className="mb-4 text-xl font-semibold">{header}</h2>
+      <div className="mb-4">
+        <label className="block text-gray-700">Mode:</label>
+        <select
+          value={mode}
+          onChange={(e) => setMode(e.target.value as CreateMapType)}
+          className="w-full rounded border px-3 py-2"
+        >
+          <option value="map">Map</option>
+          <option value="course">Course</option>
+        </select>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700">Title:</label>
@@ -49,13 +66,7 @@ const FormWrapper = ({
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Thumbnail URL:</label>
-          <input
-            type="text"
-            value={thumbnailUrl}
-            onChange={(e) => setThumbnailUrl(e.target.value)}
-            className="w-full rounded border px-3 py-2"
-          />
+          <ImageUploader />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Visibility:</label>
