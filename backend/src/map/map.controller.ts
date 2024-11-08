@@ -18,8 +18,15 @@ export class MapController {
   constructor(private readonly mapService: MapService) {}
 
   @Get()
-  async getMapList(@Query('query') query?: string) {
-    return await this.mapService.searchMap(query);
+  async getMapList(
+    @Query('query') query?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
+    if (isNaN(limit)) limit = 10;
+
+    return await this.mapService.searchMap(query, page, limit);
   }
 
   @Get('/my')
