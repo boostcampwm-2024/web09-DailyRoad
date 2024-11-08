@@ -24,6 +24,9 @@ export class Place extends BaseEntity {
   @Column({ nullable: true })
   formattedAddress?: string;
 
+  @Column({ nullable: true })
+  category?: string;
+
   @Column('text', { nullable: true })
   description?: string;
 
