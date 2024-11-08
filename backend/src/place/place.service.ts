@@ -3,6 +3,7 @@ import { PlaceRepository } from './place.repository';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
+import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
 
 @Injectable()
 export class PlaceService {
@@ -31,7 +32,7 @@ export class PlaceService {
     if (!result.length) {
       throw new PlaceNotFoundException();
     }
-    return result;
+    return result.map(PlaceSearchResponse.from);
   }
 
   async getPlace(id: number) {
@@ -39,6 +40,6 @@ export class PlaceService {
     if (!place) {
       throw new PlaceNotFoundException(id);
     }
-    return place;
+    return PlaceSearchResponse.from(place);
   }
 }
