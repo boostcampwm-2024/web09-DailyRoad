@@ -19,8 +19,15 @@ export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Get()
-  async getCourseList(@Query('query') query?: string) {
-    return await this.courseService.searchCourse(query);
+  async getCourseList(
+    @Query('query') query?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
+    if (isNaN(limit)) limit = 10;
+
+    return await this.courseService.searchCourse(query, page, limit);
   }
 
   @Get('/my')

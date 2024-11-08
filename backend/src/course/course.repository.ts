@@ -11,6 +11,7 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
 
   findAll(page: number, pageSize: number) {
     return this.find({
+      where: { isPublic: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
