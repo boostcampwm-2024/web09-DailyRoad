@@ -1,53 +1,43 @@
 import { create } from 'zustand';
 import { Loader } from '@googlemaps/js-api-loader';
+import { INITIAL_MAP_CONFIG } from '@/constants/map';
 
 type GoogleMapState = {
   googleMap: google.maps.Map | null;
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
+  markerLibrary: google.maps.MarkerLibrary | null;
+  moveTo: (lat: number, lng: number) => void;
 };
 
-export const INITIAL_CENTER = {
-  lat: 37.5,
-  lng: 127.0,
-};
-export const INITIAL_ZOOM_LEVEL = 16;
-
-export const useGoogleMapStore = create<GoogleMapState>((set) => ({
+export const useGoogleMapStore = create<GoogleMapState>((set, get) => ({
   googleMap: null,
+  markerLibrary: null,
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
   initializeMap: async (container: HTMLElement) => {
     const loader = new Loader({
       apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
-      version: '3.49',
+      version: '3.58',
     });
 
-    await Promise.all([
-      loader.importLibrary('maps'),
-      loader.importLibrary('places'),
-    ]);
+    await loader.load();
+    const { Map } = (await google.maps.importLibrary(
+      'maps',
+    )) as google.maps.MapsLibrary;
+    const markerLibrary = (await google.maps.importLibrary(
+      'marker',
+    )) as google.maps.MarkerLibrary;
+    const map = new Map(container, INITIAL_MAP_CONFIG);
 
-    const map = new google.maps.Map(container, {
-      center: INITIAL_CENTER,
-      zoom: INITIAL_ZOOM_LEVEL,
-      disableDefaultUI: true,
-      mapId: import.meta.env.VITE_GOOGLE_MAPS_ID,
-      clickableIcons: false,
-      minZoom: 10,
-      maxZoom: 18,
-      gestureHandling: 'greedy',
-      restriction: {
-        latLngBounds: {
-          north: 39,
-          south: 32,
-          east: 132,
-          west: 124,
-        },
-        strictBounds: true,
-      },
-    });
+    set({ googleMap: map, markerLibrary });
+  },
 
-    set({ googleMap: map });
+  moveTo: (lat: number, lng: number) => {
+    const map = get().googleMap;
+    if (map) {
+      map.panTo({ lat, lng });
+      map.setZoom(14);
+    }
   },
 }));
