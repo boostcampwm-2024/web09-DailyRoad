@@ -33,27 +33,27 @@ VALUES ('place1', 'Place 1', 'https://example.com/place1.jpg', 4.5, 127.001, 37.
 -- MAP 데이터 삽입
 INSERT INTO MAP (user_id, thumbnail_url, title, is_public, description)
 VALUES (1, 'https://example.com/map1.jpg', 'Map 1', TRUE, 'Description for Map 1'),
-       (2, 'https://example.com/map2.jpg', 'Map 2', FALSE, 'Description for Map 2'),
+       (2, 'https://example.com/map2.jpg', 'Map 2', TRUE, 'Description for Map 2'),
        (3, 'https://example.com/map3.jpg', 'Map 3', TRUE, 'Description for Map 3'),
-       (4, 'https://example.com/map4.jpg', 'Map 4', FALSE, 'Description for Map 4'),
+       (4, 'https://example.com/map4.jpg', 'Map 4', TRUE, 'Description for Map 4'),
        (5, 'https://example.com/map5.jpg', 'Map 5', TRUE, 'Description for Map 5'),
        (1, 'https://example.com/map6.jpg', 'Map 6', TRUE, 'Description for Map 6'),
-       (2, 'https://example.com/map7.jpg', 'Map 7', FALSE, 'Description for Map 7'),
+       (2, 'https://example.com/map7.jpg', 'Map 7', TRUE, 'Description for Map 7'),
        (3, 'https://example.com/map8.jpg', 'Map 8', TRUE, 'Description for Map 8'),
-       (4, 'https://example.com/map9.jpg', 'Map 9', FALSE, 'Description for Map 9'),
+       (4, 'https://example.com/map9.jpg', 'Map 9', TRUE, 'Description for Map 9'),
        (5, 'https://example.com/map10.jpg', 'Map 10', TRUE, 'Description for Map 10');
 
 -- COURSE 데이터 삽입
 INSERT INTO COURSE (user_id, thumbnail_url, title, is_public, description)
 VALUES (1, 'https://example.com/course1.jpg', 'Course 1', TRUE, 'Description for Course 1'),
-       (2, 'https://example.com/course2.jpg', 'Course 2', FALSE, 'Description for Course 2'),
+       (2, 'https://example.com/course2.jpg', 'Course 2', TRUE, 'Description for Course 2'),
        (3, 'https://example.com/course3.jpg', 'Course 3', TRUE, 'Description for Course 3'),
-       (4, 'https://example.com/course4.jpg', 'Course 4', FALSE, 'Description for Course 4'),
+       (4, 'https://example.com/course4.jpg', 'Course 4', TRUE, 'Description for Course 4'),
        (5, 'https://example.com/course5.jpg', 'Course 5', TRUE, 'Description for Course 5'),
        (1, 'https://example.com/course6.jpg', 'Course 6', TRUE, 'Description for Course 6'),
-       (2, 'https://example.com/course7.jpg', 'Course 7', FALSE, 'Description for Course 7'),
+       (2, 'https://example.com/course7.jpg', 'Course 7', TRUE, 'Description for Course 7'),
        (3, 'https://example.com/course8.jpg', 'Course 8', TRUE, 'Description for Course 8'),
-       (4, 'https://example.com/course9.jpg', 'Course 9', FALSE, 'Description for Course 9'),
+       (4, 'https://example.com/course9.jpg', 'Course 9', TRUE, 'Description for Course 9'),
        (5, 'https://example.com/course10.jpg', 'Course 10', TRUE, 'Description for Course 10');
 
 -- MAP_PLACE 데이터 삽입
