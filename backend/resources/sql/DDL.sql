@@ -37,6 +37,7 @@ CREATE TABLE PLACE
     longitude         DECIMAL(10, 7), -- 경도
     latitude          DECIMAL(10, 7), -- 위도
     formatted_address VARCHAR(255),
+    category          VARCHAR(50),
     description       TEXT,
     detail_page_url   VARCHAR(255),
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
