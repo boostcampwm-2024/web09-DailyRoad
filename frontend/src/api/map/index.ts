@@ -1,9 +1,15 @@
-import { BaseMapType, MapType } from '@/types';
+import { BaseMapType, MapItemType, MapType } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
 type MapResponse = {
   mapId: string;
+};
+
+type MapListResponse = {
+  maps: MapItemType[];
+  totalPages: number;
+  currentPage: number;
 };
 
 export const getMap = async (mapId: number) => {
@@ -17,4 +23,14 @@ export const createMap = async (baseMapData: BaseMapType) => {
     baseMapData,
   );
   return data.mapId;
+};
+
+export const getMapList = async () => {
+  const { data } = await axiosInstance.get<MapListResponse>(END_POINTS.MAPS);
+  return data;
+};
+
+export const getCourseList = async () => {
+  const { data } = await axiosInstance.get<MapListResponse>(END_POINTS.COURSES);
+  return data;
 };

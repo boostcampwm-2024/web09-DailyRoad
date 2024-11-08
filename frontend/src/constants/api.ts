@@ -15,5 +15,6 @@ export const END_POINTS = {
   COURSES: '/coures',
   COURSE: (courseId: number) => `/coures/${courseId}`,
   GOOGLE_LOGIN: '/oauth/google/signIn',
-  MY_MAP: 'maps/my',
+  MY_MAP: '/maps/my',
+  PLACE: '/places',
 };
