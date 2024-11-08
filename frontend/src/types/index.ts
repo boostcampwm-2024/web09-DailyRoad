@@ -21,15 +21,32 @@ export type MapType = {
   places: Place[];
 };
 
+export type CreateMapType = 'MAP' | 'COURSE';
+
 export type BaseMapType = {
   title: string;
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
   description: string;
   isPublic: boolean;
+};
+
+export type MapItemType = {
+  id: number;
+  title: string;
+  description: string;
+  pin_count: number;
 };
 
 export type User = {
   id: number;
   nickname: string;
   profile_url: string;
+};
+
+export type PlaceMarker = {
+  latitude: number;
+  longitude: number;
+  placeId: number;
+  color: string;
+  category: string;
 };
