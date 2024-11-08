@@ -12,8 +12,14 @@ export class PlaceController {
   }
 
   @Get()
-  async getPlaces(@Query('query') query?: string) {
-    return this.placeService.getPlaces(query);
+  async getPlaces(
+    @Query('query') query?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    if (isNaN(page)) page = 1;
+    if (isNaN(limit)) limit = 10;
+    return this.placeService.getPlaces(query, page, limit);
   }
 
   @Get('/:id')
