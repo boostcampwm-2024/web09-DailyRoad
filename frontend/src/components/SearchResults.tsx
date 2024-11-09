@@ -42,7 +42,7 @@ const SearchResults = ({ query }: SearchResultsProps) => {
             {page.map((place: Place) => (
               <>
                 <PlaceItem key={place.id} place={place} />
-                <Marker key={place.id} position={place.location} />
+                <Marker key={place.google_place_id} position={place.location} />
               </>
             ))}
           </React.Fragment>
