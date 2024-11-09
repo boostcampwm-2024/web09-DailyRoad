@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-import { googleTokenResponse, googleUserResponse } from './authType';
+import { googleTokenResponse, googleUserResponse } from './auth.type';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +19,14 @@ export class AuthService {
     this.jwtExpiration = this.configService.get<string>('JWT_EXPIRATION');
   }
 
-  async getGoogleToken(
-    code: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  getGoogleAuthUrl() {
+    const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    url.searchParams.append('client_id', this.clientId);
+    url.searchParams.append('redirect_uri', this.redirectUri);
+    url.searchParams.append('response_type', 'code');
+    url.searchParams.append('scope', 'openid profile');
+    return url.toString();
+  }
     return fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
