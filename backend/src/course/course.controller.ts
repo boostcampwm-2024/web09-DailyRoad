@@ -37,8 +37,7 @@ export class CourseController {
   @Get('/my')
   @UseGuards(JwtAuthGuard)
   async getMyCourseList(@AuthUser() user: AuthUser) {
-    const userId = Number(user.userId);
-    return await this.courseService.getOwnCourses(userId);
+    return await this.courseService.getOwnCourses(user.userId);
   }
 
   @Get('/:id')
@@ -52,14 +51,15 @@ export class CourseController {
     @AuthUser() user: AuthUser,
     @Body() createCourseRequest: CreateCourseRequest,
   ) {
-    const userId = Number(user.userId);
-    return await this.courseService.createCourse(userId, createCourseRequest);
+    return await this.courseService.createCourse(
+      user.userId,
+      createCourseRequest,
+    );
   }
 
   @Put('/:id/places')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async setPlacesOfCourse(
-    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body() setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
   ) {
@@ -72,7 +72,6 @@ export class CourseController {
   @Patch('/:id/info')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseInfo(
-    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body() updateCourseInfoRequest: UpdateCourseInfoRequest,
   ) {
@@ -83,7 +82,6 @@ export class CourseController {
   @Patch('/:id/visibility')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseVisibility(
-    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body('isPublic') isPublic: boolean,
   ) {
@@ -93,7 +91,7 @@ export class CourseController {
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
-  async deleteCourse(@AuthUser() user: AuthUser, @Param('id') id: number) {
+  async deleteCourse(@Param('id') id: number) {
     return await this.courseService.deleteCourse(id);
   }
 }
