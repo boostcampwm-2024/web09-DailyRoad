@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticationException } from './exception/AuthenticationException';
+import { extractBearerToken } from './utils';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
+    const token = extractBearerToken(request.headers['authorization']);
     if (!token) {
       throw new AuthenticationException('토큰이 없습니다.');
     }
