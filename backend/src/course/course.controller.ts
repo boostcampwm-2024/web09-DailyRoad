@@ -70,7 +70,9 @@ export class CourseController {
   }
 
   @Patch('/:id/info')
+  @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseInfo(
+    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body() updateCourseInfoRequest: UpdateCourseInfoRequest,
   ) {
@@ -79,7 +81,9 @@ export class CourseController {
   }
 
   @Patch('/:id/visibility')
+  @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseVisibility(
+    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body('isPublic') isPublic: boolean,
   ) {
@@ -88,7 +92,8 @@ export class CourseController {
   }
 
   @Delete('/:id')
-  async deleteCourse(@Param('id') id: number) {
+  @UseGuards(JwtAuthGuard, CoursePermissionGuard)
+  async deleteCourse(@AuthUser() user: AuthUser, @Param('id') id: number) {
     return await this.courseService.deleteCourse(id);
   }
 }
