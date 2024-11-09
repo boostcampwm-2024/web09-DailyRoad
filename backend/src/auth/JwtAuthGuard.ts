@@ -4,6 +4,7 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticationException } from './exception/AuthenticationException';
 import { extractBearerToken } from './utils';
+import { AuthUser } from './AuthUser.decorator';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -20,10 +21,7 @@ export class JwtAuthGuard implements CanActivate {
       throw new AuthenticationException('토큰이 없습니다.');
     }
     try {
-      request.user = jwt.verify(token, this.jwtSecretKey) as {
-        userId: string;
-        role: string;
-      };
+      request.user = jwt.verify(token, this.jwtSecretKey) as AuthUser;
       return true;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
