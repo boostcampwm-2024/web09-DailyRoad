@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
-import { JwtAuthGuard } from '../auth/JwtAuthGuard.';
+import { JwtAuthGuard } from '../auth/JwtAuthGuard';
 
 @Controller('places')
 export class PlaceController {
