@@ -72,6 +72,13 @@ export class CourseService {
     return await CourseDetailResponse.from(map);
   }
 
+  async getCourseOwnerId(courseId: number) {
+    const course = await this.courseRepository.findById(courseId);
+    if (!course) throw new CourseNotFoundException(courseId);
+
+    return course.user.id;
+  }
+
   async createCourse(userId: number, createMapForm: CreateCourseRequest) {
     const user = { id: userId } as User;
     const map = createMapForm.toEntity(user);
