@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { googleTokenResponse, googleUserResponse } from './auth.type';
 import { AuthenticationException } from './exception/AuthenticationException';
+import { addBearerToken } from './utils';
 
 @Injectable()
 export class AuthService {
@@ -87,7 +88,7 @@ export class AuthService {
     const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
     return fetch(url, {
       headers: {
-        authorization: `Bearer ${accessToken}`,
+        authorization: addBearerToken(accessToken),
       },
     })
       .then((response) => response.json())
