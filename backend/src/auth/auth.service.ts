@@ -27,13 +27,15 @@ export class AuthService {
     url.searchParams.append('scope', 'openid profile');
     return url.toString();
   }
+
+  async getGoogleToken(code: string): Promise<{ accessToken: string }> {
     return fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        code: code,
+        code: decodeURIComponent(code),
         client_id: this.clientId,
         client_secret: this.clientSecret,
         redirect_uri: this.redirectUri,
@@ -50,7 +52,6 @@ export class AuthService {
           throw new Error('Invalid Google Response');
         return {
           accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
         };
       })
       .catch((err) => {
@@ -61,11 +62,7 @@ export class AuthService {
   private validateTokenResponse(
     response: any,
   ): response is googleTokenResponse {
-    return (
-      response &&
-      typeof response.access_token === 'string' &&
-      typeof response.refresh_token === 'string'
-    );
+    return response && typeof response.access_token === 'string';
   }
 
   private validateUserInformationResponse(
