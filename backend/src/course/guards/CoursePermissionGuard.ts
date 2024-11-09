@@ -11,10 +11,10 @@ export class CoursePermissionGuard implements CanActivate {
     const courseId = Number(request.params.id);
     const userId = Number(request.user.userId);
 
-    const course = await this.courseService.getCourseById(courseId);
-    if (course.user.id !== userId) {
+    const course = await this.courseService.getCourseOwnerId(courseId);
+    if (course !== userId) {
       throw new CoursePermissionException(courseId);
     }
-    return course.user.id === userId;
+    return true;
   }
 }
