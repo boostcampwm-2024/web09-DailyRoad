@@ -1,11 +1,21 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
+import { JwtAuthGuard } from '../auth/JwtAuthGuard.';
 
 @Controller('places')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async addPlace(@Body() createPlaceDto: CreatePlaceRequest) {
     return this.placeService.addPlace(createPlaceDto);
