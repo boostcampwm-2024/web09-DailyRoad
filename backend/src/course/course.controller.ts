@@ -16,6 +16,7 @@ import { CourseService } from './course.service';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 import { JwtAuthGuard } from '../auth/JwtAuthGuard';
 import { AuthUser } from '../auth/AuthUser.decorator';
+import { CoursePermissionGuard } from './guards/CoursePermissionGuard';
 
 @Controller('/courses')
 export class CourseController {
@@ -46,13 +47,19 @@ export class CourseController {
   }
 
   @Post()
-  async createCourse(@Body() createCourseRequest: CreateCourseRequest) {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
+  @UseGuards(JwtAuthGuard)
+  async createCourse(
+    @AuthUser() user: AuthUser,
+    @Body() createCourseRequest: CreateCourseRequest,
+  ) {
+    const userId = Number(user.userId);
     return await this.courseService.createCourse(userId, createCourseRequest);
   }
 
   @Put('/:id/places')
+  @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async setPlacesOfCourse(
+    @AuthUser() user: AuthUser,
     @Param('id') id: number,
     @Body() setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
   ) {
