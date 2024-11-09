@@ -17,7 +17,7 @@ export const AuthUser = createParamDecorator(
 );
 
 export interface AuthUser {
-  userId: string;
+  userId: number;
   role: string;
 }
 
