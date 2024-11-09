@@ -25,7 +25,7 @@ function isAuthUser(obj: any): obj is AuthUser {
   return (
     typeof obj === 'object' &&
     obj !== null &&
-    typeof obj.userId === 'number' &&
+    !isNaN(obj.userId) &&
     typeof obj.role === 'string'
   );
 }

@@ -8,11 +8,14 @@ import {
   Param,
   Patch,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { CourseService } from './course.service';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
+import { JwtAuthGuard } from '../auth/JwtAuthGuard';
+import { AuthUser } from '../auth/AuthUser.decorator';
 
 @Controller('/courses')
 export class CourseController {
@@ -31,8 +34,9 @@ export class CourseController {
   }
 
   @Get('/my')
-  async getMyCourseList() {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
+  @UseGuards(JwtAuthGuard)
+  async getMyCourseList(@AuthUser() user: AuthUser) {
+    const userId = Number(user.userId);
     return await this.courseService.getOwnCourses(userId);
   }
 
