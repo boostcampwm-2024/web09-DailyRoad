@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { googleTokenResponse, googleUserResponse } from './auth.type';
+import { AuthenticationException } from './exception/AuthenticationException';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,7 @@ export class AuthService {
           refresh_token: data.refresh_token,
         };
         if (!this.validateTokenResponse(tokens))
-          throw new Error('Invalid Google Response');
+          throw new AuthenticationException('Invalid Google Response');
         return {
           accessToken: tokens.access_token,
         };
