@@ -5,7 +5,7 @@ import BaseWrapper from '../BaseWrapper';
 const CreateBaseMapForm = () => {
   return (
     <BaseWrapper>
-      <FormWrapper header="지도 생성" onSubmitHandler={createMap} />
+      <FormWrapper header="새 지도/코스 추가" onSubmitHandler={createMap} />
     </BaseWrapper>
   );
 };

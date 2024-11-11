@@ -1,12 +1,8 @@
-import Dashboard from '@/Dashboard';
-import GoogleMap from '@/GoogleMap';
+import CreateBaseMapForm from '@/components/Form/CreateBaseMapForm';
 
 const MapPage = () => {
   return (
-    <>
-      <GoogleMap />
-      <Dashboard />
-    </>
+    <CreateBaseMapForm />
   );
 };
 
