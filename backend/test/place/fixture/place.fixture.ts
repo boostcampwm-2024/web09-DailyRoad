@@ -1,4 +1,4 @@
-import { Place } from '../../src/place/entity/place.entity';
+import { Place } from '../../../src/place/entity/place.entity';
 import { PlaceFixtureType } from './place.fixture.type';
 
 export class PlaceFixture {
