@@ -15,8 +15,7 @@ import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 
 @Controller('/maps')
 export class MapController {
-  constructor(private readonly mapService: MapService) {
-  }
+  constructor(private readonly mapService: MapService) {}
 
   @Get()
   async getMapList(
