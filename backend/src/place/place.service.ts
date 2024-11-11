@@ -7,7 +7,8 @@ import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
 
 @Injectable()
 export class PlaceService {
-  constructor(private readonly placeRepository: PlaceRepository) {}
+  constructor(private readonly placeRepository: PlaceRepository) {
+  }
 
   async addPlace(createPlaceRequest: CreatePlaceRequest) {
     const { googlePlaceId } = createPlaceRequest;
@@ -23,15 +24,12 @@ export class PlaceService {
   async getPlaces(query?: string, page: number = 1, pageSize: number = 10) {
     const result = query
       ? await this.placeRepository.searchByNameOrAddressQuery(
-          query,
-          page,
-          pageSize,
-        )
+        query,
+        page,
+        pageSize,
+      )
       : await this.placeRepository.findAll(page, pageSize);
 
-    if (!result.length) {
-      throw new PlaceNotFoundException();
-    }
     return result.map(PlaceSearchResponse.from);
   }
 
