@@ -1,29 +1,15 @@
-import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { DataSource } from 'typeorm';
 import { PlaceRepository } from '../../src/place/place.repository';
-import { createTestDataSource } from '../datasource.config';
-import { PlaceFixture } from './place.fixture';
+import { initDataSource } from '../config/datasource.config';
+import { PlaceFixture } from './fixture/place.fixture';
+import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 
 describe('PlaceRepository', () => {
-  let placeRepository: PlaceRepository;
-  let testDataSource: DataSource;
   let container: StartedMySqlContainer;
+  let placeRepository: PlaceRepository;
 
   beforeAll(async () => {
-    container = await new MySqlContainer()
-      .withUsername('testUser')
-      .withUserPassword('testPassword')
-      .withDatabase('testDB')
-      .start();
-
-    testDataSource = await createTestDataSource(container);
-    await testDataSource.initialize();
-    placeRepository = new PlaceRepository(testDataSource);
-  });
-
-  afterAll(async () => {
-    await testDataSource.destroy();
-    await container.stop();
+    container = await new MySqlContainer().withReuse().start();
+    placeRepository = new PlaceRepository(await initDataSource(container));
   });
 
   beforeEach(async () => {
@@ -31,7 +17,6 @@ describe('PlaceRepository', () => {
   });
 
   it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다.', async () => {
-    // given
     const placesWithParkName = [
       {
         googlePlaceId: 'googlePlaceId_1',
@@ -68,7 +53,6 @@ describe('PlaceRepository', () => {
     );
     await placeRepository.save(places);
 
-    // when
     const page = 1;
     const pageSize = 10;
     const query = 'park';
@@ -78,7 +62,6 @@ describe('PlaceRepository', () => {
       pageSize,
     );
 
-    // then
     expect(results.length).toBe(3);
 
     expect(results).toEqual(
