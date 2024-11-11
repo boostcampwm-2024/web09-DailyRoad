@@ -1,59 +1,58 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { BaseException } from '../BaseException';
 
+@Catch(BaseException)
+export class BaseExceptionFilter implements ExceptionFilter {
+  catch(exception: BaseException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    return response.status(exception.getStatus()).json({
+      code: exception.getCode(),
+      message: exception.getMessage(),
+    });
+  }
+}
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    const exceptionResponse = exception.getResponse();
+
+    const errorMessage = this.isValidationError(exceptionResponse)
+      ? (exceptionResponse as any).message.join(', ')
+      : exception.message;
+
+    return response.status(exception.getStatus()).json({
+      code: 9999,
+      message: errorMessage,
+    });
+  }
+
+  private isValidationError(exceptionResponse: unknown): boolean {
+    return (
+      typeof exceptionResponse === 'object' &&
+      exceptionResponse !== null &&
+      'message' in exceptionResponse &&
+      Array.isArray((exceptionResponse as any).message)
+    );
+  }
+}
+
 @Catch()
-export class GlobalExceptionFilter implements ExceptionFilter {
+export class UnknownExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (exception instanceof BaseException) {
-      return this.sendErrorResponse(
-        response,
-        exception.getCode(),
-        exception.getStatus(),
-        exception.getMessage(),
-      );
-    }
-
-    if (exception instanceof HttpException) {
-      console.log(exception);
-      return this.sendErrorResponse(
-        response,
-        9999,
-        exception.getStatus(),
-        exception.message,
-      );
-    }
-
     console.log(exception);
-    return this.sendErrorResponse(
-      response,
-      -1,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      this.getDefaultErrorMessage(exception),
-    );
-  }
-
-  private sendErrorResponse(
-    response: Response,
-    code: number,
-    status: number,
-    message: string,
-  ) {
-    response.status(status).json({ code, message });
-  }
-
-  private getDefaultErrorMessage(exception: unknown) {
-    return exception instanceof Error
-      ? 'Internal server error: ' + exception.message
-      : 'Internal server error';
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      code: -1,
+      message: 'Internal server error',
+    });
   }
 }
