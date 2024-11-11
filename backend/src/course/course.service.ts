@@ -118,7 +118,7 @@ export class CourseService {
     const course = await this.courseRepository.findById(id);
     if (!course) throw new CourseNotFoundException(id);
 
-    await this.checkPlacesExist(
+    await this.validatePlacesForCourse(
       setPlacesOfCourseRequest.places.map((p) => p.placeId),
     );
 
@@ -131,7 +131,7 @@ export class CourseService {
     };
   }
 
-  private async checkPlacesExist(placeIds: number[]) {
+  private async validatePlacesForCourse(placeIds: number[]) {
     const notExistsPlaceIds = await Promise.all(
       placeIds.map(async (placeId) => {
         const exists = await this.placeRepository.existById(placeId);
