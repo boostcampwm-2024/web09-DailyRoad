@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/BaseEntity';
 import { User } from '../../user/entity/user.entity';
 import { MapPlace } from './map-place.entity';
+import { Color } from '../../place/color.enum';
 
 @Entity()
 export class Map extends BaseEntity {
@@ -46,8 +47,8 @@ export class Map extends BaseEntity {
     return this.mapPlaces.length;
   }
 
-  addPlace(placeId: number, description: string) {
-    this.mapPlaces.push(MapPlace.of(placeId, this, description));
+  addPlace(placeId: number, color: Color, description: string) {
+    this.mapPlaces.push(MapPlace.of(placeId, this, color, description));
   }
 
   async deletePlace(placeId: number) {
@@ -63,6 +64,7 @@ export class Map extends BaseEntity {
       this.mapPlaces.map(async (mapPlace) => ({
         place: await mapPlace.place,
         comment: mapPlace.description,
+        color: mapPlace.color,
       })),
     );
   }
