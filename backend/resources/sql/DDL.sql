@@ -64,13 +64,13 @@ CREATE TABLE MAP
 CREATE TABLE MAP_PLACE
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
-    place_id    INT       NOT NULL,
-    map_id      INT       NOT NULL,
+    place_id    INT                       NOT NULL,
+    map_id      INT                       NOT NULL,
     description TEXT,
-    color       VARCHAR(20) DEFAULT 'RED',
+    color       VARCHAR(20) DEFAULT 'RED' NOT NULL,
     created_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at  TIMESTAMP NULL,
+    deleted_at  TIMESTAMP                 NULL,
     FOREIGN KEY (place_id) REFERENCES PLACE (id) ON DELETE CASCADE,
     FOREIGN KEY (map_id) REFERENCES MAP (id) ON DELETE CASCADE
 );
