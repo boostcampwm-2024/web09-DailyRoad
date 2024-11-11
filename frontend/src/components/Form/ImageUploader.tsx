@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import ImageIcon from './imageIcon';
 
 interface FileChangeEvent extends React.ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
@@ -7,7 +8,8 @@ interface FileChangeEvent extends React.ChangeEvent<HTMLInputElement> {
 const ImageUploader = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -65,19 +67,35 @@ const ImageUploader = () => {
     }
   };
 
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      <div onClick={handleButtonClick} className="w-[168px] h-[128px] rounded-md bg-c_button_gray cursor-pointer">
+        {previewUrl ? (
+          <img
+            src={previewUrl}
+            alt="미리보기"
+            className="w-full h-full object-contain rounded-md"
+          />
+        ) : (
+          <div className="w-full h-full flex justify-center items-center ">
+            <ImageIcon />
+          </div>
+        )}
+      </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {previewUrl && (
-        <img
-          src={previewUrl}
-          alt="미리보기"
-          style={{ width: '200px', height: 'auto' }}
-        />
-      )}
     </div>
   );
-};
+}  
 
 export default ImageUploader;
