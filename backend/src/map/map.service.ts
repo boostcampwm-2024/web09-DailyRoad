@@ -104,7 +104,12 @@ export class MapService {
       throw new MapNotFoundException(id);
   }
 
-  async addPlace(id: number, placeId: number, color = Color.RED, comment?: string) {
+  async addPlace(
+    id: number,
+    placeId: number,
+    color = Color.RED,
+    comment?: string,
+  ) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
     await this.checkPlaceCanAddToMap(placeId, map);
