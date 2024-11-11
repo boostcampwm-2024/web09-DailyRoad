@@ -15,13 +15,15 @@ export class MapDetailResponse {
     readonly places: PlaceListResponse[],
     readonly createdAt: Date,
     readonly updatedAt: Date,
-  ) {}
+  ) {
+  }
 
   static async from(map: Map) {
     const places = (await map.getPlacesWithComment()).map((place) => {
       return {
         ...PlaceListResponse.from(place.place),
         comment: place.comment,
+        color: place.color,
       };
     });
 

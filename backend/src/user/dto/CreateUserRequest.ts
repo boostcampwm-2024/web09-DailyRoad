@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { User } from '../entity/user.entity';
-import { userInfoWithProvider } from '../userType';
+import { userInfoWithProvider } from '../user.type';
 
 export class CreateUserRequest {
   @IsString()

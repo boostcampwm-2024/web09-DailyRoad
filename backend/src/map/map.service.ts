@@ -11,6 +11,7 @@ import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapExc
 import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
 import { Map } from './entity/map.entity';
+import { Color } from '../place/color.enum';
 
 @Injectable()
 export class MapService {
@@ -103,17 +104,18 @@ export class MapService {
       throw new MapNotFoundException(id);
   }
 
-  async addPlace(id: number, placeId: number, comment?: string) {
+  async addPlace(id: number, placeId: number, color = Color.RED, comment?: string) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
     await this.checkPlaceCanAddToMap(placeId, map);
 
-    map.addPlace(placeId, comment);
+    map.addPlace(placeId, color, comment);
     await this.mapRepository.save(map);
 
     return {
       savedPlaceId: placeId,
-      comment: comment,
+      comment,
+      color,
     };
   }
 
