@@ -5,22 +5,24 @@ import React, { useEffect } from 'react';
 import { Place } from '@/types';
 import PlaceItem from './Place/PlaceItem';
 import Marker from './Marker/Marker';
+import { useGoogleMapStore } from '@/store/googleMapState';
 
 type SearchResultsProps = {
   query: string;
 };
 
 const SearchResults = ({ query }: SearchResultsProps) => {
+  const googleMap = useGoogleMapStore((state) => state.googleMap);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['placeSearch', query],
       queryFn: ({ pageParam = 1 }) => getPlace(query, pageParam),
       initialPageParam: 1,
       getNextPageParam: (
-        lastPage: string | any[],
-        allPages: string | any[],
+        lastPage : Place[],
+        allPages: Place[][],
       ) => {
-        return lastPage.length > 3 ? allPages.length + 1 : undefined;
+        return lastPage.length > 4 ? allPages.length + 1 : undefined;
       },
       enabled: !!query,
     });
