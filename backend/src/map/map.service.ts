@@ -112,7 +112,7 @@ export class MapService {
   ) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
-    await this.checkPlaceCanAddToMap(placeId, map);
+    await this.validatePlacesForMap(placeId, map);
 
     map.addPlace(placeId, color, comment);
     await this.mapRepository.save(map);
@@ -124,7 +124,7 @@ export class MapService {
     };
   }
 
-  private async checkPlaceCanAddToMap(placeId: number, map: Map) {
+  private async validatePlacesForMap(placeId: number, map: Map) {
     if (!(await this.placeRepository.existById(placeId))) {
       throw new InvalidPlaceToMapException(placeId);
     }
