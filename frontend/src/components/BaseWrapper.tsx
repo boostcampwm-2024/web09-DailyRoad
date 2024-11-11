@@ -1,5 +1,5 @@
 const BaseWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="absolute left-0 top-0 h-full w-72 rounded-lg bg-white p-4 shadow-md">
+  <div className="absolute left-0 top-0 h-full w-[400px] rounded-lg bg-white shadow-md">
     {children}
   </div>
 );
