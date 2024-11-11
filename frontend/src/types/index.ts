@@ -2,8 +2,8 @@ export type Place = {
   id: number;
   name: string;
   location: {
-    lat: -33.866489;
-    lng: 151.1958561;
+    lat: number;
+    lng: number;
   };
   google_place_id: string;
   detail_page_url: string;
