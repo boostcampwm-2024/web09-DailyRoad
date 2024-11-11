@@ -15,7 +15,8 @@ import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 
 @Controller('/maps')
 export class MapController {
-  constructor(private readonly mapService: MapService) {}
+  constructor(private readonly mapService: MapService) {
+  }
 
   @Get()
   async getMapList(
@@ -51,8 +52,8 @@ export class MapController {
     @Param('id') id: number,
     @Body() addPlaceToMapRequest: AddPlaceToMapRequest,
   ) {
-    const { placeId, comment } = addPlaceToMapRequest;
-    return await this.mapService.addPlace(id, placeId, comment);
+    const { placeId, color, comment } = addPlaceToMapRequest;
+    return await this.mapService.addPlace(id, placeId, color, comment);
   }
 
   @Delete('/:id/places/:placeId')
