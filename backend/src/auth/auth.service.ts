@@ -24,6 +24,7 @@ export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
     private readonly jwtHelper: JWTHelper,
   ) {
     this.accessTokenExpiration = this.configService.get<string>(
@@ -85,7 +86,23 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  async refreshAccessToken(refreshToken: string) {
+    const tokenEntity = await this.refreshTokenRepository.findOne({
+      where: { token: refreshToken },
     });
 
+    if (!tokenEntity) {
+      throw new AuthenticationException('유효하지 않은 리프레시 토큰입니다.');
+    }
+
+    const isTokenValid = this.jwtHelper.verifyToken(refreshToken);
+    if (!isTokenValid) {
+      throw new AuthenticationException('리프레시 토큰이 만료되었습니다.');
+    }
+
+    return this.jwtHelper.generateToken(
+      { userId: tokenEntity.user.id, role: tokenEntity.user.role },
+      this.accessTokenExpiration,
+    );
   }
 }
