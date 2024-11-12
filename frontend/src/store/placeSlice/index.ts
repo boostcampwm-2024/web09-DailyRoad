@@ -10,7 +10,6 @@ export type PlaceState = {
 
 export const createPlaceSlice: StateCreator<StoreState, [], [], PlaceState> = (
   set,
-  get,
 ) => ({
   place: {} as Place,
   places: [],
