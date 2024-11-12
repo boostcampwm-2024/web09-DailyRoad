@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { worker } from './mocks/browser';
 import Homepage from './pages/Homepage/HomePage';
 import MapPage from './pages/MapCreation/MapPage';
 import MapCreateMapPage from './pages/MapCreation/MapCreateMapPage';
 import MapCreateCoursePage from './pages/MapCreation/MapCreateCoursePage';
-
+import PlaceCreatePage from './pages/PlaceCreation/PlaceCreatePage';
 
 function App() {
   return (
@@ -12,9 +11,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Homepage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/map/map" element={<MapCreateMapPage />} />
-          <Route path="/map/course" element={<MapCreateCoursePage />} />
+          <Route path="/create" element={<MapPage />} />
+          <Route path="/create/map" element={<MapCreateMapPage />} />
+          <Route path="/create/course" element={<MapCreateCoursePage />} />
+          <Route path="/create/map/:mapId" element={<PlaceCreatePage />} />
         </Routes>
       </Router>
     </>

@@ -6,7 +6,7 @@ const Homepage = () => {
   return (
     <>
       <Header />
-      <NavigateButton text="나만의 지도 만들러 가기" to="/map" />
+      <NavigateButton text="나만의 지도 만들러 가기" to="/create" />
       <Footer />
     </>
   );
