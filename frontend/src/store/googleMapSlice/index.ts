@@ -1,8 +1,9 @@
-import { create } from 'zustand';
 import { Loader } from '@googlemaps/js-api-loader';
 import { INITIAL_MAP_CONFIG } from '@/constants/map';
+import { StateCreator } from 'zustand';
+import { StoreState } from '@/types';
 
-type GoogleMapState = {
+export type GoogleMapState = {
   googleMap: google.maps.Map | null;
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
@@ -10,7 +11,12 @@ type GoogleMapState = {
   moveTo: (lat: number, lng: number) => void;
 };
 
-export const useGoogleMapStore = create<GoogleMapState>((set, get) => ({
+export const createGoogleMapSlice: StateCreator<
+  StoreState,
+  [],
+  [],
+  GoogleMapState
+> = (set, get) => ({
   googleMap: null,
   markerLibrary: null,
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
@@ -40,4 +46,4 @@ export const useGoogleMapStore = create<GoogleMapState>((set, get) => ({
       map.setZoom(14);
     }
   },
-}));
+});
