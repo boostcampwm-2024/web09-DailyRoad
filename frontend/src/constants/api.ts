@@ -12,6 +12,7 @@ export const NETWORK = {
 export const END_POINTS = {
   MAPS: '/maps',
   MAP: (mapId: number) => `/maps/${mapId}`,
+  ADD_PLACE: (mapId: number) => `/maps/${mapId}/places`,
   COURSES: '/coures',
   COURSE: (courseId: number) => `/coures/${courseId}`,
   GOOGLE_LOGIN: '/oauth/google/signIn',
