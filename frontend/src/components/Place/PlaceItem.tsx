@@ -1,18 +1,28 @@
-import { useGoogleMapStore } from '@/store/googleMapState';
+import { useStore } from '@/store/useStore';
 import { Place } from '@/types';
 
-const PlaceItem = ({ place }: { place: Place }) => {
-  const moveToLocation = useGoogleMapStore((state) => state.moveTo);
+type PlaceItemProps = {
+  place: Place;
+};
+
+const PlaceItem = ({ place }: PlaceItemProps) => {
+  const { activePlace, setPlace, moveToLocation } = useStore((state) => ({
+    activePlace: state.place,
+    setPlace: state.setPlace,
+    moveToLocation: state.moveTo,
+  }));
+
   const location = place.location;
 
   const onPlaceClick = () => {
+    setPlace(place);
     moveToLocation(location.lat, location.lng);
   };
 
   return (
     <div
       onClick={onPlaceClick}
-      className="flex items-center border-b border-gray-200 p-4"
+      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id ? 'border-1 border-c_bg_blue' : 'border-c_textarea_gray'} p-4`}
     >
       <img
         src={place.thumbnail_url}
