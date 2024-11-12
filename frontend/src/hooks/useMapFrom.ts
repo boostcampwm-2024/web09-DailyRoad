@@ -17,7 +17,6 @@ export const useMapForm = (initialMapData?: BaseMap) => {
 
   useEffect(() => {
     validateInputs();
-    console.log(isMapInfoValid);
   }, [mapInfo]);
 
   const validateInputs = () => {
