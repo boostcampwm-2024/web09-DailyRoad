@@ -18,6 +18,26 @@ export const END_POINTS = {
   MY_MAP: '/maps/my',
   PLACE: '/places',
   IMAGES: '/images',
-  PRE_SIGNED_URL: (dirName: string, extension: string) =>
-    `/preSignedURL/${dirName}/${extension}`,
+  PRE_SIGNED_POST: '/storage/preSignedPost',
 };
+
+export const IMAGE_EXTENSIONS = new Set([
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'bmp',
+  'tiff',
+  'tif',
+  'webp',
+  'svg',
+  'heic',
+  'raw',
+  'cr2',
+  'nef',
+  'arw',
+  'dng',
+  'ico',
+]);
+
+export const THREE_MB = 3145728;
