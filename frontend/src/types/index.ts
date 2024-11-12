@@ -1,3 +1,6 @@
+import { GoogleMapState } from '@/store/googleMapSlice';
+import { PlaceState } from '@/store/placeSlice';
+
 export type Place = {
   id: number;
   name: string;
@@ -12,7 +15,7 @@ export type Place = {
   formed_address: string;
 };
 
-export type MapType = {
+export type Map = {
   id: number;
   author: User;
   thumbnail_url: string;
@@ -21,16 +24,23 @@ export type MapType = {
   places: Place[];
 };
 
+export type MapList = {
+  maps: MapItem[];
+  totalPages: number;
+  currentPage: number;
+};
+
 export type CreateMapType = 'MAP' | 'COURSE';
 
-export type BaseMapType = {
+export type BaseMap = {
   title: string;
   thumbnailUrl?: string;
   description: string;
   isPublic: boolean;
+  mode: CreateMapType;
 };
 
-export type MapItemType = {
+export type MapItem = {
   id: number;
   title: string;
   description: string;
@@ -44,8 +54,6 @@ export type User = {
 };
 
 export type PlaceMarker = {
-  latitude: number;
-  longitude: number;
   placeId: number;
   color: string;
   category: string;
@@ -66,3 +74,5 @@ export type PreSignedURLResponse = {
   uploadedUrl: string;
   url: string;
 };
+
+export type StoreState = GoogleMapState & PlaceState;
