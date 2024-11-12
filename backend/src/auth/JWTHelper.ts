@@ -10,7 +10,7 @@ export class JWTHelper {
     this.jwtSecretKey = this.configService.get<string>('JWT_SECRET_KEY');
   }
 
-  generateToken(payload: any, expiresIn: string): string {
+  generateToken(expiresIn: string | number, payload: any = {}): string {
     return jwt.sign(payload, this.jwtSecretKey, {
       expiresIn,
     });
