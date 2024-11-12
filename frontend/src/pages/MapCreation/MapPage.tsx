@@ -1,9 +1,7 @@
 import CreateBaseMapForm from '@/components/Form/CreateBaseMapForm';
 
 const MapPage = () => {
-  return (
-    <CreateBaseMapForm />
-  );
+  return <CreateBaseMapForm />;
 };
 
 export default MapPage;
