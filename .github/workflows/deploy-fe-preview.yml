@@ -3,7 +3,7 @@ name: Deploy Frontend Preview
 on:
   push:
     branches:
-      - develop
+      - "**"
     paths:
       - "frontend/**"
 
