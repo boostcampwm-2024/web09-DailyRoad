@@ -118,7 +118,7 @@ export class MapService {
     await this.mapRepository.save(map);
 
     return {
-      savedPlaceId: placeId,
+      placeId: placeId,
       comment,
       color,
     };
