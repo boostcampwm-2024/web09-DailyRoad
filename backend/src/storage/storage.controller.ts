@@ -11,9 +11,7 @@ export class StorageController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('/preSignedPost')
   @UseGuards(JwtAuthGuard)
-  async getPreSignedPostUrl(
-    @Body() preSignedPostRequest: PreSignedPostRequest,
-  ) {
+  async getPreSignedPost(@Body() preSignedPostRequest: PreSignedPostRequest) {
     const { dirName, extension } = preSignedPostRequest;
     return await this.storageService.generatePreSignedPost(dirName, extension);
   }
