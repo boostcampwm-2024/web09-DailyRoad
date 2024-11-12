@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import {
   BaseExceptionFilter,
@@ -9,6 +10,8 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
+
   app.useGlobalFilters(
     new UnknownExceptionFilter(),
     new HttpExceptionFilter(),
