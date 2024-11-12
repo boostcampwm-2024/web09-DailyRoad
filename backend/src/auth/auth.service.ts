@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as jwt from 'jsonwebtoken';
 import { googleTokenResponse, googleUserResponse } from './auth.type';
+import { JWTHelper } from './JWTHelper';
 import { AuthenticationException } from './exception/AuthenticationException';
 import { addBearerToken } from './utils';
 
@@ -10,15 +10,20 @@ export class AuthService {
   private readonly clientId: string;
   private readonly clientSecret: string;
   private readonly redirectUri: string;
-  private readonly jwtSecretKey: string;
-  private readonly jwtExpiration: string;
 
-  constructor(private configService: ConfigService) {
     this.clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
     this.redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
-    this.jwtSecretKey = this.configService.get<string>('JWT_SECRET_KEY');
-    this.jwtExpiration = this.configService.get<string>('JWT_EXPIRATION');
+  private readonly accessTokenExpiration: string;
+  private readonly refreshTokenExpiration: string;
+  constructor(
+    private readonly jwtHelper: JWTHelper,
+    this.accessTokenExpiration = this.configService.get<string>(
+      'ACCESS_TOKEN_EXPIRATION',
+    );
+    this.refreshTokenExpiration = this.configService.get<string>(
+      'REFRESH_TOKEN_EXPIRATION',
+    );
   }
 
   getGoogleAuthUrl() {
@@ -59,28 +64,36 @@ export class AuthService {
       .catch((err) => {
         throw new Error(err);
       });
+    return await this.generateTokens(userId, role);
   }
 
-  private validateTokenResponse(
-    response: any,
-  ): response is googleTokenResponse {
-    return response && typeof response.access_token === 'string';
   }
 
-  private validateUserInformationResponse(
-    response: any,
-  ): response is googleUserResponse {
-    return (
-      response &&
-      typeof response.id === 'string' &&
-      typeof response.picture === 'string' &&
-      typeof response.name === 'string'
+  private async generateTokens(userId: number, role: string) {
+    const accessToken = this.jwtHelper.generateToken(
+      {
+        userId,
+        role,
+      },
+      this.accessTokenExpiration,
     );
+
+    const refreshToken = this.jwtHelper.generateToken(
+      {},
+      this.refreshTokenExpiration,
+    );
+
+    await this.refreshTokenRepository.upsert(
+      {
+        token: refreshToken,
+        user: { id: userId },
+      },
+      { conflictPaths: ['userId'] },
+    );
+
+    return { accessToken, refreshToken };
   }
 
-  generateJwt(payload: any): string {
-    return jwt.sign(payload, this.jwtSecretKey, {
-      expiresIn: this.jwtExpiration,
     });
   }
 
