@@ -1,4 +1,4 @@
-import { useGoogleMapStore } from '@/store/googleMapState';
+import { useStore } from '@/store/useStore';
 import { useEffect, useState } from 'react';
 
 type MarkerEventProps = {
@@ -14,7 +14,7 @@ export type MarkerProps = Omit<
 export const useMarker = (props: MarkerProps) => {
   const [marker, setMarker] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
-  const map = useGoogleMapStore.getState().googleMap;
+  const map = useStore.getState().googleMap;
 
   const { onClick, ...markerOptions } = props;
   useEffect(() => {
