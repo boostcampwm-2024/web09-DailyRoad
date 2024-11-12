@@ -11,6 +11,7 @@ import { CourseModule } from './course/course.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BannerModule } from './banner/banner.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BannerModule } from './banner/banner.module';
     MapModule,
     CourseModule,
     BannerModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
