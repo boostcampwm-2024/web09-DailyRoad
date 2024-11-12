@@ -1,9 +1,10 @@
-import { useInfiniteQuery, QueryKey } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 
-type InfiniteScrollOptions<TQueryFnData, TData = TQueryFnData> = {
-  queryKey: QueryKey;
+type InfiniteScrollOptions<TQueryFnData> = {
+  queryKey: string;
+  query?: string;
   queryFn: ({ pageParam }: { pageParam: number }) => Promise<TQueryFnData>;
   getNextPageParam: (
     lastPage: TQueryFnData,
@@ -12,19 +13,21 @@ type InfiniteScrollOptions<TQueryFnData, TData = TQueryFnData> = {
   threshold?: number;
 };
 
-export const useInfiniteScroll = <TQueryFnData, TData = TQueryFnData>({
+export const useInfiniteScroll = <TQueryFnData>({
   queryKey,
+  query,
   queryFn,
   getNextPageParam,
   threshold = 1.0,
-}: InfiniteScrollOptions<TQueryFnData, TData>) => {
+}: InfiniteScrollOptions<TQueryFnData>) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery<TQueryFnData, unknown, TData>({
-      queryKey,
+    useInfiniteQuery<TQueryFnData>({
+      queryKey: [queryKey, query],
       queryFn: ({ pageParam = 1 }) =>
         queryFn({ pageParam: pageParam as number }),
       initialPageParam: 1,
       getNextPageParam,
+      enabled: !!query,
     });
 
   const { ref, inView } = useInView({ threshold });
