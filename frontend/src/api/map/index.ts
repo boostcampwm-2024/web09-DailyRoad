@@ -1,4 +1,4 @@
-import { BaseMapType, MapItemType, MapType } from '@/types';
+import { BaseMap, MapList, Map } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
@@ -6,18 +6,12 @@ type MapResponse = {
   mapId: string;
 };
 
-type MapListResponse = {
-  maps: MapItemType[];
-  totalPages: number;
-  currentPage: number;
-};
-
 export const getMap = async (mapId: number) => {
-  const { data } = await axiosInstance.get<MapType>(END_POINTS.MAP(mapId));
+  const { data } = await axiosInstance.get<Map>(END_POINTS.MAP(mapId));
   return data;
 };
 
-export const createMap = async (baseMapData: BaseMapType) => {
+export const createMap = async (baseMapData: Omit<BaseMap, 'mode'>) => {
   const { data } = await axiosInstance.post<MapResponse>(
     END_POINTS.MAPS,
     baseMapData,
@@ -26,11 +20,16 @@ export const createMap = async (baseMapData: BaseMapType) => {
 };
 
 export const getMapList = async () => {
-  const { data } = await axiosInstance.get<MapListResponse>(END_POINTS.MAPS);
+  const { data } = await axiosInstance.get<MapList>(END_POINTS.MAPS);
+  return data;
+};
+
+export const getMyMapList = async () => {
+  const { data } = await axiosInstance.get<MapList>(END_POINTS.MY_MAP);
   return data;
 };
 
 export const getCourseList = async () => {
-  const { data } = await axiosInstance.get<MapListResponse>(END_POINTS.COURSES);
+  const { data } = await axiosInstance.get<MapList>(END_POINTS.COURSES);
   return data;
 };
