@@ -26,10 +26,12 @@ export class AuthController {
       code,
     );
 
-    response.setHeader(
-      'Set-Cookie',
-      `${REFRESH_TOKEN}=${tokens.refreshToken}; HttpOnly; Path=/; SameSite=None; Secure;`,
-    );
+    response.cookie(REFRESH_TOKEN, tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
 
     response.json({
       accessToken: tokens.accessToken,
@@ -37,8 +39,8 @@ export class AuthController {
   }
 
   @Post('refresh')
-  async refreshAccessToken(@Req() req: Request) {
-    const refreshToken = req.cookies[REFRESH_TOKEN];
+  async refreshAccessToken(@Req() request: Request) {
+    const refreshToken = request.cookies[REFRESH_TOKEN];
     if (!refreshToken) {
       throw new AuthenticationException('리프레시 토큰이 없습니다.');
     }
