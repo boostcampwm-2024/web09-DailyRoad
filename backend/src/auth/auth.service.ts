@@ -65,15 +65,14 @@ export class AuthService {
 
   private async generateTokens(userId: number, role: string) {
     const accessToken = this.jwtHelper.generateToken(
+      this.accessTokenExpiration,
       {
         userId,
         role,
       },
-      this.accessTokenExpiration,
     );
 
     const refreshToken = this.jwtHelper.generateToken(
-      {},
       this.refreshTokenExpiration,
     );
 
@@ -102,9 +101,9 @@ export class AuthService {
       throw new AuthenticationException('리프레시 토큰이 만료되었습니다.');
     }
 
-    return this.jwtHelper.generateToken(
-      { userId: tokenEntity.user.id, role: tokenEntity.user.role },
-      this.accessTokenExpiration,
-    );
+    return this.jwtHelper.generateToken(this.accessTokenExpiration, {
+      userId: tokenEntity.user.id,
+      role: tokenEntity.user.role,
+    });
   }
 }
