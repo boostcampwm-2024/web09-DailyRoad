@@ -1,0 +1,47 @@
+name: Deploy Frontend Preview
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "frontend/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check if commit message contains 'preview'
+        id: check_commit
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" == *"preview"* ]]; then
+            echo "Commit message contains 'preview'"
+            echo "deploy=true" >> $GITHUB_ENV
+          else
+            echo "Commit message does not contain 'preview'"
+            echo "deploy=false" >> $GITHUB_ENV
+          fi
+
+      - name: Build React App
+        if: env.deploy == 'true'
+        env:
+          VITE_AXIOS_PROD_BASE_URL: ${{ secrets.VITE_AXIOS_PROD_BASE_URL }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
+          VITE_GOOGLE_MAPS_ID: ${{ secrets.VITE_GOOGLE_MAPS_ID }}
+        run: |
+          cd ${{ github.workspace }}/frontend
+          yarn install
+          yarn build
+
+      - name: Deploy to Nginx Server
+        if: env.deploy == 'true'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.NCP_SERVER_HOST }}
+          username: ${{ secrets.NCP_SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist/*"
+          target: "/usr/share/nginx/html/preview"
