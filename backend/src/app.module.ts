@@ -12,6 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BannerModule } from './banner/banner.module';
 import { AdminModule } from './admin/admin.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TimezoneInterceptor } from './config/TimezoneInterceptor';
 
 @Module({
   imports: [
@@ -28,6 +30,12 @@ import { AdminModule } from './admin/admin.module';
     AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TimezoneInterceptor,
+    },
+  ],
 })
 export class AppModule {}
