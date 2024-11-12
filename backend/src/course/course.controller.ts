@@ -1,13 +1,13 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Query,
+  Controller,
   Delete,
+  Get,
   Param,
   Patch,
+  Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
@@ -30,8 +30,7 @@ export class CourseController {
   ) {
     if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
     if (isNaN(limit)) limit = 10;
-
-    return await this.courseService.searchCourse(query, page, limit);
+    return await this.courseService.searchPublicCourses(query, page, limit);
   }
 
   @Get('/my')

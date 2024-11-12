@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateCourseInfoRequest {
   @IsString()
@@ -7,4 +7,7 @@ export class UpdateCourseInfoRequest {
 
   @IsString()
   description?: string;
+
+  @IsString()
+  thumbnailUrl?: string;
 }
