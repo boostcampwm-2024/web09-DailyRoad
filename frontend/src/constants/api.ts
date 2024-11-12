@@ -17,4 +17,7 @@ export const END_POINTS = {
   GOOGLE_LOGIN: '/oauth/google/signIn',
   MY_MAP: '/maps/my',
   PLACE: '/places',
+  IMAGES: '/images',
+  PRE_SIGNED_URL: (dirName: string, extension: string) =>
+    `/preSignedURL/${dirName}/${extension}`,
 };
