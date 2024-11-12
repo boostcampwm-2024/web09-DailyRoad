@@ -44,6 +44,8 @@ export class AuthService {
     const provider = this.getProvider(providerName);
 
     const userInfo = await provider.getUserInfo(code);
+
+    // Todo. 아래 로직 포함하는 메서드를 유저 서비스에서 제공
     const user = new CreateUserRequest({
       ...userInfo,
       provider: providerName,
