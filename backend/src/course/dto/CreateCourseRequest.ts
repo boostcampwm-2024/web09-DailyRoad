@@ -1,5 +1,5 @@
 import { User } from '../../user/entity/user.entity';
-import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { Course } from '../entity/course.entity';
 
 export class CreateCourseRequest {

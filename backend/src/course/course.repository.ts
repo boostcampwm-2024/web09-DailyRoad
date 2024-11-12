@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ILike, DataSource } from 'typeorm';
+import { DataSource, ILike } from 'typeorm';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 import { Course } from './entity/course.entity';
 
@@ -31,5 +31,30 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+  }
+
+  countByTitleAndIsPublic(title: string) {
+    return this.count({ where: { title, isPublic: true } });
+  }
+
+  countAllPublic() {
+    return this.count({ where: { isPublic: true } });
+  }
+
+  countByUserId(userId: number) {
+    return this.count({ where: { user: { id: userId } } });
+  }
+
+  updateIsPublicById(id: number, isPublic: boolean) {
+    return this.update(id, { isPublic });
+  }
+
+  updateInfoById(
+    id: number,
+    title: string,
+    description: string,
+    thumbnailUrl: string,
+  ) {
+    return this.update(id, { title, description, thumbnailUrl });
   }
 }

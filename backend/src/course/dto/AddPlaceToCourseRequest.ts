@@ -1,10 +1,10 @@
 import {
-  IsNumber,
-  IsNotEmpty,
-  IsString,
   IsArray,
-  ValidateNested,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
   Validate,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsNotConsecutiveDuplicatePlace } from '../pipes/IsNotConsecutiveDuplicatePlace';
