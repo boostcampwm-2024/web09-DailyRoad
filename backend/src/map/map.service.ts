@@ -12,6 +12,7 @@ import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
 import { Map } from './entity/map.entity';
 import { Color } from '../place/color.enum';
+import { UserRole } from '../user/user.role';
 
 @Injectable()
 export class MapService {
@@ -21,7 +22,7 @@ export class MapService {
     private readonly placeRepository: PlaceRepository,
   ) {
     // Todo. 로그인 기능 완성 후 제거
-    const testUser = new User('test', 'test', 'test', 'test');
+    const testUser = new User('test', 'test', 'test', UserRole.MEMBER);
     testUser.id = 1;
     this.userRepository.upsert(testUser, { conflictPaths: ['id'] });
   }

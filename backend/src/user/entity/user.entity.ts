@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/BaseEntity';
 import { Course } from '../../course/entity/course.entity';
 import { Map } from '../../map/entity/map.entity';
+import { UserRole } from '../user.role';
 
 @Entity()
 export class User extends BaseEntity {
@@ -14,8 +15,12 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   oauthId: string;
 
-  @Column()
-  role: string;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.MEMBER,
+  })
+  role: UserRole;
 
   @Column({ nullable: true })
   profileImageUrl?: string;
@@ -30,7 +35,7 @@ export class User extends BaseEntity {
     provider: string,
     nickname: string,
     oauthId: string,
-    role: string,
+    role: UserRole,
     profileImageUrl?: string,
   ) {
     super();
