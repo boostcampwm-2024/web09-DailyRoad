@@ -10,6 +10,7 @@ import { PlaceModule } from './place/place.module';
 import { CourseModule } from './course/course.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { BannerModule } from './banner/banner.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     PlaceModule,
     MapModule,
     CourseModule,
+    BannerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
