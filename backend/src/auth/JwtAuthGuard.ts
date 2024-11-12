@@ -1,18 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { ConfigService } from '@nestjs/config';
 import { AuthenticationException } from './exception/AuthenticationException';
 import { extractBearerToken } from './utils';
 import { AuthUser } from './AuthUser.decorator';
+import { JWTHelper } from './JWTHelper';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  private readonly jwtSecretKey: string;
-
-  constructor(private configService: ConfigService) {
-    this.jwtSecretKey = this.configService.get<string>('JWT_SECRET_KEY');
-  }
+  constructor(private readonly jwtHelper: JWTHelper) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -21,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
       throw new AuthenticationException('토큰이 없습니다.');
     }
     try {
-      request.user = jwt.verify(token, this.jwtSecretKey) as AuthUser;
+      request.user = this.jwtHelper.verifyToken(token) as AuthUser;
       return true;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
