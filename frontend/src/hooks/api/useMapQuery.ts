@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getMap } from '@/api/map';
-import { MapType } from '@/types';
+import { Map } from '@/types';
 
 export const useGetMap = (mapId: number) => {
-  const { data: mapData } = useQuery<MapType, Error>({
+  const { data: mapData } = useQuery<Map, Error>({
     queryKey: ['map', mapId],
     queryFn: () => getMap(mapId),
   });
