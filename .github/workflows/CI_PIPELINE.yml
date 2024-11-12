@@ -42,18 +42,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Cache dependencies for ${{ matrix.project }}
-        if: env.changed == 'true'
-        uses: actions/cache@v3
-        with:
-          path: ${{ matrix.project }}/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}/yarn.lock', matrix.project)) }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-          
-
       - name: Install Dependencies for ${{ matrix.project }}
         if: env.changed == 'true'
-        run: yarn install
+        run: yarn install --frozen-lockfile # yarn.lock 을 기준으로 설치하며, 의존성 재해석 방지
         working-directory: ${{ matrix.project }}
 
       - name: Lint ${{ matrix.project }}
