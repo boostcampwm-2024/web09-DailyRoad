@@ -14,14 +14,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Check if commit message contains 'preview'
+      - name: Check if commit message contains '#preview'
         id: check_commit
         run: |
           if [[ "${{ github.event.head_commit.message }}" == *"preview"* ]]; then
-            echo "Commit message contains 'preview'"
+            echo "Commit message contains '#preview'"
             echo "deploy=true" >> $GITHUB_ENV
           else
-            echo "Commit message does not contain 'preview'"
+            echo "Commit message does not contain '#preview'"
             echo "deploy=false" >> $GITHUB_ENV
           fi
 
