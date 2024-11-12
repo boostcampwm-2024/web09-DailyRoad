@@ -9,7 +9,7 @@ export enum OAuthProviders {
 export function getOAuthProviderNameByValue(
   value: string,
 ): OAuthProviderName | undefined {
-  return (Object.entries(OAuthProviders).find(([_, v]) => v === value) ||
+  return (Object.entries(OAuthProviders).find(([, v]) => v === value) ||
     [])[0] as OAuthProviderName | undefined;
 }
 
