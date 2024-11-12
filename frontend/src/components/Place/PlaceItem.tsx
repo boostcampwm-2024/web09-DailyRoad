@@ -6,12 +6,9 @@ type PlaceItemProps = {
 };
 
 const PlaceItem = ({ place }: PlaceItemProps) => {
-  const { activePlace, setPlace, moveToLocation } = useStore((state) => ({
-    activePlace: state.place,
-    setPlace: state.setPlace,
-    moveToLocation: state.moveTo,
-  }));
-
+  const activePlace = useStore((state) => state.place);
+  const setPlace = useStore((state) => state.setPlace);
+  const moveToLocation = useStore((state) => state.moveTo);
   const location = place.location;
 
   const onPlaceClick = () => {
