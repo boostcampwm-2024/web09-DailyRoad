@@ -5,11 +5,11 @@ type TextInputAreaProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   maxLength?: number;
-  height?: number; 
+  height?: number;
   isTextArea?: boolean;
 };
 
-const TextInputArea = ({         
+const TextInputArea = ({
   value,
   onChange,
   placeholder,
@@ -17,12 +17,14 @@ const TextInputArea = ({
   height = 20,
   isTextArea = false,
 }: TextInputAreaProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     onChange(e.target.value);
   };
 
   return (
-    <div className="w-full flex justify-between">
+    <div className="flex w-full justify-between">
       {isTextArea ? (
         <textarea
           value={value}
@@ -30,7 +32,7 @@ const TextInputArea = ({
           placeholder={placeholder}
           maxLength={maxLength}
           style={{ height: `${height}px` }}
-          className="w-full gray p-2 rounded-lg border-none text-customText bg-customGray focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="gray text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       ) : (
         <input
@@ -39,7 +41,7 @@ const TextInputArea = ({
           onChange={handleChange}
           placeholder={placeholder}
           maxLength={maxLength}
-          className="w-full p-2 rounded-lg border-none text-customText bg-customGray focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       )}
       {maxLength && (

@@ -1,8 +1,5 @@
-
 const MapCreateCoursePage = () => {
-  return (
-    <div>MapCreateCoursePage</div>
-  )
-}
+  return <div>MapCreateCoursePage</div>;
+};
 
-export default MapCreateCoursePage
+export default MapCreateCoursePage;
