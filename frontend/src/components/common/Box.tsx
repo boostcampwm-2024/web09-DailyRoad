@@ -1,11 +1,5 @@
-
-
 const Box = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="w-full bg-white shadow-xl p-2">
-        {children}
-    </div>
-  )
-}
+  return <div className="w-full bg-white p-4 shadow-xl">{children}</div>;
+};
 
-export default Box
+export default Box;
