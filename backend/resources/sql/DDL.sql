@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS BANNER;
 -- 무결성 제약 조건 재활성화
 SET FOREIGN_KEY_CHECKS = 1;
 
+SET time_zone = 'ASIA/SEOUL';
+
 -- USER 테이블
 CREATE TABLE USER
 (
