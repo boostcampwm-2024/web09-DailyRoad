@@ -1,17 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-
-export type OAuthProviderName = keyof typeof OAuthProviders;
-
-export enum OAuthProviders {
-  GOOGLE = 'google',
-}
-
-export function getOAuthProviderNameByValue(
-  value: string,
-): OAuthProviderName | undefined {
-  return (Object.entries(OAuthProviders).find(([, v]) => v === value) ||
-    [])[0] as OAuthProviderName | undefined;
-}
+import { OAuthProviders } from './OAuthProviders';
 
 export abstract class OAuthProvider {
   protected readonly clientId: string;

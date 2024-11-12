@@ -4,19 +4,17 @@ import { JWTHelper } from './JWTHelper';
 import { CreateUserRequest } from '../user/dto/CreateUserRequest';
 import { UserService } from '../user/user.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
-import {
-  OAuthProviderName,
-  OAuthProvider,
-} from './oauthProvider/OAuthProvider';
-import { GoogleOAuthProvider } from './oauthProvider/GoogleOAuthProvider';
+import { OAuthProvider } from './oauthProvider/OAuthProvider';
 import { AuthenticationException } from './exception/AuthenticationException';
 import { Role } from '../user/role.enum';
+import {
+  OAuthProviderName,
+  getOAuthProviders,
+} from './oauthProvider/OAuthProviders';
 
 @Injectable()
 export class AuthService {
-  private readonly providers: Record<OAuthProviderName, OAuthProvider> = {
-    GOOGLE: new GoogleOAuthProvider(this.configService),
-  };
+  private readonly providers: Record<OAuthProviderName, OAuthProvider>;
 
   private readonly accessTokenExpiration: string;
   private readonly refreshTokenExpiration: string;
@@ -27,6 +25,8 @@ export class AuthService {
     private readonly refreshTokenRepository: RefreshTokenRepository,
     private readonly jwtHelper: JWTHelper,
   ) {
+    this.providers = getOAuthProviders(this.configService);
+
     this.accessTokenExpiration = this.configService.get<string>(
       'ACCESS_TOKEN_EXPIRATION',
     );
