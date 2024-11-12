@@ -21,7 +21,7 @@ jobs:
           VITE_GOOGLE_MAPS_ID: ${{ secrets.VITE_GOOGLE_MAPS_ID }}
         run: |
           cd ${{ github.workspace }}/frontend
-          yarn install
+          yarn install --frozen-lockfile
           yarn build
 
       - name: Deploy to Nginx Server
