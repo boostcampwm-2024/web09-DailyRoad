@@ -50,3 +50,19 @@ export type PlaceMarker = {
   color: string;
   category: string;
 };
+
+export type PreSignedURLResponse = {
+  fields: {
+    'Content-Type': string;
+    Policy: string;
+    'X-Amz-Algorithm': string;
+    'X-Amz-Credential': string;
+    'X-Amz-Date': string;
+    'X-Amz-Signature': string;
+    acl: string;
+    bucket: string;
+    key: string;
+  };
+  uploadedUrl: string;
+  url: string;
+};
