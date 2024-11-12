@@ -18,6 +18,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       entities: [__dirname + '/../**/*.entity.{ts,js}'],
       synchronize: false,
       namingStrategy: new CustomNamingStrategy(),
+      timezone: 'Asia/Seoul',
     };
   }
 }
