@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import ImageIcon from './imageIcon';
+import ImageIcon from '@/components/Form/ImageIcon';
 
 interface FileChangeEvent extends React.ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
@@ -9,7 +9,7 @@ const ImageUploader = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -80,15 +80,18 @@ const ImageUploader = () => {
         onChange={handleFileChange}
         className="hidden"
       />
-      <div onClick={handleButtonClick} className="w-[168px] h-[128px] rounded-md bg-c_button_gray cursor-pointer">
+      <div
+        onClick={handleButtonClick}
+        className="h-[128px] w-[168px] cursor-pointer rounded-md bg-c_button_gray"
+      >
         {previewUrl ? (
           <img
             src={previewUrl}
             alt="미리보기"
-            className="w-full h-full object-contain rounded-md"
+            className="h-full w-full rounded-md object-contain"
           />
         ) : (
-          <div className="w-full h-full flex justify-center items-center ">
+          <div className="flex h-full w-full items-center justify-center">
             <ImageIcon />
           </div>
         )}
@@ -96,6 +99,6 @@ const ImageUploader = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
-}  
+};
 
 export default ImageUploader;

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useGoogleMapStore } from './store/googleMapState';
+import { useStore } from './store/useStore';
 
 const GoogleMap = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const googleMap = useGoogleMapStore((state) => state.googleMap);
-  const initializeMap = useGoogleMapStore((state) => state.initializeMap);
+  const googleMap = useStore((state) => state.googleMap);
+  const initializeMap = useStore((state) => state.initializeMap);
 
   useEffect(() => {
     if (ref.current && !googleMap) {
