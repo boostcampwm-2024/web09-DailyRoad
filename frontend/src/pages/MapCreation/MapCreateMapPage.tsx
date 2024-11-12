@@ -1,13 +1,13 @@
-import Dashboard from '@/Dashboard'
-import GoogleMap from '@/GoogleMap'
+import SearchPanel from '@/components/Place/SearchPanel';
+import GoogleMap from '@/GoogleMap';
 
 const MapCreateMapPage = () => {
   return (
     <>
-    <GoogleMap />
-    <Dashboard />
+      <GoogleMap />
+      <SearchPanel />
     </>
-  )
-}
+  );
+};
 
-export default MapCreateMapPage
+export default MapCreateMapPage;
