@@ -6,7 +6,7 @@ import { UserService } from '../user/user.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
 import { OAuthProvider } from './oauthProvider/OAuthProvider';
 import { AuthenticationException } from './exception/AuthenticationException';
-import { Role } from '../user/role.enum';
+import { UserRole } from '../user/user.role';
 import {
   OAuthProviderName,
   getOAuthProviders,
@@ -49,7 +49,7 @@ export class AuthService {
     const user = new CreateUserRequest({
       ...userInfo,
       provider: providerName,
-      role: Role.MEMBER,
+      role: UserRole.MEMBER,
     });
     const { userId, role } = await this.userService.addUser(user);
     return await this.generateTokens(userId, role);

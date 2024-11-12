@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { User } from '../entity/user.entity';
-import { userInfoWithProvider } from '../user.type';
+import { UserInfoWithProvider } from '../user.type';
+import { UserRole } from '../user.role';
 
 export class CreateUserRequest {
   @IsString()
@@ -15,20 +16,20 @@ export class CreateUserRequest {
   @IsNotEmpty()
   oauthId: string;
 
-  @IsString()
+  @IsEnum(UserRole)
   @IsNotEmpty()
-  role: string;
+  role: UserRole;
 
   @IsString()
   @IsOptional()
   profileImageUrl?: string;
 
-  constructor(user: userInfoWithProvider) {
+  constructor(user: UserInfoWithProvider) {
     this.provider = user.provider;
-    this.nickname = user.name;
+    this.nickname = user.nickname;
     this.oauthId = user.oauthId;
     this.role = user.role;
-    this.profileImageUrl = user.picture;
+    this.profileImageUrl = user.profileImageUrl;
   }
 
   toEntity(): User {

@@ -1,7 +1,9 @@
-export type userInfoWithProvider = {
+import { UserRole } from './user.role';
+
+export type UserInfoWithProvider = {
   provider: string;
-  name: string;
+  nickname: string;
   oauthId: string;
-  picture: string;
-  role: string;
+  role: UserRole;
+  profileImageUrl: string;
 };
