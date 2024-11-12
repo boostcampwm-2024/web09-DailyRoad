@@ -6,6 +6,9 @@ export class Banner extends BaseEntity {
   @Column()
   imageUrl: string;
 
+  @Column()
+  redirectUrl: string;
+
   @Column({ type: 'timestamp' })
   startedAt: Date;
 
