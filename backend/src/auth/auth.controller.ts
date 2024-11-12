@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Body, Controller, Post, Get, Param, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { getOAuthProviderNameByValue } from './oauthProvider/OAuthProvider';
 import { AuthenticationException } from './exception/AuthenticationException';
+import { getOAuthProviderNameByValue } from './oauthProvider/OAuthProviders';
 
 const REFRESH_TOKEN = 'refreshToken';
 

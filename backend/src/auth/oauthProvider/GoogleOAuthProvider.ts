@@ -1,8 +1,9 @@
-import { OAuthProvider, OAuthProviders } from './OAuthProvider';
+import { OAuthProvider } from './OAuthProvider';
 import { addBearerToken } from '../utils';
 import { AuthenticationException } from '../exception/AuthenticationException';
 import { isGoogleTokenResponse, isGoogleUserResponse } from '../auth.type';
 import { ConfigService } from '@nestjs/config';
+import { OAuthProviders } from './OAuthProviders';
 
 export class GoogleOAuthProvider extends OAuthProvider {
   constructor(configService: ConfigService) {
