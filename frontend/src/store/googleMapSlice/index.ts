@@ -5,9 +5,9 @@ import { StoreState } from '@/types';
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
+  markerLibrary: google.maps.MarkerLibrary | null;
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
-  markerLibrary: google.maps.MarkerLibrary | null;
   moveTo: (lat: number, lng: number) => void;
 };
 
@@ -19,6 +19,7 @@ export const createGoogleMapSlice: StateCreator<
 > = (set, get) => ({
   googleMap: null,
   markerLibrary: null,
+
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
   initializeMap: async (container: HTMLElement) => {
@@ -33,14 +34,16 @@ export const createGoogleMapSlice: StateCreator<
 
     try {
       await loader.load();
+
       const { Map: GoogleMap } = (await google.maps.importLibrary(
         'maps',
       )) as google.maps.MapsLibrary;
+
       const markerLibrary = (await google.maps.importLibrary(
         'marker',
       )) as google.maps.MarkerLibrary;
-      const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
 
+      const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
       set({ googleMap: map, markerLibrary });
     } catch (error) {
       throw new Error('Failed to load Google Maps API');

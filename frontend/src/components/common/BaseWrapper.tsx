@@ -6,7 +6,7 @@ const BaseWrapper = ({
   className?: string;
 }) => (
   <div
-    className={`relative flex h-full w-full max-w-[400px] flex-col gap-0.5 rounded-lg bg-gray-200 shadow-md ${className}`}
+    className={`absolute left-0 top-0 flex h-full w-1/4 flex-col gap-0.5 rounded-lg bg-gray-200 shadow-md ${className}`}
   >
     {children}
   </div>
