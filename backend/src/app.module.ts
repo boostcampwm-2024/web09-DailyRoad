@@ -12,8 +12,10 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BannerModule } from './banner/banner.module';
 import { AdminModule } from './admin/admin.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TimezoneInterceptor } from './config/TimezoneInterceptor';
+import { StorageModule } from './storage/storage.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -21,6 +23,12 @@ import { TimezoneInterceptor } from './config/TimezoneInterceptor';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 3,
+      },
+    ]),
     AuthModule,
     UserModule,
     PlaceModule,
@@ -28,6 +36,7 @@ import { TimezoneInterceptor } from './config/TimezoneInterceptor';
     CourseModule,
     BannerModule,
     AdminModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [
@@ -35,6 +44,10 @@ import { TimezoneInterceptor } from './config/TimezoneInterceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: TimezoneInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
