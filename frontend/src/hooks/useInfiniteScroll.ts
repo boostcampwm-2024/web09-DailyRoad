@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { throttle } from 'lodash';
 
 /**
  * todo:
@@ -18,6 +19,7 @@ type InfiniteScrollOptions<TQueryFnData> = {
     allPages: TQueryFnData[],
   ) => number | undefined;
   threshold?: number;
+  defaultFetch?: boolean;
 };
 
 export const useInfiniteScroll = <TQueryFnData>({
@@ -25,7 +27,8 @@ export const useInfiniteScroll = <TQueryFnData>({
   query,
   queryFn,
   getNextPageParam,
-  threshold = 1.0,
+  threshold = 0.5,
+  defaultFetch = false,
 }: InfiniteScrollOptions<TQueryFnData>) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<TQueryFnData>({
@@ -34,16 +37,23 @@ export const useInfiniteScroll = <TQueryFnData>({
         queryFn({ pageParam: pageParam as number }),
       initialPageParam: 1,
       getNextPageParam,
-      enabled: !!query,
+      enabled: !!query || defaultFetch,
     });
 
   const { ref, inView } = useInView({ threshold });
+  console.log('1', hasNextPage, isFetchingNextPage);
+
+  const throttledFetchNextPage = useRef(
+    throttle(() => {
+      fetchNextPage();
+    }, 500),
+  ).current;
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+      throttledFetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [inView, throttledFetchNextPage]);
 
   return { ref, data, isFetchingNextPage, hasNextPage };
 };
