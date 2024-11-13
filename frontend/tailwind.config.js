@@ -8,6 +8,7 @@ module.exports = {
       },
       colors: {
         c_button_gray: '#cdced6',
+        c_border_gray: '#e8e8ee',
         c_textarea_gray: '#f9f9f9',
         c_background_gray: '#fffff',
         c_placeholder_gray: '#858899',
