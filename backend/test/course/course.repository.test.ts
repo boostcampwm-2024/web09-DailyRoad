@@ -199,4 +199,21 @@ describe('CourseRepository', () => {
     const count = await courseRepository.countByUserId(fakeUser1.id);
     expect(count).toBe(coursesWithFakeUser1.length);
   });
+
+  it('코스의 공개 여부를 업데이트한다.', async () => {
+    const course = CourseFixture.createCourse({
+      user: fakeUser1,
+      isPublic: true,
+    });
+    await courseRepository.save(course);
+
+    const isPublic = false;
+    await courseRepository.updateIsPublicById(course.id, isPublic);
+
+    const result = (
+      await datasource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
+    )[0];
+
+    expect(Boolean(result.is_public)).toEqual(isPublic);
+  });
 });
