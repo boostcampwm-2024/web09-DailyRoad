@@ -8,7 +8,7 @@ module.exports = {
       },
       colors: {
         c_button_gray: '#cdced6',
-        c_textarea_gray: 'f9f9f9',
+        c_textarea_gray: '#f9f9f9',
         c_background_gray: '#fffff',
         c_placeholder_gray: '#858899',
         c_strong_black: '#000000',
@@ -16,6 +16,6 @@ module.exports = {
         c_bg_blue: '#00a3ff',
       },
     },
-    plugins: [require('tailwind-scrollbar')],
   },
+  plugins: [require('tailwind-scrollbar')],
 };

@@ -1,7 +1,7 @@
 import { BaseMap } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
 
-const defualtMapData: BaseMap = {
+const defaultMapData: BaseMap = {
   title: '',
   description: '',
   thumbnailUrl: 'https://example.com/map7.jpg',
@@ -11,7 +11,7 @@ const defualtMapData: BaseMap = {
 
 export const useMapForm = (initialMapData?: BaseMap) => {
   const [mapInfo, setMapInfo] = useState<BaseMap>(
-    initialMapData ?? defualtMapData,
+    initialMapData ?? defaultMapData,
   );
   const [isMapInfoValid, setIsMapInfoValid] = useState(false);
 
@@ -20,8 +20,9 @@ export const useMapForm = (initialMapData?: BaseMap) => {
   }, [mapInfo]);
 
   const validateInputs = () => {
-    const { title, description } = mapInfo;
-    setIsMapInfoValid(!!title && !!description);
+    const { title, description, thumbnailUrl } = mapInfo;
+    const isUrlValid = !thumbnailUrl || /^https?:\/\/.+/.test(thumbnailUrl);
+    setIsMapInfoValid(!!title && !!description && isUrlValid);
   };
 
   const updateMapInfo = useCallback(
