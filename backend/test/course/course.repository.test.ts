@@ -10,15 +10,17 @@ describe('CourseRepository', () => {
   let container: StartedMySqlContainer;
   let courseRepository: CourseRepository;
   let datasource: DataSource;
-  let fakeUser: User;
+  let fakeUser1: User;
+  let fakeUser2: User;
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
     datasource = await initDataSource(container);
     courseRepository = new CourseRepository(datasource);
 
-    fakeUser = UserFixture.createUser({});
-    await datasource.getRepository(User).save(fakeUser);
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
+    await datasource.getRepository(User).save([fakeUser1, fakeUser2]);
   });
 
   beforeEach(async () => {
@@ -37,7 +39,7 @@ describe('CourseRepository', () => {
 
     const courses = [...publicCourses, ...privateCourses].map(
       ({ title, isPublic }) =>
-        CourseFixture.createCourse({ user: fakeUser, title, isPublic }),
+        CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
     );
     await courseRepository.save(courses);
 
@@ -50,5 +52,71 @@ describe('CourseRepository', () => {
         publicCourses.map((course) => expect.objectContaining(course)),
       ),
     );
+  });
+  describe('코스 이름에 포함된 키워드를 찾아 해당하는 코스를 반환한다.', () => {
+    it('키워드의 대소문자를 구분하지 않는다.', async () => {
+      const coursesWithTravel = [
+        { title: 'TravelCourse 1', isPublic: true },
+        { title: 'travelCourse 2', isPublic: true },
+      ];
+
+      const coursesWithoutTravel = [
+        { title: 'DateCourse 1', isPublic: true },
+        { title: 'FoodCourse 2', isPublic: true },
+      ];
+
+      const courses = [...coursesWithTravel, ...coursesWithoutTravel].map(
+        ({ title, isPublic }) =>
+          CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
+      );
+      await courseRepository.save(courses);
+
+      const page = 1;
+      const pageSize = 10;
+      const query = 'travel';
+      const results = await courseRepository.searchByTitleQuery(
+        query,
+        page,
+        pageSize,
+      );
+      expect(results).toHaveLength(coursesWithTravel.length);
+      expect(results).toEqual(
+        expect.arrayContaining(
+          coursesWithTravel.map((course) => expect.objectContaining(course)),
+        ),
+      );
+    });
+
+    it('검색은 공개 코스에 대해서만 이루어진다.', async () => {
+      const publicCourses = [
+        { title: 'Public Travel Course 1', isPublic: true },
+        { title: 'Public Travel Course 2', isPublic: true },
+      ];
+      const privateCourses = [
+        { title: 'Private Travel Course 1', isPublic: false },
+        { title: 'Private Travel Course 2', isPublic: false },
+      ];
+
+      const courses = [...publicCourses, ...privateCourses].map(
+        ({ title, isPublic }) =>
+          CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
+      );
+      await courseRepository.save(courses);
+
+      const page = 1;
+      const pageSize = 10;
+      const query = 'Travel';
+      const results = await courseRepository.searchByTitleQuery(
+        query,
+        page,
+        pageSize,
+      );
+      expect(results).toHaveLength(publicCourses.length);
+      expect(results).toEqual(
+        expect.arrayContaining(
+          publicCourses.map((course) => expect.objectContaining(course)),
+        ),
+      );
+    });
   });
 });
