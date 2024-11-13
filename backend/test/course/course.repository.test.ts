@@ -123,17 +123,17 @@ describe('CourseRepository', () => {
 
   it('사용자의 아이디로 코스를 찾아 반환한다.', async () => {
     const coursesWithFakeUser1 = [
-      { title: 'Course 1', isPublic: true },
-      { title: 'Course 2', isPublic: true },
-    ].map(({ title, isPublic }) =>
-      CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
+      { title: 'Course 1' },
+      { title: 'Course 2' },
+    ].map(({ title }) =>
+      CourseFixture.createCourse({ user: fakeUser1, title }),
     );
     const coursesWithFakeUser2 = [
-      { title: 'Course 3', isPublic: true },
-      { title: 'Course 4', isPublic: true },
-      { title: 'Course 5', isPublic: true },
-    ].map(({ title, isPublic }) =>
-      CourseFixture.createCourse({ user: fakeUser2, title, isPublic }),
+      { title: 'Course 3' },
+      { title: 'Course 4' },
+      { title: 'Course 5' },
+    ].map(({ title }) =>
+      CourseFixture.createCourse({ user: fakeUser2, title }),
     );
     await courseRepository.save([
       ...coursesWithFakeUser1,
@@ -175,5 +175,28 @@ describe('CourseRepository', () => {
 
     const count = await courseRepository.countAllPublic();
     expect(count).toBe(publicCourses.length);
+  });
+
+  it('사용자의 아이디로 코스의 개수를 반환한다.', async () => {
+    const coursesWithFakeUser1 = [
+      { title: 'Course 1' },
+      { title: 'Course 2' },
+    ].map(({ title }) =>
+      CourseFixture.createCourse({ user: fakeUser1, title }),
+    );
+    const coursesWithFakeUser2 = [
+      { title: 'Course 3' },
+      { title: 'Course 4' },
+      { title: 'Course 5' },
+    ].map(({ title }) =>
+      CourseFixture.createCourse({ user: fakeUser2, title }),
+    );
+    await courseRepository.save([
+      ...coursesWithFakeUser1,
+      ...coursesWithFakeUser2,
+    ]);
+
+    const count = await courseRepository.countByUserId(fakeUser1.id);
+    expect(count).toBe(coursesWithFakeUser1.length);
   });
 });
