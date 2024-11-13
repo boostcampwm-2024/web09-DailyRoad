@@ -25,7 +25,7 @@ export type Map = {
 };
 
 export type MapList = {
-  maps: MapItem[];
+  maps: MapItemType[];
   totalPages: number;
   currentPage: number;
 };
@@ -40,11 +40,15 @@ export type BaseMap = {
   mode: CreateMapType;
 };
 
-export type MapItem = {
+export type MapItemType = {
   id: number;
+  user: User;
   title: string;
+  isPublic: boolean;
+  thumbnailUrl: string;
   description: string;
   pinCount: number;
+  createdAt: string;
 };
 
 export type User = {
