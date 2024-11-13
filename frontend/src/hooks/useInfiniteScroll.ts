@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { throttle } from 'lodash';
 
 /**
@@ -41,7 +41,6 @@ export const useInfiniteScroll = <TQueryFnData>({
     });
 
   const { ref, inView } = useInView({ threshold });
-  console.log('1', hasNextPage, isFetchingNextPage);
 
   const throttledFetchNextPage = useRef(
     throttle(() => {
