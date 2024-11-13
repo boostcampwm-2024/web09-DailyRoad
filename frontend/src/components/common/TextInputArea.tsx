@@ -32,6 +32,9 @@ const TextInputArea = ({
           placeholder={placeholder}
           maxLength={maxLength}
           style={{ height: `${height}px` }}
+          aria-label={placeholder || '텍스트 입력 영역'}
+          role="textbox"
+          aria-multiline="true"
           className="gray text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       ) : (
@@ -41,6 +44,7 @@ const TextInputArea = ({
           onChange={handleChange}
           placeholder={placeholder}
           maxLength={maxLength}
+          aria-label={placeholder || '텍스트 입력'}
           className="text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       )}

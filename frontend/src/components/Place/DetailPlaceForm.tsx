@@ -11,8 +11,10 @@ const DetailPlaceForm = () => {
   const [color, selectColor] = useState('');
   return (
     <BaseWrapper>
-      <Box>
-        <h2 className="p-4 text-xl font-semibold">장소 추가하기</h2>
+      <Box role="region" aria-label="장소 상세 정보">
+        <h2 className="p-4 text-xl font-semibold" id="review-heading">
+          장소 추가하기
+        </h2>
         <PlaceItem place={place} />
       </Box>
       <Box>
@@ -24,6 +26,7 @@ const DetailPlaceForm = () => {
           maxLength={150}
           height={160}
           isTextArea={true}
+          aria-labelledby="review-heading"
         />
       </Box>
     </BaseWrapper>
