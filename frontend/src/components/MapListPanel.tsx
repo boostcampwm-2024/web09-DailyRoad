@@ -17,7 +17,7 @@ const MapListPanel = () => {
       defaultFetch: true,
     });
   return (
-    <div className="scrollbar-thin scrollbar-thumb-rounded-lg scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 hover:scrollbar-track-gray-200 scrollbar-track-transparent flex max-h-[600px] flex-wrap space-y-4 overflow-y-auto">
+    <div className="scrollbar-thumb-rounded-lg flex max-h-[600px] flex-wrap space-y-4 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
       {data?.pages.map((page, index) => (
         <React.Fragment key={index}>
           {page.maps.map((map: MapItemType) => (
