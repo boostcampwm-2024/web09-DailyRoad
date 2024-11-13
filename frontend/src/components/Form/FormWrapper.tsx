@@ -3,6 +3,7 @@ import ImageUploader from './ImageUploader';
 import TextInputArea from '../common/TextInputArea';
 import VisibilitySelector from './VisibilitySelector';
 import Box from '../common/Box';
+import DashBoardHeader from '../common/DashBoardHeader';
 
 type FormWrapperProps = {
   header: string;
@@ -23,7 +24,7 @@ const FormWrapper = ({
 
   return (
     <div className="h-full">
-      <h2 className="p-4 text-xl font-semibold">{header}</h2>
+      <DashBoardHeader title={header} />
       <div className="flex h-[200px] gap-4 p-4">
         <ImageUploader />
         <select
