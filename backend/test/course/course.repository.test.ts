@@ -40,6 +40,7 @@ describe('CourseRepository', () => {
       ({ title, isPublic }) =>
         CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
     );
+
     await courseRepository.save(courses);
 
     const page = 1;
@@ -53,6 +54,7 @@ describe('CourseRepository', () => {
       ),
     );
   });
+
   describe('코스 이름에 포함된 키워드를 찾아 해당하는 코스를 반환한다.', () => {
     it('키워드의 대소문자를 구분하지 않는다.', async () => {
       const coursesWithTravel = [
@@ -152,5 +154,26 @@ describe('CourseRepository', () => {
         coursesWithFakeUser1.map((course) => expect.objectContaining(course)),
       ),
     );
+  });
+
+  it('공개된 코스의 개수를 반환한다.', async () => {
+    const publicCourses = [
+      { title: 'Public Course 1', isPublic: true },
+      { title: 'Public Course 2', isPublic: true },
+      { title: 'Public Course 3', isPublic: true },
+    ];
+    const privateCourses = [
+      { title: 'Private Course 1', isPublic: false },
+      { title: 'Private Course 2', isPublic: false },
+    ];
+    const courses = [...publicCourses, ...privateCourses].map(
+      ({ title, isPublic }) =>
+        CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
+    );
+
+    await courseRepository.save(courses);
+
+    const count = await courseRepository.countAllPublic();
+    expect(count).toBe(publicCourses.length);
   });
 });
