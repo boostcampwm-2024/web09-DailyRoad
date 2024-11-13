@@ -44,7 +44,7 @@ export type MapItem = {
   id: number;
   title: string;
   description: string;
-  pin_count: number;
+  pinCount: number;
 };
 
 export type User = {
@@ -53,10 +53,13 @@ export type User = {
   profile_url: string;
 };
 
+export type MarkerColor = 'red' | 'blue' | 'green' | string;
+export type MarkerCategory = 'restaurant' | 'cafe' | 'attraction' | string;
+
 export type PlaceMarker = {
   placeId: number;
-  color: string;
-  category: string;
+  color: MarkerColor;
+  category: MarkerCategory;
 };
 
 export type PreSignedURLResponse = {
