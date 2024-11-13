@@ -8,11 +8,20 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
 
 root.render(
   <QueryClientProvider client={queryClient}>
     <App />
-    <ReactQueryDevtools initialIsOpen={false} />
+    {process.env.NODE_ENV === 'development' && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )}
   </QueryClientProvider>,
 );
