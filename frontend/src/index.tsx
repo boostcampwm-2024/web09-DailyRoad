@@ -3,6 +3,7 @@ import './index.css';
 import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { StrictMode } from 'react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -19,9 +20,11 @@ const queryClient = new QueryClient({
 
 root.render(
   <QueryClientProvider client={queryClient}>
-    <App />
-    {process.env.NODE_ENV === 'development' && (
-      <ReactQueryDevtools initialIsOpen={false} />
-    )}
+    <StrictMode>
+      <App />
+      {process.env.NODE_ENV === 'development' && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
+    </StrictMode>
   </QueryClientProvider>,
 );
