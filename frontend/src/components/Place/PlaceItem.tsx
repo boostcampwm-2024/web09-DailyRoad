@@ -3,9 +3,10 @@ import { Place } from '@/types';
 
 type PlaceItemProps = {
   place: Place;
+  isDetailPage?: boolean;
 };
 
-const PlaceItem = ({ place }: PlaceItemProps) => {
+const PlaceItem = ({ place, isDetailPage }: PlaceItemProps) => {
   const activePlace = useStore((state) => state.place);
   const setPlace = useStore((state) => state.setPlace);
   const moveToLocation = useStore((state) => state.moveTo);
@@ -28,7 +29,7 @@ const PlaceItem = ({ place }: PlaceItemProps) => {
       tabIndex={0}
       onClick={onPlaceClick}
       onKeyDown={onKeyDown}
-      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id ? 'border-1 border-c_bg_blue' : 'border-c_textarea_gray'} p-4`}
+      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4 ${isDetailPage ? 'cursor-default' : ''}`}
     >
       <img
         src={place.thumbnail_url}
