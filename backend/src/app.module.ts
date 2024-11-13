@@ -16,10 +16,12 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TimezoneInterceptor } from './config/TimezoneInterceptor';
 import { StorageModule } from './storage/storage.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CustomLoggerModule } from './common/log/CustomLoggerModule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    CustomLoggerModule,
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),
