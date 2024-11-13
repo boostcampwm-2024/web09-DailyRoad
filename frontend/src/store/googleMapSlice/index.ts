@@ -46,6 +46,7 @@ export const createGoogleMapSlice: StateCreator<
       const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
       set({ googleMap: map, markerLibrary });
     } catch (error) {
+      console.error(error);
       throw new Error('Failed to load Google Maps API');
     }
   },
