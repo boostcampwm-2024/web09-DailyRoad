@@ -2,10 +2,15 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CustomNamingStrategy } from './CustomNamingStrategy';
+import { PinoTypeORMLogger } from './CustomTypeORMLogger';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly logger: PinoLogger,
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
@@ -19,6 +24,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       synchronize: false,
       namingStrategy: new CustomNamingStrategy(),
       timezone: '+09:00',
+      logger: new PinoTypeORMLogger(this.logger),
+      logging: true,
     };
   }
 }
