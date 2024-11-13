@@ -10,16 +10,15 @@ import { CourseNotFoundException } from './exception/CourseNotFoundException';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 import { PlaceRepository } from '../place/place.repository';
-import { UserRepository } from '../user/user.repository';
 import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
-import { OwnCourseListResponse } from './dto/OwnCourseListResponse';
+import { PagedCourseResponse } from './dto/PagedCourseResponse';
+import { User } from '../user/entity/user.entity';
 
 @Injectable()
 export class CourseService {
   constructor(
     private readonly courseRepository: CourseRepository,
     private readonly placeRepository: PlaceRepository,
-    private readonly userRepository: UserRepository,
   ) {}
 
   // Todo. 작성자명 등 ... 검색 조건 추가
@@ -28,7 +27,7 @@ export class CourseService {
     page: number = 1,
     pageSize: number = 10,
   ) {
-    const [maps, totalCount] = query
+    const [searchedCourses, totalCount] = query
       ? await Promise.all([
           this.courseRepository.searchByTitleQuery(query, page, pageSize),
           this.courseRepository.countByTitleAndIsPublic(query),
@@ -38,11 +37,10 @@ export class CourseService {
           this.courseRepository.countAllPublic(),
         ]);
 
-    return {
-      courses: await Promise.all(maps.map(CourseListResponse.from)),
-      totalPages: Math.ceil(totalCount / pageSize),
-      currentPage: page,
-    };
+    const courses = await Promise.all(
+      searchedCourses.map(CourseListResponse.from),
+    );
+    return new PagedCourseResponse(courses, totalCount, page, pageSize);
   }
 
   // Todo. 그룹 기능 추가
@@ -53,8 +51,7 @@ export class CourseService {
     ]);
 
     const courses = await Promise.all(ownCourses.map(CourseListResponse.from));
-    const totalPages = Math.ceil(totalCount / pageSize);
-    return new OwnCourseListResponse(courses, totalPages, page);
+    return new PagedCourseResponse(courses, totalCount, page, pageSize);
   }
 
   async getCourseById(id: number) {
@@ -72,7 +69,7 @@ export class CourseService {
   }
 
   async createCourse(userId: number, createCourseForm: CreateCourseRequest) {
-    const user = await this.userRepository.findById(userId);
+    const user = { id: userId } as User;
     const map = createCourseForm.toEntity(user);
 
     return { id: (await this.courseRepository.save(map)).id };
