@@ -5,11 +5,11 @@ export const useOverlay = () => {
 
   const open = useCallback(() => {
     setIsOpen(true);
-  }, [setIsOpen]);
+  }, []);
 
   const close = useCallback(() => {
     setIsOpen(false);
-  }, [setIsOpen]);
+  }, []);
 
   const toggle = useCallback(() => {
     setIsOpen((prev) => !prev);
