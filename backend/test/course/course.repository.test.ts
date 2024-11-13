@@ -36,7 +36,6 @@ describe('CourseRepository', () => {
       { title: 'Private Course 1', isPublic: false },
       { title: 'Private Course 2', isPublic: false },
     ];
-
     const courses = [...publicCourses, ...privateCourses].map(
       ({ title, isPublic }) =>
         CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
@@ -46,6 +45,7 @@ describe('CourseRepository', () => {
     const page = 1;
     const pageSize = 10;
     const results = await courseRepository.findAll(page, pageSize);
+
     expect(results).toHaveLength(publicCourses.length);
     expect(results).toEqual(
       expect.arrayContaining(
@@ -59,12 +59,10 @@ describe('CourseRepository', () => {
         { title: 'TravelCourse 1', isPublic: true },
         { title: 'travelCourse 2', isPublic: true },
       ];
-
       const coursesWithoutTravel = [
         { title: 'DateCourse 1', isPublic: true },
         { title: 'FoodCourse 2', isPublic: true },
       ];
-
       const courses = [...coursesWithTravel, ...coursesWithoutTravel].map(
         ({ title, isPublic }) =>
           CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
@@ -79,6 +77,7 @@ describe('CourseRepository', () => {
         page,
         pageSize,
       );
+
       expect(results).toHaveLength(coursesWithTravel.length);
       expect(results).toEqual(
         expect.arrayContaining(
@@ -118,5 +117,40 @@ describe('CourseRepository', () => {
         ),
       );
     });
+  });
+
+  it('사용자의 아이디로 코스를 찾아 반환한다.', async () => {
+    const coursesWithFakeUser1 = [
+      { title: 'Course 1', isPublic: true },
+      { title: 'Course 2', isPublic: true },
+    ].map(({ title, isPublic }) =>
+      CourseFixture.createCourse({ user: fakeUser1, title, isPublic }),
+    );
+    const coursesWithFakeUser2 = [
+      { title: 'Course 3', isPublic: true },
+      { title: 'Course 4', isPublic: true },
+      { title: 'Course 5', isPublic: true },
+    ].map(({ title, isPublic }) =>
+      CourseFixture.createCourse({ user: fakeUser2, title, isPublic }),
+    );
+    await courseRepository.save([
+      ...coursesWithFakeUser1,
+      ...coursesWithFakeUser2,
+    ]);
+
+    const page = 1;
+    const pageSize = 10;
+    const results = await courseRepository.findByUserId(
+      fakeUser1.id,
+      page,
+      pageSize,
+    );
+
+    expect(results).toHaveLength(coursesWithFakeUser1.length);
+    expect(results).toEqual(
+      expect.arrayContaining(
+        coursesWithFakeUser1.map((course) => expect.objectContaining(course)),
+      ),
+    );
   });
 });
