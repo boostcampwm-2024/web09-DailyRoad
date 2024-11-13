@@ -7,10 +7,10 @@ const GoogleMap = () => {
   const initializeMap = useStore((state) => state.initializeMap);
 
   useEffect(() => {
-    if (ref.current && !googleMap) {
+    if (ref.current) {
       initializeMap(ref.current);
     }
-  }, [googleMap, initializeMap]);
+  }, [initializeMap]);
 
   return <div ref={ref} id="map" style={{ minHeight: '100vh' }} />;
 };
