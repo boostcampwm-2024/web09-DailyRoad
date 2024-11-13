@@ -55,10 +55,10 @@ export class CourseService {
   }
 
   async getCourseById(id: number) {
-    const map = await this.courseRepository.findById(id);
-    if (!map) throw new CourseNotFoundException(id);
+    const course = await this.courseRepository.findById(id);
+    if (!course) throw new CourseNotFoundException(id);
 
-    return await CourseDetailResponse.from(map);
+    return await CourseDetailResponse.from(course);
   }
 
   async getCourseOwnerId(courseId: number) {
@@ -70,9 +70,9 @@ export class CourseService {
 
   async createCourse(userId: number, createCourseForm: CreateCourseRequest) {
     const user = { id: userId } as User;
-    const map = createCourseForm.toEntity(user);
+    const course = createCourseForm.toEntity(user);
 
-    return { id: (await this.courseRepository.save(map)).id };
+    return { id: (await this.courseRepository.save(course)).id };
   }
 
   async deleteCourse(id: number) {
@@ -82,9 +82,12 @@ export class CourseService {
     return { id };
   }
 
-  async updateCourseInfo(id: number, updateMapForm: UpdateCourseInfoRequest) {
+  async updateCourseInfo(
+    id: number,
+    updateCourseForm: UpdateCourseInfoRequest,
+  ) {
     await this.validateCourseExistsById(id);
-    const { title, description, thumbnailUrl } = updateMapForm;
+    const { title, description, thumbnailUrl } = updateCourseForm;
     return this.courseRepository.updateInfoById(
       id,
       title,
