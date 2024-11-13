@@ -16,7 +16,7 @@ describe('PlaceRepository', () => {
     await placeRepository.delete({});
   });
 
-  it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다.', async () => {
+  it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다', async () => {
     const placesWithParkName = [
       {
         googlePlaceId: 'googlePlaceId_1',

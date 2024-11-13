@@ -27,7 +27,7 @@ describe('CourseRepository', () => {
     await courseRepository.delete({});
   });
 
-  it('공개되어 있는 코스를 반환한다.', async () => {
+  it('공개되어 있는 코스를 반환한다', async () => {
     const publicCourses = [
       { title: 'Public Course 1', isPublic: true },
       { title: 'Public Course 2', isPublic: true },
@@ -55,8 +55,8 @@ describe('CourseRepository', () => {
     );
   });
 
-  describe('코스 이름에 포함된 키워드를 찾아 해당하는 코스를 반환한다.', () => {
-    it('키워드의 대소문자를 구분하지 않는다.', async () => {
+  describe('코스 이름에 포함된 키워드를 찾아 해당하는 코스를 반환한다', () => {
+    it('키워드의 대소문자를 구분하지 않는다', async () => {
       const coursesWithTravel = [
         { title: 'TravelCourse 1', isPublic: true },
         { title: 'travelCourse 2', isPublic: true },
@@ -88,7 +88,7 @@ describe('CourseRepository', () => {
       );
     });
 
-    it('검색은 공개 코스에 대해서만 이루어진다.', async () => {
+    it('검색은 공개 코스에 대해서만 이루어진다', async () => {
       const publicCourses = [
         { title: 'Public Travel Course 1', isPublic: true },
         { title: 'Public Travel Course 2', isPublic: true },
@@ -121,7 +121,7 @@ describe('CourseRepository', () => {
     });
   });
 
-  it('사용자의 아이디로 코스를 찾아 반환한다.', async () => {
+  it('사용자의 아이디로 코스를 찾아 반환한다', async () => {
     const coursesWithFakeUser1 = [
       { title: 'Course 1' },
       { title: 'Course 2' },
@@ -156,7 +156,7 @@ describe('CourseRepository', () => {
     );
   });
 
-  it('공개된 코스의 개수를 반환한다.', async () => {
+  it('공개된 코스의 개수를 반환한다', async () => {
     const publicCourses = [
       { title: 'Public Course 1', isPublic: true },
       { title: 'Public Course 2', isPublic: true },
@@ -177,7 +177,7 @@ describe('CourseRepository', () => {
     expect(count).toBe(publicCourses.length);
   });
 
-  it('사용자의 아이디로 코스의 개수를 반환한다.', async () => {
+  it('사용자의 아이디로 코스의 개수를 반환한다', async () => {
     const coursesWithFakeUser1 = [
       { title: 'Course 1' },
       { title: 'Course 2' },
@@ -200,7 +200,7 @@ describe('CourseRepository', () => {
     expect(count).toBe(coursesWithFakeUser1.length);
   });
 
-  it('코스의 공개 여부를 업데이트한다.', async () => {
+  it('코스의 공개 여부를 업데이트한다', async () => {
     const course = CourseFixture.createCourse({
       user: fakeUser1,
       isPublic: true,
@@ -215,5 +215,33 @@ describe('CourseRepository', () => {
     )[0];
 
     expect(Boolean(result.is_public)).toEqual(isPublic);
+  });
+
+  it('코스의 정보를 업데이트한다', async () => {
+    const course = CourseFixture.createCourse({
+      user: fakeUser1,
+      title: 'Old Title',
+      description: 'Old Description',
+      thumbnailUrl: 'Old Thumbnail Url',
+    });
+    await courseRepository.save(course);
+
+    const title = 'New Title';
+    const description = 'New Description';
+    const thumbnailUrl = 'New Thumbnail Url';
+    await courseRepository.updateInfoById(
+      course.id,
+      title,
+      description,
+      thumbnailUrl,
+    );
+
+    const result = (
+      await datasource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
+    )[0];
+
+    expect(result.title).toEqual(title);
+    expect(result.description).toEqual(description);
+    expect(result.thumbnail_url).toEqual(thumbnailUrl);
   });
 });
