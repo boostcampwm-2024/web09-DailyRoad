@@ -1,4 +1,5 @@
 import Option from '@/components/common/Option';
+import { VISIBILITY_TEXTS } from '@/constants/map';
 
 type VisibilitySelectorProps = {
   selected: 'public' | 'private';
@@ -10,22 +11,28 @@ const VisibilitySelector = ({
   onSelect,
 }: VisibilitySelectorProps) => {
   return (
-    <div className="flex flex-col gap-2 bg-white">
-      <h2 className="text-lg font-bold">공개 범위</h2>
-      <p className="mb-4 text-gray-600">공개 여부를 선택해주세요</p>
+    <div
+      className="flex flex-col gap-2 bg-white"
+      role="radiogroup"
+      aria-label={VISIBILITY_TEXTS.title}
+    >
+      <h2 className="text-lg font-bold">{VISIBILITY_TEXTS.title}</h2>
+      <p className="mb-4 text-gray-600">{VISIBILITY_TEXTS.description}</p>
 
       <Option
-        label="공개"
-        description="나의 지도를 다른 사람들과 공유할 수 있습니다."
+        label={VISIBILITY_TEXTS.public.label}
+        description={VISIBILITY_TEXTS.public.description}
         isSelected={selected === 'public'}
         onClick={() => onSelect('public')}
+        aria-checked={selected === 'public'}
       />
 
       <Option
-        label="비공개"
-        description="나의 지도를 나만 볼 수 있습니다."
+        label={VISIBILITY_TEXTS.private.label}
+        description={VISIBILITY_TEXTS.private.description}
         isSelected={selected === 'private'}
         onClick={() => onSelect('private')}
+        aria-checked={selected === 'private'}
       />
     </div>
   );

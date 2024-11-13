@@ -9,7 +9,14 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [input, setInput] = useState('');
 
   const handleSearch = () => {
+    if (!input.trim()) return;
     onSearch(input);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -20,8 +27,15 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
         onChange={(e) => setInput(e.target.value)}
         placeholder="검색어를 입력하세요"
         className="w-full outline-none"
+        aria-label="장소 검색"
+        onKeyDown={handleKeyPress}
       />
-      <button onClick={handleSearch} className="text-c_bg_blue">
+      <button
+        type="button"
+        onClick={handleSearch}
+        className="text-c_bg_blue"
+        aria-label="검색"
+      >
         <SearchIcon />
       </button>
     </div>
