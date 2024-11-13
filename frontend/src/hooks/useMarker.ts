@@ -14,7 +14,7 @@ export type MarkerProps = Omit<
 export const useMarker = (props: MarkerProps) => {
   const [marker, setMarker] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
-  const map = useStore.getState().googleMap;
+  const map = useStore((state) => state.googleMap);
 
   const { onClick, ...markerOptions } = props;
   useEffect(() => {
@@ -37,14 +37,12 @@ export const useMarker = (props: MarkerProps) => {
   useEffect(() => {
     if (!marker) return;
 
-    const m = marker;
-
-    const gme = google.maps.event;
-
-    if (onClick) gme.addListener(m, 'click', onClick);
+    if (onClick) {
+      google.maps.event.addListener(marker, 'click', onClick);
+    }
 
     return () => {
-      gme.clearInstanceListeners(m);
+      google.maps.event.clearInstanceListeners(marker);
     };
   }, [marker, onClick]);
   return marker;
