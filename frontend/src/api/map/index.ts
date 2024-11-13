@@ -19,8 +19,12 @@ export const createMap = async (baseMapData: Omit<BaseMap, 'mode'>) => {
   return data.mapId;
 };
 
-export const getMapList = async () => {
-  const { data } = await axiosInstance.get<MapList>(END_POINTS.MAPS);
+export const getMapList = async (pageParam: number) => {
+  const { data } = await axiosInstance.get<MapList>(END_POINTS.MAPS, {
+    params: {
+      page: pageParam,
+    },
+  });
   return data;
 };
 
