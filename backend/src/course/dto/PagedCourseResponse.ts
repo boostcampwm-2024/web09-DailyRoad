@@ -1,7 +1,7 @@
 import { CourseListResponse } from './CourseListResponse';
 import { PaginationResponse } from '../../common/dto/PaginationResponse';
 
-export class OwnCourseListResponse extends PaginationResponse {
+export class PagedCourseResponse extends PaginationResponse {
   constructor(
     readonly courses: CourseListResponse[],
     totalCount: number,
