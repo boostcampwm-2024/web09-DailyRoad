@@ -23,3 +23,16 @@ export const INITIAL_MAP_CONFIG = {
     strictBounds: true,
   },
 };
+
+export const VISIBILITY_TEXTS = {
+  title: '공개 범위',
+  description: '공개 여부를 선택해주세요',
+  public: {
+    label: '공개',
+    description: '나의 지도를 다른 사람들과 공유할 수 있습니다.',
+  },
+  private: {
+    label: '비공개',
+    description: '나의 지도를 나만 볼 수 있습니다.',
+  },
+} as const;
