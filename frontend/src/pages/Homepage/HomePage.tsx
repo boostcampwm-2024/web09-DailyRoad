@@ -1,5 +1,5 @@
-import Footer from './Footer';
-import Header from './Header';
+import Footer from '@/pages/HomePage/Footer';
+import Header from '@/pages/HomePage/Header';
 import NavigateButton from '@/components/common/NavigateButton';
 
 const Homepage = () => {
