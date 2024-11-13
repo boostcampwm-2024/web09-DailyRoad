@@ -45,7 +45,7 @@ const FormWrapper = ({
         <Box>
           <TextInputArea
             value={title}
-            onChange={(prev) => updateMapInfo('title', prev)}
+            onChange={(value) => updateMapInfo('title', value)}
             placeholder={'새 지도명을 입력해주세요.'}
             maxLength={20}
             height={28}
@@ -54,7 +54,7 @@ const FormWrapper = ({
           <p>지도 소개</p>
           <TextInputArea
             value={description}
-            onChange={(prev) => updateMapInfo('description', prev)}
+            onChange={(value) => updateMapInfo('description', value)}
             placeholder={'지도 소개를 입력해주세요.'}
             maxLength={150}
             height={160}
