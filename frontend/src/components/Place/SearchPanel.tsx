@@ -1,8 +1,10 @@
 import { useState } from 'react';
+
 import BaseWrapper from '../common/BaseWrapper';
+import Box from '../common/Box';
+
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
-import Box from '../common/Box';
 import AddPlaceButton from './AddPlaceButton';
 
 const SearchPanel = () => {
