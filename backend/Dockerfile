@@ -18,6 +18,8 @@ WORKDIR /app
 
 RUN apk update
 
+ENV NODE_ENV=prod
+
 COPY --from=builder /build/.env.prod .env
 COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/node_modules ./node_modules
