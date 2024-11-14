@@ -9,6 +9,11 @@ import {
   BaseExceptionFilter,
 } from './common/exception/filter/GlobalExceptionFilter';
 
+process.env.NODE_ENV =
+  process.env.NODE_ENV && process.env.NODE_ENV.trim().toLowerCase() === 'prod'
+    ? 'prod'
+    : 'develop';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
