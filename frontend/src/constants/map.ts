@@ -1,3 +1,5 @@
+import { MarkerColor } from '@/types';
+
 const INITIAL_CENTER = {
   lat: 37.5,
   lng: 127.0,
@@ -36,3 +38,29 @@ export const VISIBILITY_TEXTS = {
     description: '나의 지도를 나만 볼 수 있습니다.',
   },
 } as const;
+
+export const MARKER_COLORS: MarkerColor[] = [
+  'RED',
+  'ORANGE',
+  'YELLOW',
+  'GREEN',
+  'BLUE',
+  'PURPLE',
+] as const;
+
+export const markerBgColor: { [K in MarkerColor]: string } = {
+  RED: 'bg-c_marker_RED',
+  ORANGE: 'bg-c_marker_ORANGE',
+  YELLOW: 'bg-c_marker_YELLOW',
+  GREEN: 'bg-c_marker_GREEN',
+  BLUE: 'bg-c_marker_BLUE',
+  PURPLE: 'bg-c_marker_PURPLE',
+};
+export const markerBorderColor: { [K in MarkerColor]: string } = {
+  RED: 'border-c_marker_RED',
+  ORANGE: 'border-c_marker_ORANGE',
+  YELLOW: 'border-c_marker_YELLOW',
+  GREEN: 'border-c_marker_GREEN',
+  BLUE: 'border-c_marker_BLUE',
+  PURPLE: 'border-c_marker_PURPLE',
+};
