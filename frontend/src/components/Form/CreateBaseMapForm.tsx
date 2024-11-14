@@ -8,21 +8,21 @@ import { ROUTES } from '@/constants/routes';
 
 const CreateBaseMapForm = () => {
   const { mapInfo, updateMapInfo, isMapInfoValid } = useMapForm();
-  const addMapMutation = useAddMapMutation();
   const navigate = useNavigate();
   const { mode, ...baseMap } = mapInfo;
+  const addMapMutation = useAddMapMutation(mode);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addMapMutation.mutate(baseMap, {
-      onSuccess: () => {
-        navigateByMode(mode);
+      onSuccess: (id) => {
+        navigateByMode(mode, id);
       },
     });
   };
 
-  const navigateByMode = (mode: CreateMapType) => {
-    return navigate(mode === 'MAP' ? ROUTES.MAP : ROUTES.COURSE);
+  const navigateByMode = (mode: CreateMapType, id: number) => {
+    return navigate(mode === 'MAP' ? ROUTES.MAP(id) : ROUTES.COURSE(id));
   };
 
   return (
