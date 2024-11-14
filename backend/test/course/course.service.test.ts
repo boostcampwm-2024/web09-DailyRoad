@@ -161,4 +161,33 @@ describe('CourseService', () => {
     expect(result).toEqual(expectedResponse);
     result.courses.forEach((course) => expect(course.isPublic).not.toBeFalsy());
   });
+
+  it('사용자는 자신의 코스를 조회할 수 있다', async () => {
+    const ownCourses = [
+      { title: 'My Course 1', isPublic: true },
+      { title: 'My Course 2', isPublic: true },
+    ].map(({ title, isPublic }) =>
+      CourseFixture.createCourse({
+        user: fakeUser1,
+        title,
+        isPublic,
+      }),
+    );
+    courseRepository.findByUserId.mockResolvedValue(ownCourses);
+    courseRepository.countByUserId.mockResolvedValue(ownCourses.length);
+
+    const result = await courseService.getOwnCourses(
+      fakeUser1.id,
+      page,
+      pageSize,
+    );
+
+    const expectedResponse = await createPagedResponse(
+      ownCourses,
+      ownCourses.length,
+      page,
+      pageSize,
+    );
+    expect(result).toEqual(expectedResponse);
+  });
 });
