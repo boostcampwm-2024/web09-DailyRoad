@@ -18,11 +18,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     const status = exception.getStatus();
-    if (status >= 400 && status < 500) {
-      this.logger.warn(`${exception.getMessage()}`);
-    } else if (status >= 500) {
-      this.logger.error(`${exception.getMessage()}`);
-    }
+    logException(this.logger, exception.getMessage(), status);
 
     return response.status(status).json({
       code: exception.getCode(),
@@ -45,11 +41,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       : exception.message;
 
     const status = exception.getStatus();
-    if (status >= 400 && status < 500) {
-      this.logger.warn(`${errorMessage}`);
-    } else if (status >= 500) {
-      this.logger.error(`${errorMessage}`);
-    }
+    logException(this.logger, errorMessage, status);
 
     return response.status(status).json({
       code: 9999,
@@ -65,6 +57,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
       Array.isArray((exceptionResponse as any).message)
     );
   }
+}
+
+function logException(logger: PinoLogger, message: string, status: number) {
+  const WARN = 400;
+  const ERROR = 500;
+
+  if (status < WARN) return;
+  void (status < ERROR
+    ? logger.warn(`${message}`)
+    : logger.error(`${message}`));
 }
 
 @Catch()
