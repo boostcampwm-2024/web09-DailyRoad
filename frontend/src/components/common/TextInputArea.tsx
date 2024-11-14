@@ -4,7 +4,7 @@ type TextInputAreaProps = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  maxLength?: number;
+  maxLength: number;
   height?: number;
   isTextArea?: boolean;
 };
@@ -14,7 +14,7 @@ const TextInputArea = ({
   onChange,
   placeholder,
   maxLength,
-  height = 20,
+  height,
   isTextArea = false,
 }: TextInputAreaProps) => {
   const handleChange = (
@@ -24,34 +24,43 @@ const TextInputArea = ({
   };
 
   return (
-    <div className="flex w-full justify-between">
+    <div
+      style={{ height: height }}
+      className="flex w-full items-center justify-between rounded-md border-[1px] px-1"
+    >
       {isTextArea ? (
-        <textarea
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          style={{ height: `${height}px` }}
-          aria-label={placeholder || '텍스트 입력 영역'}
-          role="textbox"
-          aria-multiline="true"
-          className="gray text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <>
+          <textarea
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+            maxLength={maxLength}
+            aria-label={placeholder || '텍스트 입력 영역'}
+            role="textbox"
+            aria-multiline="true"
+            className="gray bg-customGray h-full w-full rounded-lg border-none p-2 text-base focus:outline-none"
+          />
+          <div className="flex h-full flex-col-reverse text-xs text-c_placeholder_gray">
+            <p>
+              {value.length}/{maxLength}
+            </p>
+          </div>
+        </>
       ) : (
-        <input
-          type="text"
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          aria-label={placeholder || '텍스트 입력'}
-          className="text-customText bg-customGray w-full rounded-lg border-none p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      )}
-      {maxLength && (
-        <div className="text-xs text-c_placeholder_gray">
-          {value.length}/{maxLength}
-        </div>
+        <>
+          <input
+            type="text"
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+            maxLength={maxLength}
+            aria-label={placeholder || '텍스트 입력'}
+            className="bg-customGray w-full rounded-lg border-none p-2 text-sm focus:outline-none"
+          />
+          <div className="text-xs text-c_placeholder_gray">
+            {value.length}/{maxLength}
+          </div>
+        </>
       )}
     </div>
   );

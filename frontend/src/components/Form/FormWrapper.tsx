@@ -49,10 +49,10 @@ const FormWrapper = ({
             onChange={(value) => updateMapInfo('title', value)}
             placeholder={'새 지도명을 입력해주세요.'}
             maxLength={20}
-            height={28}
+            height={40}
             isTextArea={false}
           />
-          <p>지도 소개</p>
+          <p className="text-lg font-semibold">지도 소개</p>
           <TextInputArea
             value={description}
             onChange={(value) => updateMapInfo('description', value)}

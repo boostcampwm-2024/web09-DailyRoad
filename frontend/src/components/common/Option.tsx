@@ -23,7 +23,7 @@ const Option = ({ label, description, isSelected, onClick }: OptionProps) => {
         isSelected ? 'border-[#00A3FF]' : 'border-gray-300'
       }`}
     >
-      <div className={`text-center font-bold`}>{label}</div>
+      <div className={`text-sm font-bold`}>{label}</div>
       <div className="text-gray-300" aria-hidden="true">
         |
       </div>

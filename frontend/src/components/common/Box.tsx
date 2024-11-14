@@ -6,7 +6,10 @@ type BoxProps = {
 
 const Box = ({ children, className = '', role = 'region' }: BoxProps) => {
   return (
-    <div role={role} className={`w-full bg-white p-4 shadow-xl ${className}`}>
+    <div
+      role={role}
+      className={`w-full bg-white p-4 shadow-xl ${className} flex flex-col gap-2`}
+    >
       {children}
     </div>
   );
