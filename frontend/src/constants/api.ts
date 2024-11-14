@@ -1,7 +1,7 @@
 const PROD = import.meta.env.PROD;
 
 export const AXIOS_BASE_URL = PROD
-  ? `${window.location.protocol}//${import.meta.env.VITE_AXIOS_PROD_BASE_URL}`
+  ? import.meta.env.VITE_AXIOS_PROD_BASE_URL
   : import.meta.env.VITE_AXIOS_DEV_BASE_URL || '/';
 
 export const NETWORK = {
@@ -12,7 +12,8 @@ export const NETWORK = {
 export const END_POINTS = {
   MAPS: '/maps',
   MAP: (mapId: number) => `/maps/${mapId}`,
-  ADD_PLACE: (mapId: number) => `/maps/${mapId}/places`,
+  ADD_PLACE_TO_MAP: (id: number) => `/maps/${id}/places`,
+  ADD_PLACE_TO_COURSE: (id: number) => `/courses/${id}/places`,
   COURSES: '/courses',
   COURSE: (courseId: number) => `/courses/${courseId}`,
   GOOGLE_LOGIN: '/oauth/google/signIn',
