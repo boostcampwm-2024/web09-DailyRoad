@@ -1,6 +1,12 @@
 import { User } from '../../user/entity/user.entity';
 import { Map } from '../entity/map.entity';
-import { IsString, IsNotEmpty, IsUrl, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUrl,
+  IsBoolean,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateMapRequest {
   @IsString()
@@ -14,6 +20,7 @@ export class CreateMapRequest {
   @IsString()
   description?: string;
 
+  @ValidateIf((object, value) => value !== '')
   @IsUrl()
   thumbnailUrl?: string;
 
@@ -22,7 +29,7 @@ export class CreateMapRequest {
     request.title = title;
     request.isPublic = isPublic;
     request.description = description;
-    request.thumbnailUrl = thumbnailUrl;
+    request.thumbnailUrl = thumbnailUrl ? Map.DEFAULT_THUMBNAIL_URL : '';
 
     return request;
   }
@@ -32,7 +39,7 @@ export class CreateMapRequest {
       user,
       this.title,
       this.isPublic,
-      this.thumbnailUrl,
+      this.thumbnailUrl ? this.thumbnailUrl : Map.DEFAULT_THUMBNAIL_URL,
       this.description,
     );
   }
