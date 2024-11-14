@@ -5,18 +5,23 @@ import MapCreateMapPage from '@/pages/MapCreation/MapCreateMapPage';
 import MapCreateCoursePage from '@/pages/MapCreation/MapCreateCoursePage';
 import PlaceCreatePage from '@/pages/PlaceCreation/PlaceCreatePage';
 import LayoutCreate from '@/LayoutCreate';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/map" element={<LayoutCreate />}></Route>
+
         <Route path="/create" element={<LayoutCreate />}>
           <Route index element={<MapPage />} />
-          <Route path="map" element={<MapCreateMapPage />} />
-          <Route path="course" element={<MapCreateCoursePage />} />
-          <Route path="map/:mapId" element={<PlaceCreatePage />} />
+          <Route path="map/:id" element={<MapCreateMapPage />} />
+          <Route path="course/:id" element={<MapCreateCoursePage />} />
+          <Route path="map/:id/:placeId" element={<PlaceCreatePage />} />
+          <Route path="course/:id/:placeId" element={<PlaceCreatePage />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
