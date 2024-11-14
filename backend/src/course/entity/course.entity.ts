@@ -6,6 +6,10 @@ import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
 
 @Entity()
 export class Course extends BaseEntity {
+  // Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
+  public static readonly DEFAULT_THUMBNAIL_URL =
+    'https://avatars.githubusercontent.com/u/87180146?v=4';
+
   @ManyToOne(() => User, (user) => user.courses, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -13,7 +17,7 @@ export class Course extends BaseEntity {
   @Column()
   isPublic: boolean;
 
-  @Column({ nullable: true })
+  @Column({ default: Course.DEFAULT_THUMBNAIL_URL })
   thumbnailUrl?: string;
 
   @Column()
@@ -44,6 +48,7 @@ export class Course extends BaseEntity {
   }
 
   get pinCount() {
+    if (!this.coursePlaces) return 0;
     return this.coursePlaces.length;
   }
 

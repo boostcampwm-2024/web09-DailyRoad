@@ -54,7 +54,7 @@ CREATE TABLE MAP
 (
     id            INT PRIMARY KEY AUTO_INCREMENT,
     user_id       INT          NOT NULL,
-    thumbnail_url VARCHAR(255),
+    thumbnail_url VARCHAR(255) NOT NULL,
     title         VARCHAR(255) NOT NULL,
     is_public     BOOLEAN      NOT NULL,
     description   TEXT,
@@ -84,7 +84,7 @@ CREATE TABLE COURSE
 (
     id            INT PRIMARY KEY AUTO_INCREMENT,
     user_id       INT          NOT NULL,
-    thumbnail_url VARCHAR(255),
+    thumbnail_url VARCHAR(255) NOT NULL,
     title         VARCHAR(255) NOT NULL,
     is_public     BOOLEAN      NOT NULL,
     description   TEXT,
