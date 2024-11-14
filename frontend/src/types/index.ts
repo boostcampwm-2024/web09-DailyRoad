@@ -13,6 +13,7 @@ export type Place = {
   thumbnail_url: string;
   rating: number;
   formed_address: string;
+  category?: string;
 };
 
 export type Map = {
@@ -57,13 +58,30 @@ export type User = {
   profile_url: string;
 };
 
-export type MarkerColor = 'red' | 'blue' | 'green' | string;
-export type MarkerCategory = 'restaurant' | 'cafe' | 'attraction' | string;
+export type MarkerColor =
+  | 'RED'
+  | 'ORANGE'
+  | 'YELLOW'
+  | 'GREEN'
+  | 'BLUE'
+  | 'PURPLE';
+export type MarkerCategory =
+  | 'restaurant'
+  | 'cafe'
+  | 'attraction'
+  | string
+  | undefined;
 
 export type PlaceMarker = {
   placeId: number;
   color: MarkerColor;
   category: MarkerCategory;
+};
+
+export type CustomPlace = {
+  placeId: number;
+  color: MarkerColor;
+  comment: string;
 };
 
 export type PreSignedURLResponse = {
