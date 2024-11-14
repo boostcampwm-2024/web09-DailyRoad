@@ -11,7 +11,7 @@ import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapExc
 import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
 import { Map } from './entity/map.entity';
-import { Color } from '../place/color.enum';
+import { Color } from '../place/place.color.enum';
 import { UserRole } from '../user/user.role';
 
 @Injectable()

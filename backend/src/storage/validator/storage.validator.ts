@@ -3,7 +3,7 @@ import {
   ValidationArguments,
   ValidatorOptions,
 } from 'class-validator';
-import { IMAGE_EXTENSIONS } from './storage.constants';
+import { IMAGE_EXTENSIONS } from '../storage.constants';
 
 export function IsImageFile(validationOptions?: ValidatorOptions) {
   return function (object: object, propertyName: string) {
