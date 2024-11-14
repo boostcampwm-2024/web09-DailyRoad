@@ -3,7 +3,7 @@ import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
 type MapResponse = {
-  mapId: string;
+  id: number;
 };
 
 export const getMap = async (mapId: number) => {
@@ -16,7 +16,7 @@ export const createMap = async (baseMapData: Omit<BaseMap, 'mode'>) => {
     END_POINTS.MAPS,
     baseMapData,
   );
-  return data.mapId;
+  return data.id;
 };
 
 export const getMapList = async (pageParam: number) => {
