@@ -1,13 +1,7 @@
 import DetailPlaceForm from '@/components/Place/DetailPlaceForm';
-import GoogleMap from '@/GoogleMap';
 
 const PlaceCreatePage = () => {
-  return (
-    <>
-      <GoogleMap />
-      <DetailPlaceForm />
-    </>
-  );
+  return <DetailPlaceForm />;
 };
 
 export default PlaceCreatePage;
