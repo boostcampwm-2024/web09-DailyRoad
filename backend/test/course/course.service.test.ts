@@ -131,7 +131,7 @@ describe('CourseService', () => {
   it('코스 목록을 조회할 때 비공개 코스를 조회할 수 없다', async () => {
     const publicCoursesWithFood = [
       { title: 'Public Food Course 1', isPublic: true },
-      { title: 'Public Food Course 2', isPublic: false },
+      { title: 'Public Food Course 2', isPublic: true },
     ].map(({ title, isPublic }) =>
       CourseFixture.createCourse({
         user: fakeUser1,
@@ -159,6 +159,6 @@ describe('CourseService', () => {
       pageSize,
     );
     expect(result).toEqual(expectedResponse);
-    result.courses.forEach((course) => expect(course.isPublic).not.toBe(false));
+    result.courses.forEach((course) => expect(course.isPublic).not.toBeFalsy());
   });
 });
