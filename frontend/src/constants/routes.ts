@@ -1,4 +1,4 @@
 export const ROUTES = {
-  MAP: '/create/map',
-  COURSE: '/create/course',
+  MAP: (id: number) => `/create/map/${id}`,
+  COURSE: (id: number) => `/create/course/${id}`,
 } as const;
