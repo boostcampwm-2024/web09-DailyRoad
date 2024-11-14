@@ -6,15 +6,32 @@ import { User } from '../../src/user/entity/user.entity';
 import { CourseListResponse } from '../../src/course/dto/CourseListResponse';
 import { PagedCourseResponse } from '../../src/course/dto/PagedCourseResponse';
 import { PlaceRepository } from '../../src/place/place.repository';
+import { Course } from '../../src/course/entity/course.entity';
+
+async function createPagedResponse(
+  courses: Course[],
+  totalCount: number,
+  page: number,
+  pageSize: number,
+) {
+  const courseList = await Promise.all(courses.map(CourseListResponse.from));
+  return new PagedCourseResponse(courseList, totalCount, page, pageSize);
+}
 
 describe('CourseService', () => {
   let courseService: CourseService;
-  let courseRepository: Partial<Record<keyof CourseRepository, jest.Mock>>;
-  let placeRepository: Partial<Record<keyof PlaceRepository, jest.Mock>>;
+  let courseRepository: Partial<jest.Mocked<CourseRepository>>;
+  let placeRepository: Partial<jest.Mocked<PlaceRepository>>;
   let fakeUser1: User;
+  let page: number;
+  let pageSize: number;
+  let foodQuery: string;
 
   beforeAll(async () => {
     fakeUser1 = { id: 1 } as User;
+    page = 1;
+    pageSize = 10;
+    foodQuery = 'Food';
   });
 
   beforeEach(async () => {
@@ -63,24 +80,18 @@ describe('CourseService', () => {
     courseRepository.findAll.mockResolvedValue(publicCourses);
     courseRepository.countAllPublic.mockResolvedValue(publicCourses.length);
 
-    const page = 1;
-    const pageSize = 10;
     const result = await courseService.searchPublicCourses(
       null,
       page,
       pageSize,
     );
 
-    const expectedCourses = await Promise.all(
-      publicCourses.map(CourseListResponse.from),
-    );
-    const expectedResponse = new PagedCourseResponse(
-      expectedCourses,
+    const expectedResponse = await createPagedResponse(
+      publicCourses,
       publicCourses.length,
       page,
       pageSize,
     );
-
     expect(result).toEqual(expectedResponse);
   });
 
@@ -90,12 +101,11 @@ describe('CourseService', () => {
       { title: 'Food Course 2', isPublic: true },
     ].map(({ title, isPublic }) =>
       CourseFixture.createCourse({
-        user: { id: 1 } as User,
+        user: fakeUser1,
         title,
         isPublic,
       }),
     );
-
     courseRepository.searchByTitleQuery.mockResolvedValue(
       publicCoursesWithFood,
     );
@@ -103,24 +113,52 @@ describe('CourseService', () => {
       publicCoursesWithFood.length,
     );
 
-    const page = 1;
-    const pageSize = 10;
-    const query = 'Food';
     const result = await courseService.searchPublicCourses(
-      query,
+      foodQuery,
       page,
       pageSize,
     );
 
-    const expectedCourses = await Promise.all(
-      publicCoursesWithFood.map(CourseListResponse.from),
-    );
-    const expectedResponse = new PagedCourseResponse(
-      expectedCourses,
+    const expectedResponse = await createPagedResponse(
+      publicCoursesWithFood,
       publicCoursesWithFood.length,
       page,
       pageSize,
     );
     expect(result).toEqual(expectedResponse);
+  });
+
+  it('코스 목록을 조회할 때 비공개 코스를 조회할 수 없다', async () => {
+    const publicCoursesWithFood = [
+      { title: 'Public Food Course 1', isPublic: true },
+      { title: 'Public Food Course 2', isPublic: false },
+    ].map(({ title, isPublic }) =>
+      CourseFixture.createCourse({
+        user: fakeUser1,
+        title,
+        isPublic,
+      }),
+    );
+    courseRepository.searchByTitleQuery.mockResolvedValue(
+      publicCoursesWithFood,
+    );
+    courseRepository.countByTitleAndIsPublic.mockResolvedValue(
+      publicCoursesWithFood.length,
+    );
+
+    const result = await courseService.searchPublicCourses(
+      foodQuery,
+      page,
+      pageSize,
+    );
+
+    const expectedResponse = await createPagedResponse(
+      publicCoursesWithFood,
+      publicCoursesWithFood.length,
+      page,
+      pageSize,
+    );
+    expect(result).toEqual(expectedResponse);
+    result.courses.forEach((course) => expect(course.isPublic).not.toBe(false));
   });
 });
