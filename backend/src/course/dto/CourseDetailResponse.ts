@@ -1,6 +1,5 @@
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
 import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
-import { DEFAULT_THUMBNAIL_URL } from './CourseListResponse';
 import { Course } from '../entity/course.entity';
 
 export class CourseDetailResponse {
@@ -25,7 +24,7 @@ export class CourseDetailResponse {
       UserIconResponse.from(course.user),
       course.title,
       course.isPublic,
-      course.thumbnailUrl ?? DEFAULT_THUMBNAIL_URL,
+      course.thumbnailUrl ?? Course.DEFAULT_THUMBNAIL_URL,
       course.description ?? '',
       course.pinCount,
       places,
