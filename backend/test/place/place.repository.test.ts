@@ -16,7 +16,7 @@ describe('PlaceRepository', () => {
     await placeRepository.delete({});
   });
 
-  describe('PlaceRepository - 데이터 저장 및 무결성', () => {
+  describe('데이터 저장 및 무결성', () => {
     it('중복된 googlePlaceId를 저장할 수 없다', async () => {
       const place = PlaceFixture.createPlace({ googlePlaceId: 'duplicate_id' });
       await placeRepository.save([place]);
@@ -39,7 +39,7 @@ describe('PlaceRepository', () => {
     });
   });
 
-  describe('PlaceRepository - findAll 메서드', () => {
+  describe('findAll 메서드', () => {
     it('페이지 번호와 페이지 크기를 기준으로 모든 장소를 반환한다', async () => {
       const places = [
         PlaceFixture.createPlace({ googlePlaceId: 'googlePlaceId_1' }),
@@ -105,7 +105,7 @@ describe('PlaceRepository', () => {
     });
   });
 
-  describe('PlaceRepository - findByGooglePlaceId 메서드', () => {
+  describe('findByGooglePlaceId 메서드', () => {
     it('주어진 googlePlaceId에 해당하는 장소를 반환한다', async () => {
       const place = PlaceFixture.createPlace({
         googlePlaceId: 'unique_google_place_id',
@@ -128,7 +128,7 @@ describe('PlaceRepository', () => {
     });
   });
 
-  describe('PlaceRepository - searchByNameOrAddressQuery 메서드', () => {
+  describe('searchByNameOrAddressQuery 메서드', () => {
     it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다', async () => {
       const placesWithParkName = [
         {
@@ -243,7 +243,7 @@ describe('PlaceRepository', () => {
     });
   });
 
-  describe('PlaceRepository - SoftDelete 연동', () => {
+  describe('SoftDelete 연동', () => {
     it('소프트 삭제된 장소는 검색 결과에 포함되지 않는다', async () => {
       const place = PlaceFixture.createPlace({
         googlePlaceId: 'soft_deleted_id',
