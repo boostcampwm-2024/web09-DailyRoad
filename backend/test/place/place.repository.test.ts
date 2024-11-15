@@ -88,7 +88,7 @@ describe('PlaceRepository', () => {
       expect(results).toEqual([]);
     });
 
-    it('페이지 크기가 매우 클 경우에도 정상적으로 작동한다', async () => {
+    it('페이지 크기가 전체 개수를 초과할 경우에도 정상적으로 작동한다', async () => {
       const places = Array.from({ length: 50 }, (_, i) =>
         PlaceFixture.createPlace({
           googlePlaceId: `googlePlaceId_${i + 1}`,
@@ -102,6 +102,22 @@ describe('PlaceRepository', () => {
       const results = await placeRepository.findAll(1, 1000);
 
       expect(results.length).toBe(50);
+    });
+
+    it('페이지가 전체 페이지 수를 초과할 경우에도 정상적으로 작동한다', async () => {
+      const places = Array.from({ length: 50 }, (_, i) =>
+        PlaceFixture.createPlace({
+          googlePlaceId: `googlePlaceId_${i + 1}`,
+          name: `Place ${i + 1}`,
+          formattedAddress: `Address ${i + 1}`,
+        }),
+      );
+
+      await placeRepository.save(places);
+
+      const results = await placeRepository.findAll(1000, 10);
+
+      expect(results.length).toBe(0);
     });
   });
 
@@ -222,7 +238,7 @@ describe('PlaceRepository', () => {
       expect(results).toEqual([]);
     });
 
-    it('결과가 너무 많을 경우 페이지 크기만큼만 반환한다', async () => {
+    it('결과 개수가 페이지 크기를 초과할 경우 페이지 크기만큼만 반환한다', async () => {
       const places = Array.from({ length: 20 }, (_, i) =>
         PlaceFixture.createPlace({
           googlePlaceId: `googlePlaceId_${i + 1}`,
