@@ -1,6 +1,6 @@
 import { PlaceFixture } from './fixture/place.fixture';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
-import { PlaceRepository } from '../../src/place/place.repository';
+import { PlaceRepository } from '@src/place/place.repository';
 import { initDataSource } from '../config/datasource.config';
 
 describe('PlaceRepository', () => {

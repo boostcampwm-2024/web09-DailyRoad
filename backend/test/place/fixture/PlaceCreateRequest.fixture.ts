@@ -1,4 +1,4 @@
-import { CreatePlaceRequest } from '../../../src/place/dto/CreatePlaceRequest';
+import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
 
 export class PlaceCreateRequestFixture {
   static default = {
