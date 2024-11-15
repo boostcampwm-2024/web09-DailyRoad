@@ -10,6 +10,7 @@ import {
 import { PlaceService } from './place.service';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 import { JwtAuthGuard } from '../auth/JwtAuthGuard';
+import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 
 @Controller('places')
 export class PlaceController {
@@ -24,12 +25,9 @@ export class PlaceController {
   @Get()
   async getPlaces(
     @Query('query') query?: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
+    @Query('limit', new ParseOptionalNumberPipe(5)) limit?: number,
   ) {
-    if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
-    if (isNaN(limit)) limit = 5;
-
     return this.placeService.getPlaces(query, page, limit);
   }
 

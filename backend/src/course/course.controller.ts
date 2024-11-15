@@ -17,6 +17,7 @@ import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
 import { JwtAuthGuard } from '../auth/JwtAuthGuard';
 import { AuthUser } from '../auth/AuthUser.decorator';
 import { CoursePermissionGuard } from './guards/CoursePermissionGuard';
+import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 
 @Controller('/courses')
 export class CourseController {
@@ -25,11 +26,9 @@ export class CourseController {
   @Get()
   async getCourseList(
     @Query('query') query?: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
+    @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
   ) {
-    if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
-    if (isNaN(limit)) limit = 10;
     return await this.courseService.searchPublicCourses(query, page, limit);
   }
 

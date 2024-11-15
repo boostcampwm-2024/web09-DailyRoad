@@ -12,6 +12,7 @@ import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
+import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 
 @Controller('/maps')
 export class MapController {
@@ -20,12 +21,9 @@ export class MapController {
   @Get()
   async getMapList(
     @Query('query') query?: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
+    @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
   ) {
-    if (isNaN(page)) page = 1; // Todo. number 타입 선택적 매개변수일 때 NaN 으로 처리되어 추가. 다른 방법?
-    if (isNaN(limit)) limit = 10;
-
     return await this.mapService.searchMap(query, page, limit);
   }
 
