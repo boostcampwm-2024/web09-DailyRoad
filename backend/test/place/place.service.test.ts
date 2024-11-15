@@ -3,9 +3,8 @@ import { PlaceService } from '../../src/place/place.service';
 import { PlaceAlreadyExistsException } from '../../src/place/exception/PlaceAlreadyExistsException';
 import { PlaceNotFoundException } from '../../src/place/exception/PlaceNotFoundException';
 import { PlaceCreateRequestFixture } from './fixture/PlaceCreateRequest.fixture';
-import { PlaceRepository } from '../../src/place/place.repository';
-import { initDataSource } from '../config/datasource.config';
-import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
+import { PlaceRepository } from '../../src/place/interface/PlaceRepository.interface';
+import { PlaceRepositoryI } from '../../src/place/placeRepositoryI';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
@@ -19,10 +18,7 @@ describe('PlaceService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PlaceService,
-        {
-          provide: PlaceRepository,
-          useValue: new PlaceRepository(dataSource),
-        },
+        PlaceRepository,
       ],
     }).compile();
 

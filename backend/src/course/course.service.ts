@@ -9,10 +9,10 @@ import {
 import { CourseNotFoundException } from './exception/CourseNotFoundException';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
 import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
-import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
 import { PagedCourseResponse } from './dto/PagedCourseResponse';
 import { User } from '../user/entity/user.entity';
+import { PlaceRepository } from '../place/interface/PlaceRepository.interface';
 
 @Injectable()
 export class CourseService {

@@ -1,18 +1,7 @@
-import type { Config } from 'jest';
+const isIntegration = process.env.TEST_ENV === 'integration';
 
-const config: Config = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: '.',
-  testTimeout: 100000,
-  testRegex: 'test/.*\\.test\\.ts$',
-  transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
-  },
-  collectCoverageFrom: ['src/**/*.(t|j)s'],
-  coverageDirectory: './coverage',
-  testEnvironment: 'node',
-  globalSetup: '<rootDir>/test/config/globalSetup.ts',
-  globalTeardown: '<rootDir>/test/config/globalTeardown.ts',
-};
+const config = isIntegration
+  ? require('./test/config/jest.integration.config').default
+  : require('./test/config/jest.common.config').default;
 
 export default config;

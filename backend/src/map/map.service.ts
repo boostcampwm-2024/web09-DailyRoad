@@ -8,11 +8,11 @@ import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { MapNotFoundException } from './exception/MapNotFoundException';
 import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapException';
-import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
 import { Map } from './entity/map.entity';
 import { Color } from '../place/color.enum';
 import { UserRole } from '../user/user.role';
+import { PlaceRepository } from '../place/interface/PlaceRepository.interface';
 
 @Injectable()
 export class MapService {

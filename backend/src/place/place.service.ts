@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceRepository } from './place.repository';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
 import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
+import { PlaceRepository } from './interface/PlaceRepository.interface';
 
 @Injectable()
 export class PlaceService {

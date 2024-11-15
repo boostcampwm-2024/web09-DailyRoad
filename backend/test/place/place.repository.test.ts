@@ -1,15 +1,15 @@
 import { PlaceFixture } from './fixture/place.fixture';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
-import { PlaceRepository } from '../../src/place/place.repository';
+import { PlaceRepositoryI } from '../../src/place/placeRepositoryI';
 import { initDataSource } from '../config/datasource.config';
 
 describe('PlaceRepository', () => {
   let container: StartedMySqlContainer;
-  let placeRepository: PlaceRepository;
+  let placeRepository: PlaceRepositoryI;
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
-    placeRepository = new PlaceRepository(await initDataSource(container));
+    placeRepository = new PlaceRepositoryI(await initDataSource(container));
   });
 
   beforeEach(async () => {

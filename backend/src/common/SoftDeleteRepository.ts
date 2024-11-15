@@ -47,7 +47,7 @@ export abstract class SoftDeleteRepository<
     return super.update(id, { deletedAt: new Date() } as any);
   }
 
-  existById(id: K) {
+  async existById(id: K) {
     return this.count({ where: { id } as FindOptionsWhere<T> }).then(
       (count) => count > 0,
     );
