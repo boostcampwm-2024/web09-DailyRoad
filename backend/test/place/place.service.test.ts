@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PlaceService } from '../../src/place/place.service';
-import { PlaceAlreadyExistsException } from '../../src/place/exception/PlaceAlreadyExistsException';
-import { PlaceNotFoundException } from '../../src/place/exception/PlaceNotFoundException';
+import { PlaceService } from '@src/place/place.service';
+import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
+import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundException';
+import { PlaceRepository } from '@src/place/place.repository';
 import { PlaceCreateRequestFixture } from './fixture/PlaceCreateRequest.fixture';
-import { PlaceRepository } from '../../src/place/place.repository';
 import { initDataSource } from '../config/datasource.config';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 
