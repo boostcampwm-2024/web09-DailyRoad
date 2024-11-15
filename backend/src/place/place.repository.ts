@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { DataSource, ILike } from 'typeorm';
 import { Place } from './entity/place.entity';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
@@ -10,6 +10,8 @@ export class PlaceRepository extends SoftDeleteRepository<Place, number> {
   }
 
   async findAll(page: number, pageSize: number) {
+    this.validatePageAndPageSize(page, pageSize);
+
     return this.find({
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -25,6 +27,8 @@ export class PlaceRepository extends SoftDeleteRepository<Place, number> {
     page: number,
     pageSize: number,
   ) {
+    this.validatePageAndPageSize(page, pageSize);
+
     return this.find({
       where: [
         { formattedAddress: ILike(`%${query}%`) },
@@ -33,5 +37,15 @@ export class PlaceRepository extends SoftDeleteRepository<Place, number> {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+  }
+
+  private validatePageAndPageSize(page: number, pageSize: number) {
+    if (page <= 0) {
+      throw new BadRequestException('페이지는 1 이상이어야 합니다.');
+    }
+
+    if (pageSize <= 0) {
+      throw new BadRequestException('페이지 크기는 1 이상이어야 합니다.');
+    }
   }
 }
