@@ -2,8 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { FakeRepository } from './fakeRepository';
 
 @Injectable()
-export abstract class FakeSoftDeleteRepository<T extends { id: K; deletedAt?: Date }, K> extends FakeRepository<T, K> {
-  async find(options: { where?: Partial<T>; skip?: number; take?: number } = {}): Promise<T[]> {
+export abstract class FakeSoftDeleteRepository<
+  T extends { id: K; deletedAt?: Date },
+  K,
+> extends FakeRepository<T, K> {
+  async find(
+    options: { where?: Partial<T>; skip?: number; take?: number } = {},
+  ): Promise<T[]> {
     const filteredOptions = this.applyDeletedAtCondition(options.where);
     return super.find({ ...options, where: filteredOptions });
   }
@@ -13,7 +18,9 @@ export abstract class FakeSoftDeleteRepository<T extends { id: K; deletedAt?: Da
     return entity && !entity.deletedAt ? entity : undefined;
   }
 
-  async findAndCount(options: { where?: Partial<T>; skip?: number; take?: number } = {}): Promise<[T[], number]> {
+  async findAndCount(
+    options: { where?: Partial<T>; skip?: number; take?: number } = {},
+  ): Promise<[T[], number]> {
     const filteredOptions = this.applyDeletedAtCondition(options.where);
     const result = await super.find({ ...options, where: filteredOptions });
     return [result, result.length];
@@ -37,7 +44,9 @@ export abstract class FakeSoftDeleteRepository<T extends { id: K; deletedAt?: Da
   }
 
   async existById(id: K): Promise<boolean> {
-    return this.entities.some(entity => entity.id === id && !entity.deletedAt);
+    return this.entities.some(
+      (entity) => entity.id === id && !entity.deletedAt,
+    );
   }
 
   private applyDeletedAtCondition(where: Partial<T> | undefined) {
