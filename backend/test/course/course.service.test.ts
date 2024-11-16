@@ -9,6 +9,8 @@ import { PlaceRepository } from '../../src/place/place.repository';
 import { Course } from '../../src/course/entity/course.entity';
 import { CourseNotFoundException } from '../../src/course/exception/CourseNotFoundException';
 import * as courseDetailUtils from '../../src/course/dto/CourseDetailResponse';
+import { CreateCourseRequest } from '../../src/course/dto/CreateCourseRequest';
+import { DeepPartial } from 'typeorm';
 
 async function createPagedResponse(
   courses: Course[],
@@ -255,5 +257,27 @@ describe('CourseService', () => {
         new CourseNotFoundException(courseId),
       );
     });
+  });
+
+  it('코스를 생성할 수 있다', async () => {
+    const createCourseForm = {
+      title: 'My Course',
+      isPublic: true,
+      thumbnailUrl: 'https://example.com/course_thumbnail.jpg',
+      description: 'A sample course with popular places',
+    };
+    const course = CourseFixture.createCourse({
+      user: fakeUser1,
+      ...createCourseForm,
+    });
+    course.id = 1;
+    courseRepository.save.mockResolvedValue(course);
+
+    const result = await courseService.createCourse(
+      fakeUser1.id,
+      CreateCourseRequest.from(createCourseForm),
+    );
+
+    expect(result.id).toEqual(course.id);
   });
 });
