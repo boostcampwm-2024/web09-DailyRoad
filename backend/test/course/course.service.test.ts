@@ -50,6 +50,8 @@ describe('CourseService', () => {
       countByUserId: jest.fn(),
       updateIsPublicById: jest.fn(),
       updateInfoById: jest.fn(),
+      existById: jest.fn(),
+      softDelete: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -279,5 +281,27 @@ describe('CourseService', () => {
     );
 
     expect(result.id).toEqual(course.id);
+  });
+
+  describe('코스를 삭제할 때', () => {
+    it('코스가 존재하면 삭제할 수 있다', async () => {
+      const courseId = 1;
+      courseRepository.existById.mockResolvedValue(true);
+
+      const result = await courseService.deleteCourse(courseId);
+
+      expect(result.id).toEqual(courseId);
+    });
+    it('코스가 존재하지 않으면 예외를 던진다', async () => {
+      const courseId = 1;
+      courseRepository.existById.mockResolvedValue(false);
+
+      const result = courseService.deleteCourse(courseId);
+
+      await expect(result).rejects.toThrow(CourseNotFoundException);
+      await expect(result).rejects.toThrow(
+        new CourseNotFoundException(courseId),
+      );
+    });
   });
 });
