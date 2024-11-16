@@ -361,5 +361,21 @@ describe('CourseService', () => {
         new CourseNotFoundException(courseId),
       );
     });
+
+    it('장소가 존재하지 않으면 예외를 던진다', async () => {
+      const courseId = 1;
+      courseRepository.findById.mockResolvedValue({} as Course);
+      placeRepository.existById.mockResolvedValue(false);
+
+      const result = courseService.setPlacesOfCourse(
+        courseId,
+        setPlacesOfCourseRequest,
+      );
+
+      await expect(result).rejects.toThrow(InvalidPlaceToCourseException);
+      await expect(result).rejects.toThrow(
+        new InvalidPlaceToCourseException([1]),
+      );
+    });
   });
 });
