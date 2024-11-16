@@ -7,7 +7,7 @@
     "dev": "nest start --watch",
     "debug": "nest start --debug --watch",
     "prod": "node dist/main",
-    "test": "jest -i --config jest.config.ts --runInBand",
+    "test": "jest -i --config jest.config.ts",
     "test:cov": "npm run test -- --coverage",
     "test:e2e": "jest -i --config test/config/jest-e2e.json",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

@@ -6,15 +6,17 @@ import { PlaceRepository } from '@src/place/place.repository';
 import { PlaceCreateRequestFixture } from './fixture/PlaceCreateRequest.fixture';
 import { initDataSource } from '../config/datasource.config';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
+import { DataSource } from 'typeorm';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
-    const dataSource = await initDataSource(container);
+    dataSource = await initDataSource(container);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -28,6 +30,10 @@ describe('PlaceService', () => {
 
     placeService = module.get<PlaceService>(PlaceService);
     placeRepository = module.get<PlaceRepository>(PlaceRepository);
+  });
+
+  afterAll(async () => {
+    await dataSource.destroy();
   });
 
   beforeEach(async () => {

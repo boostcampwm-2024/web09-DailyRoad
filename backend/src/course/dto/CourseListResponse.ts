@@ -1,10 +1,6 @@
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
 import { Course } from '../entity/course.entity';
 
-// Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
-export const DEFAULT_THUMBNAIL_URL =
-  'https://avatars.githubusercontent.com/u/87180146?v=4';
-
 export class CourseListResponse {
   constructor(
     readonly id: number,
@@ -18,17 +14,17 @@ export class CourseListResponse {
     readonly updatedAt: Date,
   ) {}
 
-  static async from(map: Course) {
+  static async from(course: Course) {
     return new CourseListResponse(
-      map.id,
-      UserIconResponse.from(map.user),
-      map.title,
-      map.isPublic,
-      map.thumbnailUrl ?? DEFAULT_THUMBNAIL_URL,
-      map.description ?? '',
-      map.pinCount,
-      map.createdAt,
-      map.updatedAt,
+      course.id,
+      UserIconResponse.from(course.user),
+      course.title,
+      course.isPublic,
+      course.thumbnailUrl ?? Course.DEFAULT_THUMBNAIL_URL,
+      course.description ?? '',
+      course.pinCount,
+      course.createdAt,
+      course.updatedAt,
     );
   }
 }

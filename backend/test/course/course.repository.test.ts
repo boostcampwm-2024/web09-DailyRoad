@@ -23,6 +23,10 @@ describe('CourseRepository', () => {
     await datasource.getRepository(User).save([fakeUser1, fakeUser2]);
   });
 
+  afterAll(async () => {
+    await datasource.destroy();
+  });
+
   beforeEach(async () => {
     await courseRepository.delete({});
   });

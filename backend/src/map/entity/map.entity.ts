@@ -2,10 +2,13 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/BaseEntity';
 import { User } from '../../user/entity/user.entity';
 import { MapPlace } from './map-place.entity';
-import { Color } from '../../place/color.enum';
+import { Color } from '../../place/place.color.enum';
 
 @Entity()
 export class Map extends BaseEntity {
+  // Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
+  public static readonly DEFAULT_THUMBNAIL_URL = 'https://aaa.com';
+
   @ManyToOne(() => User, (user) => user.maps, { eager: true }) // Todo: onDelete -> soft delete
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -16,7 +19,7 @@ export class Map extends BaseEntity {
   @Column({ default: true })
   isPublic: boolean;
 
-  @Column({ nullable: true })
+  @Column({ default: Map.DEFAULT_THUMBNAIL_URL })
   thumbnailUrl?: string;
 
   @Column('text', { nullable: true })

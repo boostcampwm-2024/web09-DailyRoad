@@ -1,5 +1,11 @@
 import { User } from '../../user/entity/user.entity';
-import { IsBoolean, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsString,
+  IsUrl,
+  ValidateIf,
+} from 'class-validator';
 import { Course } from '../entity/course.entity';
 
 export class CreateCourseRequest {
@@ -14,6 +20,7 @@ export class CreateCourseRequest {
   @IsString()
   description?: string;
 
+  @ValidateIf((object, value) => value !== '')
   @IsUrl()
   thumbnailUrl?: string;
 
@@ -22,8 +29,7 @@ export class CreateCourseRequest {
     request.title = title;
     request.isPublic = isPublic;
     request.description = description;
-    request.thumbnailUrl = thumbnailUrl;
-
+    request.thumbnailUrl = thumbnailUrl || Course.DEFAULT_THUMBNAIL_URL;
     return request;
   }
 
@@ -32,7 +38,7 @@ export class CreateCourseRequest {
       user,
       this.title,
       this.isPublic,
-      this.thumbnailUrl,
+      this.thumbnailUrl ? this.thumbnailUrl : Course.DEFAULT_THUMBNAIL_URL,
       this.description,
     );
   }
