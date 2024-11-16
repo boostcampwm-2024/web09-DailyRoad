@@ -21,12 +21,7 @@ export class MapService {
     private readonly mapRepository: MapRepository,
     private readonly userRepository: UserRepository,
     private readonly placeRepository: PlaceRepository,
-  ) {
-    // Todo. 로그인 기능 완성 후 제거
-    const testUser = new User('test', 'test', 'test', UserRole.MEMBER);
-    testUser.id = 1;
-    this.userRepository.upsert(testUser, { conflictPaths: ['id'] });
-  }
+  ) {}
 
   // Todo. 작성자명 등 ... 검색 조건 추가
   // Todo. fix : public 으로 조회해서 페이지마다 수 일정하게. (현재는 한 페이지에 10개 미만인 경우 존재)
