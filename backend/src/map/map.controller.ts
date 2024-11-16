@@ -1,18 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Query,
+  Controller,
   Delete,
+  Get,
   Param,
   Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { AuthUser } from '@src/auth/AuthUser.decorator';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 
 @Controller('/maps')
 export class MapController {
@@ -27,10 +30,10 @@ export class MapController {
     return await this.mapService.searchMap(query, page, limit);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/my')
-  async getMyMapList() {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
-    return await this.mapService.getOwnMaps(userId);
+  async getMyMapList(@AuthUser() user: AuthUser) {
+    return await this.mapService.getOwnMaps(user.userId);
   }
 
   @Get('/:id')
@@ -38,12 +41,16 @@ export class MapController {
     return await this.mapService.getMapById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async createMap(@Body() createMapRequest: CreateMapRequest) {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
-    return await this.mapService.createMap(userId, createMapRequest);
+  async createMap(
+    @Body() createMapRequest: CreateMapRequest,
+    @AuthUser() user: AuthUser,
+  ) {
+    return await this.mapService.createMap(user.userId, createMapRequest);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/:id/places')
   async addPlaceToMap(
     @Param('id') id: number,
@@ -53,6 +60,7 @@ export class MapController {
     return await this.mapService.addPlace(id, placeId, color, comment);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id/places/:placeId')
   async deletePlaceFromMap(
     @Param('id') id: number,
@@ -61,6 +69,7 @@ export class MapController {
     return await this.mapService.deletePlace(id, placeId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('/:id/info')
   async updateMapInfo(
     @Param('id') id: number,
@@ -70,6 +79,7 @@ export class MapController {
     return { id, ...updateMapInfoRequest };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('/:id/visibility')
   async updateMapVisibility(
     @Param('id') id: number,
@@ -79,6 +89,7 @@ export class MapController {
     return { id, isPublic };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   async deleteMap(@Param('id') id: number) {
     return await this.mapService.deleteMap(id);
