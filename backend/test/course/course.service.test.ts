@@ -318,4 +318,15 @@ describe('CourseService', () => {
     await expect(result).rejects.toThrow(CourseNotFoundException);
     await expect(result).rejects.toThrow(new CourseNotFoundException(courseId));
   });
+
+  it('코스 공개/비공개 여부를 수정할 때 코스가 존재하지 않으면 예외를 던진다', async () => {
+    const courseId = 1;
+    const isPublic = true;
+    courseRepository.existById.mockResolvedValue(false);
+
+    const result = courseService.updateCourseVisibility(courseId, isPublic);
+
+    await expect(result).rejects.toThrow(CourseNotFoundException);
+    await expect(result).rejects.toThrow(new CourseNotFoundException(courseId));
+  });
 });
