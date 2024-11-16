@@ -10,6 +10,11 @@ import { Course } from '../../src/course/entity/course.entity';
 import { CourseNotFoundException } from '../../src/course/exception/CourseNotFoundException';
 import { CreateCourseRequest } from '../../src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '../../src/course/dto/UpdateCourseInfoRequest';
+import {
+  SetPlacesOfCourseRequest,
+  SetPlacesOfCourseRequestItem,
+} from '../../src/course/dto/AddPlaceToCourseRequest';
+import { InvalidPlaceToCourseException } from '../../src/course/exception/InvalidPlaceToCourseException';
 
 async function createPagedResponse(
   courses: Course[],
@@ -51,6 +56,9 @@ describe('CourseService', () => {
       updateInfoById: jest.fn(),
       existById: jest.fn(),
       softDelete: jest.fn(),
+    };
+    placeRepository = {
+      existById: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -328,5 +336,30 @@ describe('CourseService', () => {
 
     await expect(result).rejects.toThrow(CourseNotFoundException);
     await expect(result).rejects.toThrow(new CourseNotFoundException(courseId));
+  });
+  describe('코스에 장소를 추가할 때', () => {
+    const setPlacesOfCourseRequest = {
+      places: [
+        {
+          placeId: 1,
+          comment: 'A popular place',
+        },
+      ] as SetPlacesOfCourseRequestItem[],
+    } as SetPlacesOfCourseRequest;
+    it('코스가 존재하지 않으면 예외를 던진다', async () => {
+      const courseId = 1;
+      courseRepository.findById.mockResolvedValue(null);
+      placeRepository.existById.mockResolvedValue(true);
+
+      const result = courseService.setPlacesOfCourse(
+        courseId,
+        setPlacesOfCourseRequest,
+      );
+
+      await expect(result).rejects.toThrow(CourseNotFoundException);
+      await expect(result).rejects.toThrow(
+        new CourseNotFoundException(courseId),
+      );
+    });
   });
 });
