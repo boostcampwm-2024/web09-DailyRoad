@@ -7,9 +7,8 @@ import { CourseListResponse } from '../../src/course/dto/CourseListResponse';
 import { PagedCourseResponse } from '../../src/course/dto/PagedCourseResponse';
 import { PlaceRepository } from '../../src/place/place.repository';
 import { Course } from '../../src/course/entity/course.entity';
-import { CourseDetailResponse } from '../../src/course/dto/CourseDetailResponse';
-import { UserIconResponse } from '../../src/user/dto/UserIconResponse';
 import { CourseNotFoundException } from '../../src/course/exception/CourseNotFoundException';
+import * as courseDetailUtils from '../../src/course/dto/CourseDetailResponse';
 
 async function createPagedResponse(
   courses: Course[],
@@ -208,22 +207,13 @@ describe('CourseService', () => {
       });
       const courseWithId = { ...course, id: 1 } as Course;
       courseRepository.findById.mockResolvedValue(courseWithId);
-      jest.spyOn(CourseDetailResponse, 'from').mockResolvedValue({
-        id: courseWithId.id,
-        user: {
-          id: fakeUser1.id,
-        } as UserIconResponse,
-        title: courseWithId.title,
-        isPublic: courseWithId.isPublic,
-      } as CourseDetailResponse);
+      courseWithId.getPlacesWithComment = jest.fn().mockResolvedValue([]);
 
       const result = await courseService.getCourseById(courseWithId.id);
 
-      const expectedResponse = await CourseListResponse.from(courseWithId);
-      expect(result.id).toEqual(expectedResponse.id);
-      expect(result.user.id).toEqual(expectedResponse.user.id);
-      expect(result.title).toEqual(expectedResponse.title);
-      expect(result.isPublic).toEqual(expectedResponse.isPublic);
+      expect(result.id).toEqual(courseWithId.id);
+      expect(result.title).toEqual(courseWithId.title);
+      expect(result.isPublic).toEqual(courseWithId.isPublic);
     });
 
     it('실패하면 코스를 찾을 수 없다는 예외를 던진다', async () => {
@@ -231,6 +221,34 @@ describe('CourseService', () => {
       courseRepository.findById.mockResolvedValue(null);
 
       const result = courseService.getCourseById(courseId);
+
+      await expect(result).rejects.toThrow(CourseNotFoundException);
+      await expect(result).rejects.toThrow(
+        new CourseNotFoundException(courseId),
+      );
+    });
+  });
+
+  describe('특정 코스의 소유자를 조회할 때', () => {
+    it('성공하면 특정 코스의 소유자의 id를 조회할 수 있다', async () => {
+      const course = CourseFixture.createCourse({
+        user: fakeUser1,
+        title: 'Course 1',
+        isPublic: true,
+      });
+      const courseWithId = { ...course, id: 1 } as Course;
+      courseRepository.findById.mockResolvedValue(courseWithId);
+
+      const result = await courseService.getCourseOwnerId(courseWithId.id);
+
+      expect(result).toEqual(fakeUser1.id);
+    });
+
+    it('실패하면 코스를 찾을 수 없다는 예외를 던진다', async () => {
+      const courseId = 1;
+      courseRepository.findById.mockResolvedValue(null);
+
+      const result = courseService.getCourseOwnerId(courseId);
 
       await expect(result).rejects.toThrow(CourseNotFoundException);
       await expect(result).rejects.toThrow(
