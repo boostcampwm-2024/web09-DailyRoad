@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../../common/BaseEntity';
+import decimalNumericTransformer from '@src/config/DecimalTransformer';
 
 @Entity()
 export class Place extends BaseEntity {
@@ -12,13 +13,25 @@ export class Place extends BaseEntity {
   @Column({ nullable: true })
   thumbnailUrl?: string;
 
-  @Column('float', { nullable: true })
+  @Column('decimal', {
+    precision: 3,
+    scale: 2,
+    transformer: decimalNumericTransformer,
+  })
   rating?: number;
 
-  @Column('decimal', { precision: 10, scale: 7 })
+  @Column('decimal', {
+    precision: 10,
+    scale: 7,
+    transformer: decimalNumericTransformer,
+  })
   longitude: number;
 
-  @Column('decimal', { precision: 10, scale: 7 })
+  @Column('decimal', {
+    precision: 10,
+    scale: 7,
+    transformer: decimalNumericTransformer,
+  })
   latitude: number;
 
   @Column({ nullable: true })

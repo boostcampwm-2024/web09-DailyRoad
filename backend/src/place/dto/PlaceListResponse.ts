@@ -5,8 +5,8 @@ export class PlaceListResponse {
     readonly id: number,
     readonly name: string,
     readonly location: {
-      readonly lat: number;
-      readonly lng: number;
+      readonly latitude: number;
+      readonly longitude: number;
     },
     readonly google_place_id: string,
     readonly category?: string,
@@ -22,8 +22,8 @@ export class PlaceListResponse {
       place.id,
       place.name,
       {
-        lat: place.latitude,
-        lng: place.longitude,
+        latitude: place.latitude,
+        longitude: place.longitude,
       },
       place.googlePlaceId,
       place.detailPageUrl,
