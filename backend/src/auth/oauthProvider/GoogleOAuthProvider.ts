@@ -59,7 +59,7 @@ export class GoogleOAuthProvider extends OAuthProvider {
     }
     return {
       oauthId: data.id,
-      name: data.name,
+      nickname: data.name,
       picture: data.picture,
     };
   }
