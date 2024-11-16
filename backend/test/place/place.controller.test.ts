@@ -8,16 +8,18 @@ import { PlaceModule } from '@src/place/place.module';
 import { PlaceRepository } from '@src/place/place.repository';
 import { PlaceService } from '@src/place/place.service';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
+import { DataSource } from 'typeorm';
 
 describe('PlaceController', () => {
   let app: INestApplication;
   let container: StartedMySqlContainer;
+  let dataSource: DataSource;
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
-    const dataSource = await initDataSource(container);
+    dataSource = await initDataSource(container);
     placeRepository = new PlaceRepository(dataSource);
 
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +40,7 @@ describe('PlaceController', () => {
   });
 
   afterAll(async () => {
+    await dataSource.destroy();
     await app.close();
   });
 
