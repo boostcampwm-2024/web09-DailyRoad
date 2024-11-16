@@ -1,28 +1,41 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-
-export default tseslint.config(
-  { ignores: ['dist'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+export default {
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+  plugins: ['react', '@typescript-eslint', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+  ],
+  env: {
+    node: true,
+    browser: true,
+    es2021: true,
+  },
+  rules: {
+    'react/no-unknown-property': [
+      'error',
+      {
+        ignore: ['css'],
+      },
+    ],
+    'react/react-in-jsx-scope': 'off',
+    'no-non-null-assertion': 'off',
+    'no-unused-vars': 'off',
+    'no-nested-ternary': 'error',
+    eqeqeq: 'error',
+    'no-console': 'warn',
+  },
+  settings: {
+    react: {
+      version: 'detect',
     },
   },
-)
+};
