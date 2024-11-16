@@ -9,6 +9,7 @@ import {
   Patch,
   BadRequestException,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
@@ -17,6 +18,8 @@ import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
+import { AuthUser } from '@src/auth/AuthUser.decorator';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 
 @Controller('/maps')
 export class MapController {
@@ -31,10 +34,10 @@ export class MapController {
     return await this.mapService.searchMap(query, page, limit);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/my')
-  async getMyMapList() {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
-    return await this.mapService.getOwnMaps(userId);
+  async getMyMapList(@AuthUser() user: AuthUser) {
+    return await this.mapService.getOwnMaps(user.userId);
   }
 
   @Get('/:id')
@@ -42,12 +45,16 @@ export class MapController {
     return await this.mapService.getMapById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async createMap(@Body() createMapRequest: CreateMapRequest) {
-    const userId = 1; // Todo. 로그인 기능 완성 후 수정
-    return await this.mapService.createMap(userId, createMapRequest);
+  async createMap(
+    @Body() createMapRequest: CreateMapRequest,
+    @AuthUser() user: AuthUser,
+  ) {
+    return await this.mapService.createMap(user.userId, createMapRequest);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/:id/places')
   async addPlaceToMap(
     @Param('id') id: number,
@@ -72,6 +79,7 @@ export class MapController {
     return { mapId: id, placeId, color, comment };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id/places/:placeId')
   async deletePlaceFromMap(
     @Param('id') id: number,
