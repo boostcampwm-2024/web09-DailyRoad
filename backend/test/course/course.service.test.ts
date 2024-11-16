@@ -1,20 +1,20 @@
-import { CourseRepository } from '../../src/course/course.repository';
-import { CourseService } from '../../src/course/course.service';
+import { CourseRepository } from '@src/course/course.repository';
+import { CourseService } from '@src/course/course.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CourseFixture } from './fixture/course.fixture';
-import { User } from '../../src/user/entity/user.entity';
-import { CourseListResponse } from '../../src/course/dto/CourseListResponse';
-import { PagedCourseResponse } from '../../src/course/dto/PagedCourseResponse';
-import { PlaceRepository } from '../../src/place/place.repository';
-import { Course } from '../../src/course/entity/course.entity';
-import { CourseNotFoundException } from '../../src/course/exception/CourseNotFoundException';
-import { CreateCourseRequest } from '../../src/course/dto/CreateCourseRequest';
-import { UpdateCourseInfoRequest } from '../../src/course/dto/UpdateCourseInfoRequest';
+import { User } from '@src/user/entity/user.entity';
+import { CourseListResponse } from '@src/course/dto/CourseListResponse';
+import { PagedCourseResponse } from '@src/course/dto/PagedCourseResponse';
+import { PlaceRepository } from '@src/place/place.repository';
+import { Course } from '@src/course/entity/course.entity';
+import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundException';
+import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
+import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
 import {
   SetPlacesOfCourseRequest,
   SetPlacesOfCourseRequestItem,
-} from '../../src/course/dto/AddPlaceToCourseRequest';
-import { InvalidPlaceToCourseException } from '../../src/course/exception/InvalidPlaceToCourseException';
+} from '@src/course/dto/AddPlaceToCourseRequest';
+import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
 
 async function createPagedResponse(
   courses: Course[],
@@ -40,6 +40,10 @@ describe('CourseService', () => {
     page = 1;
     pageSize = 10;
     foodQuery = 'Food';
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 
   beforeEach(async () => {
@@ -218,7 +222,7 @@ describe('CourseService', () => {
       });
       const courseWithId = { ...course, id: 1 } as Course;
       courseRepository.findById.mockResolvedValue(courseWithId);
-      courseWithId.getPlacesWithComment = jest.fn();
+      courseWithId.getPlacesWithComment = jest.fn().mockResolvedValue([]);
 
       const result = await courseService.getCourseById(courseWithId.id);
 
