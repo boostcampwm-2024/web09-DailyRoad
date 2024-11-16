@@ -17,6 +17,7 @@ import { TimezoneInterceptor } from './config/TimezoneInterceptor';
 import { StorageModule } from './storage/storage.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CustomLoggerModule } from './common/log/CustomLoggerModule';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CustomLoggerModule } from './common/log/CustomLoggerModule';
     BannerModule,
     AdminModule,
     StorageModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [
