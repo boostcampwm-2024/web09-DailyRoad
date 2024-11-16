@@ -8,9 +8,8 @@ import { PagedCourseResponse } from '../../src/course/dto/PagedCourseResponse';
 import { PlaceRepository } from '../../src/place/place.repository';
 import { Course } from '../../src/course/entity/course.entity';
 import { CourseNotFoundException } from '../../src/course/exception/CourseNotFoundException';
-import * as courseDetailUtils from '../../src/course/dto/CourseDetailResponse';
 import { CreateCourseRequest } from '../../src/course/dto/CreateCourseRequest';
-import { DeepPartial } from 'typeorm';
+import { UpdateCourseInfoRequest } from '../../src/course/dto/UpdateCourseInfoRequest';
 
 async function createPagedResponse(
   courses: Course[],
@@ -303,5 +302,20 @@ describe('CourseService', () => {
         new CourseNotFoundException(courseId),
       );
     });
+  });
+
+  it('코스 정보를 수정할 때 코스가 존재하지 않으면 예외를 던진다', async () => {
+    const courseId = 1;
+    const updateCourseForm = {
+      title: 'My Course',
+      description: 'A sample course with popular places',
+      thumbnailUrl: 'https://example.com/course_thumbnail.jpg',
+    } as UpdateCourseInfoRequest;
+    courseRepository.existById.mockResolvedValue(false);
+
+    const result = courseService.updateCourseInfo(courseId, updateCourseForm);
+
+    await expect(result).rejects.toThrow(CourseNotFoundException);
+    await expect(result).rejects.toThrow(new CourseNotFoundException(courseId));
   });
 });
