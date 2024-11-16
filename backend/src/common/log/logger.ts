@@ -48,7 +48,11 @@ const logstashLoggerOptions = {
 
 export function createLogger(host: string, port: number) {
   if (process.env.NODE_ENV === 'prod') {
-    const stream = net.createConnection({ host, port });
+    const stream = net.createConnection({ host, port, timeout: 5000 });
+    stream.on('error', (err) => {
+      console.error('Log Stream connection error:', err);
+    });
+
     return pino(logstashLoggerOptions, stream);
   }
   return pino(consoleLoggerOptions);
