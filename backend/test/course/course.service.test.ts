@@ -218,7 +218,7 @@ describe('CourseService', () => {
       });
       const courseWithId = { ...course, id: 1 } as Course;
       courseRepository.findById.mockResolvedValue(courseWithId);
-      courseWithId.getPlacesWithComment = jest.fn().mockResolvedValue([]);
+      courseWithId.getPlacesWithComment = jest.fn();
 
       const result = await courseService.getCourseById(courseWithId.id);
 
@@ -376,6 +376,39 @@ describe('CourseService', () => {
       await expect(result).rejects.toThrow(
         new InvalidPlaceToCourseException([1]),
       );
+    });
+
+    it('성공적으로 코스에 장소를 추가할 수 있다', async () => {
+      const courseId = 1;
+      const course = CourseFixture.createCourse({
+        user: fakeUser1,
+        title: 'Course 1',
+        isPublic: true,
+      });
+      const courseWithId = { ...course, id: courseId } as Course;
+      courseRepository.findById.mockResolvedValue(courseWithId);
+      placeRepository.existById.mockResolvedValue(true);
+      const mockPlaces = [
+        { place: { id: 1, name: 'Place 1' }, comment: 'A popular place' },
+        { place: { id: 2, name: 'Place 2' }, comment: 'A good place' },
+      ];
+      courseWithId.setPlaces = jest.fn();
+      courseWithId.getPlacesWithComment = jest
+        .fn()
+        .mockResolvedValue(mockPlaces);
+
+      const result = await courseService.setPlacesOfCourse(
+        courseId,
+        setPlacesOfCourseRequest,
+      );
+      mockPlaces.forEach((place, index) => {
+        expect(result.places[index]).toMatchObject({
+          id: place.place.id,
+          name: place.place.name,
+          comment: place.comment,
+          order: index + 1,
+        });
+      });
     });
   });
 });
