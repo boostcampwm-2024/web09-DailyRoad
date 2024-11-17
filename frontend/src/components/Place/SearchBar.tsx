@@ -8,15 +8,14 @@ type SearchBarProps = {
 const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [input, setInput] = useState('');
 
-  const handleSearch = () => {
-    if (!input.trim()) return;
-    onSearch(input);
-  };
+  const isValidInput = (input: string) => input.trim().length > 0;
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+  const handleKeyPress = (e: React.KeyboardEvent) =>
+    e.key === 'Enter' && handleSearch();
+
+  const handleSearch = () => {
+    if (!isValidInput(input)) return;
+    onSearch(input);
   };
 
   return (
