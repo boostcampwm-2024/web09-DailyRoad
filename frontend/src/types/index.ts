@@ -5,8 +5,8 @@ export type Place = {
   id: number;
   name: string;
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
   };
   google_place_id: string;
   detail_page_url: string;
@@ -18,11 +18,13 @@ export type Place = {
 
 export type Map = {
   id: number;
-  author: User;
-  thumbnail_url: string;
+  user: User;
   title: string;
+  isPublic: boolean;
+  thumbnailUrl: string;
   description: string;
-  places: Place[];
+  pinCount: number;
+  places: (Place & CustomPlace)[];
 };
 
 export type MapList = {

@@ -73,7 +73,13 @@ const DetailPlaceForm = () => {
           완료
         </button>
       </Box>
-      <Marker key={place.google_place_id} position={place.location} />
+      <Marker
+        key={place.google_place_id}
+        position={{
+          lat: place.location.latitude,
+          lng: place.location.longitude,
+        }}
+      />
     </BaseWrapper>
   );
 };

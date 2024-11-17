@@ -20,7 +20,6 @@ const SearchResults = ({ query }: SearchResultsProps) => {
       return lastPage.length > 4 ? lastPage.length : undefined;
     },
   });
-
   const isEmptyResults = (data?: { pages: Place[][] }) =>
     !data?.pages || data.pages.every((page) => page.length === 0);
 
@@ -38,7 +37,10 @@ const SearchResults = ({ query }: SearchResultsProps) => {
                   <PlaceItem key={place.id} place={place} />
                   <Marker
                     key={place.google_place_id}
-                    position={place.location}
+                    position={{
+                      lat: place.location.latitude,
+                      lng: place.location.longitude,
+                    }}
                   />
                 </React.Fragment>
               ))}
