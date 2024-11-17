@@ -1,4 +1,4 @@
-import { BaseException } from '../../common/exception/BaseException';
+import { BaseException } from '@src/common/exception/BaseException';
 import { HttpStatus } from '@nestjs/common';
 
 export class AuthenticationException extends BaseException {
