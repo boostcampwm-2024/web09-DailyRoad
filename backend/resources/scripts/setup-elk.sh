@@ -35,6 +35,19 @@ sed -i "s/^LOGSTASH_PASSWORD=.*/LOGSTASH_PASSWORD=${LOGSTASH_PASSWORD}/" .env
 sed -i "s/^KIBANA_PASSWORD=.*/KIBANA_PASSWORD=${KIBANA_PASSWORD}/" .env
 sed -i "s/'//g" .env # 작은 따옴표 제거
 
+# 로그 인덱스 설정
+LOGSTASH_CONFIG="logstash/pipeline/logstash.conf"
+LOG_INDEX="dailyroad-%{+YYYY.MM.dd}"
+
+if [ -f "$LOGSTASH_CONFIG" ]; then
+    echo "Configuring Logstash to use a custom index..."
+    sed -i "/elasticsearch {/a \    index => \"${LOG_INDEX}\"" "$LOGSTASH_CONFIG"
+else
+    echo "Logstash configuration file not found: $LOGSTASH_CONFIG"
+    exit 1
+fi
+
+
 # 초기 사용자 및 권한 설정
 echo "Setting up initial users and permissions..."
 docker-compose up setup
