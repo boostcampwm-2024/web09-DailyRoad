@@ -11,6 +11,7 @@ type FormWrapperProps = {
   updateMapInfo: <K extends keyof BaseMap>(field: K, value: BaseMap[K]) => void;
   isMapInfoValid: boolean;
   onSubmitHandler: (e: React.FormEvent<HTMLFormElement>) => void;
+  isEditMode?: boolean;
 };
 
 const FormWrapper = ({
@@ -19,6 +20,7 @@ const FormWrapper = ({
   updateMapInfo,
   isMapInfoValid,
   onSubmitHandler,
+  isEditMode = false,
 }: FormWrapperProps) => {
   const { title, description, isPublic, mode, thumbnailUrl } = mapInfo;
 
@@ -27,16 +29,18 @@ const FormWrapper = ({
       <DashBoardHeader title={header} />
       <div className="flex h-[200px] gap-4 p-4">
         <ImageUploader />
-        <select
-          value={mode}
-          onChange={(e) =>
-            updateMapInfo('mode', e.target.value as CreateMapType)
-          }
-          className="h-[41px] w-[144px] rounded border px-3 py-2"
-        >
-          <option value="map">지도</option>
-          <option value="course">코스</option>
-        </select>
+        {!isEditMode && (
+          <select
+            value={mode}
+            onChange={(e) =>
+              updateMapInfo('mode', e.target.value as CreateMapType)
+            }
+            className="h-[41px] w-[144px] rounded border px-3 py-2"
+          >
+            <option value="map">지도</option>
+            <option value="course">코스</option>
+          </select>
+        )}
       </div>
 
       <form
@@ -71,13 +75,15 @@ const FormWrapper = ({
             }
           />
         </Box>
-        <button
-          type="submit"
-          className={`w-full rounded text-white ${isMapInfoValid ? 'bg-c_bg_blue' : 'bg-gray-400'}`}
-          disabled={!isMapInfoValid}
-        >
-          완료
-        </button>
+        <Box className="bottom-0">
+          <button
+            type="submit"
+            className={`h-14 w-full rounded-md ${isMapInfoValid ? 'bg-c_bg_blue' : 'bg-c_button_gray'} p-4 text-xl font-semibold text-white`}
+            disabled={!isMapInfoValid}
+          >
+            완료
+          </button>
+        </Box>
       </form>
     </div>
   );
