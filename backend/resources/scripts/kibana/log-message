@@ -1,0 +1,26 @@
+if (!params['_source'].containsKey('message')) {
+  emit("no message");
+  return;
+}
+
+String message = params['_source']['message'];
+if (message == null) {
+  emit("message is null");
+  return;
+}
+
+// "msg":" 를 기준으로 값 추출
+int startIndex = message.indexOf('"msg":"');
+if (startIndex == -1) {
+  emit("no msg in message");
+  return;
+}
+
+startIndex += 7; // "msg":"의 길이만큼 이동
+int endIndex = message.indexOf('"', startIndex);
+if (endIndex == -1) {
+  emit("no end of msg");
+  return;
+}
+
+emit(message.substring(startIndex, endIndex));
