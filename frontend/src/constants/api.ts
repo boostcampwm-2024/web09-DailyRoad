@@ -12,8 +12,12 @@ export const NETWORK = {
 export const END_POINTS = {
   MAPS: '/maps',
   MAP: (mapId: number) => `/maps/${mapId}`,
-  ADD_PLACE_TO_MAP: (id: number) => `/maps/${id}/places`,
+  ADD_PLACE_TO_MAP: (mapId: number) => `/maps/${mapId}/places`,
+  EDIT_MAP_INFO: (mapId: number) => `/maps/${mapId}/info`,
+  EDIT_MAP_VISIBILITY: (mapId: number) => `/maps/${mapId}/visibility`,
   ADD_PLACE_TO_COURSE: (id: number) => `/courses/${id}/places`,
+  DELETE_PLACE_TO_MAP: (id: number, placeId: number) =>
+    `/maps/${id}/places/${placeId}`,
   COURSES: '/courses',
   COURSE: (courseId: number) => `/courses/${courseId}`,
   GOOGLE_LOGIN: '/oauth/google/signIn',

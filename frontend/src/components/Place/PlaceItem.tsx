@@ -1,12 +1,19 @@
 import { useStore } from '@/store/useStore';
 import { Place } from '@/types';
 
+import DeletePlaceButton from './DeletePlaceButton';
+
 type PlaceItemProps = {
   place: Place;
   isDetailPage?: boolean;
+  isDeleteMode?: boolean;
 };
 
-const PlaceItem = ({ place, isDetailPage }: PlaceItemProps) => {
+const PlaceItem = ({
+  place,
+  isDetailPage,
+  isDeleteMode = false,
+}: PlaceItemProps) => {
   const activePlace = useStore((state) => state.place);
   const setPlace = useStore((state) => state.setPlace);
   const moveToLocation = useStore((state) => state.moveTo);
@@ -14,13 +21,7 @@ const PlaceItem = ({ place, isDetailPage }: PlaceItemProps) => {
 
   const onPlaceClick = () => {
     setPlace(place);
-    moveToLocation(location.lat, location.lng);
-  };
-
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      onPlaceClick();
-    }
+    moveToLocation(location.latitude, location.longitude);
   };
 
   return (
@@ -28,11 +29,10 @@ const PlaceItem = ({ place, isDetailPage }: PlaceItemProps) => {
       role="button"
       tabIndex={0}
       onClick={onPlaceClick}
-      onKeyDown={onKeyDown}
-      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4 ${isDetailPage ? 'cursor-default' : ''}`}
+      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4`}
     >
       <img
-        src={place.thumbnail_url}
+        src="/src/assets/Map.jpg"
         alt={place.name}
         className="h-16 w-16 rounded-md"
       />
@@ -43,6 +43,7 @@ const PlaceItem = ({ place, isDetailPage }: PlaceItemProps) => {
           {place.rating} ⭐️
         </div>
       </div>
+      {isDeleteMode && <DeletePlaceButton placeId={place.id} />}
     </article>
   );
 };
