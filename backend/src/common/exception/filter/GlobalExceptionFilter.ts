@@ -77,7 +77,19 @@ export class UnknownExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    this.logger.error(`Unexpected exception occurred : ${exception}`);
+    if (exception instanceof Error) {
+      this.logger.error({
+        message: `Unexpected exception occurred: ${exception.message}`,
+        stack: exception.stack,
+        name: exception.name,
+      });
+    } else {
+      this.logger.error({
+        message: `Unexpected non-error exception occurred`,
+        exception,
+      });
+    }
+
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       code: -1,
       message: 'Internal server error',
