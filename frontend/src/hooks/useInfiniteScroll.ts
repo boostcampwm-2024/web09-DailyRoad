@@ -19,7 +19,7 @@ type InfiniteScrollOptions<TQueryFnData> = {
     allPages: TQueryFnData[],
   ) => number | undefined;
   threshold?: number;
-  defaultFetch?: boolean;
+  fetchWithoutQuery?: boolean;
 };
 
 export const useInfiniteScroll = <TQueryFnData>({
@@ -28,7 +28,7 @@ export const useInfiniteScroll = <TQueryFnData>({
   queryFn,
   getNextPageParam,
   threshold = 0.5,
-  defaultFetch = false,
+  fetchWithoutQuery = false,
 }: InfiniteScrollOptions<TQueryFnData>) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<TQueryFnData>({
@@ -37,7 +37,7 @@ export const useInfiniteScroll = <TQueryFnData>({
         queryFn({ pageParam: pageParam as number }),
       initialPageParam: 1,
       getNextPageParam,
-      enabled: !!query || defaultFetch,
+      enabled: Boolean(query) || fetchWithoutQuery,
     });
 
   const { ref, inView } = useInView({ threshold });
@@ -52,6 +52,9 @@ export const useInfiniteScroll = <TQueryFnData>({
     if (inView && hasNextPage && !isFetchingNextPage) {
       throttledFetchNextPage();
     }
+    return () => {
+      throttledFetchNextPage.cancel();
+    };
   }, [inView, throttledFetchNextPage]);
 
   return { ref, data, isFetchingNextPage, hasNextPage };

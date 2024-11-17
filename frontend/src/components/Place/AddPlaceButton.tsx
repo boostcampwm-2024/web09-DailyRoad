@@ -10,7 +10,7 @@ const AddPlaceButton = () => {
     <Box>
       <button
         className={`h-14 w-full rounded-md ${activePlace ? 'bg-c_bg_blue' : 'bg-c_button_gray'} p-4 text-xl font-semibold text-white`}
-        disabled={!!!activePlace}
+        disabled={!activePlace}
         onClick={() => navigate(`${location.pathname}/${activePlace?.id}`)}
       >
         장소 추가하기
