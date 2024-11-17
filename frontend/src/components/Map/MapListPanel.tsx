@@ -2,8 +2,8 @@ import { getMapList } from '@/api/map';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { MapItemType, MapList } from '@/types';
 import React from 'react';
-import MapItem from './MapItem';
-import NavigateButton from './common/NavigateButton';
+import MapItem from '@/components/Map/MapItem';
+import NavigateButton from '@/components/common/NavigateButton';
 
 const MapListPanel = () => {
   const { data, isFetchingNextPage, hasNextPage, ref } =
@@ -15,7 +15,7 @@ const MapListPanel = () => {
           ? lastPage.currentPage + 1
           : undefined;
       },
-      defaultFetch: true,
+      fetchWithoutQuery: true,
     });
   return (
     <>
@@ -30,14 +30,12 @@ const MapListPanel = () => {
         {data?.pages.map((page, index) => (
           <React.Fragment key={index}>
             {page.maps.map((map: MapItemType) => (
-              <React.Fragment key={map.id}>
-                <MapItem key={map.id} mapItem={map} />
-              </React.Fragment>
+              <MapItem key={map.id} mapItem={map} />
             ))}
           </React.Fragment>
         ))}
-        <div ref={ref} className="h-1" />
       </div>
+      <div ref={ref} className="h-1" />
     </>
   );
 };
