@@ -1,12 +1,14 @@
 type PrevIconProps = {
   className?: string;
+  width?: number;
+  height?: number;
 };
 
-const PrevIcon = ({ className }: PrevIconProps) => {
+const PrevIcon = ({ width = 24, height = 24, className }: PrevIconProps) => {
   return (
     <svg
-      width="24"
-      height="24"
+      width={width}
+      height={height}
       viewBox="0 0 52 92"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
