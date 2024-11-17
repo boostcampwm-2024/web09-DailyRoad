@@ -23,6 +23,10 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       entities: [__dirname + '/../**/*.entity.{ts,js}'],
       synchronize: false,
       namingStrategy: new CustomNamingStrategy(),
+      extra: {
+        connectTimeout: 15000,
+        queryTimeout: 10000,
+      },
       timezone: '+09:00',
       logger: new PinoTypeORMLogger(this.logger),
       logging: true,
