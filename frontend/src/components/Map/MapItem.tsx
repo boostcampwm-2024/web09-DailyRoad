@@ -1,6 +1,6 @@
 import { MapItemType } from '@/types';
 import { Link } from 'react-router-dom';
-import PinIcon from './PinIcon';
+import PinIcon from '@/components/PinIcon';
 import MapThumbnail from './MapThumbnail';
 
 type MapItemProps = {
