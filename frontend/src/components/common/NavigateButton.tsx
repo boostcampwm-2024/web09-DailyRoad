@@ -8,11 +8,11 @@ type NavigateButtonProps = {
 
 const NavigateButton = ({ text, to, className }: NavigateButtonProps) => {
   const navigate = useNavigate();
-  const handleClick = () => {
+  const handleNavigation = () => {
     navigate(to);
   };
   return (
-    <button className={className} onClick={handleClick}>
+    <button type="button" className={className} onClick={handleNavigation}>
       {text}
     </button>
   );

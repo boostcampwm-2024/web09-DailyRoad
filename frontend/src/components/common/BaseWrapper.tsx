@@ -1,12 +1,20 @@
+type BaseWrapperProps = {
+  children: React.ReactNode;
+  position?: string;
+  left?: string;
+  top?: string;
+  className?: string;
+};
+
 const BaseWrapper = ({
   children,
+  position = 'absolute',
+  left = 'left-0',
+  top = 'top-0',
   className = '',
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
+}: BaseWrapperProps) => (
   <div
-    className={`absolute left-0 top-0 flex h-full w-1/4 flex-col gap-0.5 bg-gray-200 p-2 shadow-md ${className}`}
+    className={`${position} ${left} ${top} flex h-full w-1/4 flex-col gap-0.5 bg-gray-200 shadow-md ${className}`}
   >
     {children}
   </div>
