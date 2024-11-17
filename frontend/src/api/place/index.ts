@@ -9,16 +9,8 @@ export const getPlace = async (queryString: string, pageParam: number) => {
       page: pageParam,
     },
   });
-  const Data = data.map((place) => {
-    return {
-      ...place,
-      location: {
-        lat: Number(place.location.lat),
-        lng: Number(place.location.lng),
-      },
-    };
-  });
-  return Data;
+
+  return data;
 };
 
 type AddPlaceParams = {
@@ -44,4 +36,25 @@ export const addPlaceToCourse = async ({
     placeMarkerData,
   );
   return { ...data, id };
+};
+
+type Response = {
+  code?: number;
+  message?: string;
+};
+type DeletePlaceResponse = {
+  deletedId: number;
+} & Response;
+
+export const deletePlaceToMap = async ({
+  id,
+  placeId,
+}: {
+  id: number;
+  placeId: number;
+}) => {
+  const { data } = await axiosInstance.delete<DeletePlaceResponse>(
+    END_POINTS.DELETE_PLACE_TO_MAP(id, placeId),
+  );
+  return { placeId: data.deletedId, id };
 };
