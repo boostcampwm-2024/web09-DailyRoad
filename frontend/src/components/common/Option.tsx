@@ -8,6 +8,7 @@ type OptionProps = {
 const Option = ({ label, description, isSelected, onClick }: OptionProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
       onClick();
     }
   };
