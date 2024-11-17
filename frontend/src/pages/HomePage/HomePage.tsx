@@ -1,7 +1,6 @@
 import Footer from '@/pages/HomePage/Footer';
 import Header from '@/pages/HomePage/Header';
-import NavigateButton from '@/components/common/NavigateButton';
-import MapListPanel from '@/components/MapListPanel';
+import MapListPanel from '@/components/Map/MapListPanel';
 
 const Homepage = () => {
   return (

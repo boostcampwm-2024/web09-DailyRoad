@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import BaseWrapper from '@/components/common/BaseWrapper';
 import Box from '@/components/common/Box';
-import DashBoardHeader from '../common/DashBoardHeader';
+import DashBoardHeader from '@/components/common/DashBoardHeader';
 
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
