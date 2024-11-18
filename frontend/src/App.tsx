@@ -9,10 +9,12 @@ import NotFound from './pages/NotFound';
 import MapDetailPage from './pages/MapDetail/MapDetailPage';
 import { Suspense } from 'react';
 import MapEditPage from './pages/MapEditPage';
+import ToastContainer from './components/common/Toast/ToastContainer';
 
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Homepage />} />
 
