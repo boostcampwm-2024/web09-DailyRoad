@@ -47,3 +47,5 @@ export const IMAGE_EXTENSIONS = new Set([
 ]);
 
 export const THREE_MB = 3145728;
+export const IMAGE_WIDTH = 1200;
+export const IMAGE_HEIGHT = 900;
