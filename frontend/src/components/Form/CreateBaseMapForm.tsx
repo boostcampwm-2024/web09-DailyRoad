@@ -5,17 +5,20 @@ import { useAddMapMutation } from '@/hooks/api/useAddMapMutation';
 import { useMapForm } from '@/hooks/useMapForm';
 import { CreateMapType } from '@/types';
 import { ROUTES } from '@/constants/routes';
+import { useStore } from '@/store/useStore';
 
 const CreateBaseMapForm = () => {
   const { mapInfo, updateMapInfo, isMapInfoValid } = useMapForm();
   const navigate = useNavigate();
   const { mode, ...baseMap } = mapInfo;
   const addMapMutation = useAddMapMutation(mode);
+  const addToast = useStore((state) => state.addToast);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addMapMutation.mutate(baseMap, {
       onSuccess: (id) => {
+        addToast('지도/코스가 추가되었습니다.', '', 'success');
         navigateByMode(mode, id);
       },
     });
