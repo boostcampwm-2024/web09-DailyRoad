@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, UseGuards } from '@nestjs/common';
 import { AdminBannerModule } from './banner/banner.module';
-import { RouterModule, APP_GUARD } from '@nestjs/core';
+import { RouterModule } from '@nestjs/core';
 import { AdminGuard } from '@src/admin/guard/AdminGuard';
 import { AuthModule } from '@src/auth/auth.module';
 
+@UseGuards(AdminGuard)
 @Module({
   imports: [
     AuthModule,
@@ -20,12 +21,6 @@ import { AuthModule } from '@src/auth/auth.module';
         ],
       },
     ]),
-  ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AdminGuard,
-    },
   ],
 })
 export class AdminModule {}
