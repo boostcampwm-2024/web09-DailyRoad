@@ -1,5 +1,6 @@
 import { GoogleMapState } from '@/store/googleMapSlice';
 import { PlaceState } from '@/store/placeSlice';
+import { ToastState } from '@/store/toastSlice';
 
 export type Place = {
   id: number;
@@ -102,4 +103,4 @@ export type PreSignedURLResponse = {
   url: string;
 };
 
-export type StoreState = GoogleMapState & PlaceState;
+export type StoreState = GoogleMapState & PlaceState & ToastState;
