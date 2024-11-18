@@ -9,6 +9,7 @@ export type GoogleMapState = {
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
   moveTo: (lat: number, lng: number) => void;
+  fetchPlacePhotos: (placeId: string) => void;
 };
 
 export const createGoogleMapSlice: StateCreator<
@@ -30,6 +31,7 @@ export const createGoogleMapSlice: StateCreator<
     const loader = new Loader({
       apiKey: apiKey,
       version: '3.58',
+      libraries: ['places'],
     });
 
     try {
@@ -57,5 +59,43 @@ export const createGoogleMapSlice: StateCreator<
       map.panTo({ lat, lng });
       map.setZoom(14);
     }
+  },
+  fetchPlacePhotos: (placeId: string) => {
+    const map = get().googleMap;
+    if (!map) {
+      console.error('Map is not initialized.');
+      return;
+    }
+
+    const service = new google.maps.places.PlacesService(map);
+
+    const request: google.maps.places.PlaceDetailsRequest = {
+      placeId: placeId,
+      fields: ['photos'], // 필요한 필드 지정
+    };
+
+    service.getDetails(request, (place, status) => {
+      if (
+        status === google.maps.places.PlacesServiceStatus.OK &&
+        place?.photos
+      ) {
+        const photos = place.photos;
+        photos.forEach((photo, index) => {
+          const imgUrl = photo.getUrl({ maxWidth: 400, maxHeight: 400 });
+          // 이미지 URL을 이용해 이미지를 표시하거나 처리
+          console.log(`Photo ${index + 1}:`, imgUrl);
+
+          // 예: 이미지 요소 생성 및 추가 (적절한 컨테이너에 추가)
+          const img = document.createElement('img');
+          img.src = imgUrl;
+          img.alt = `Place Photo ${index + 1}`;
+          img.style.margin = '5px';
+          // 예시로 document.body에 추가 (실제 사용 시 적절한 위치에 추가)
+          document.body.appendChild(img);
+        });
+      } else {
+        console.error('Place details 요청 실패:', status);
+      }
+    });
   },
 });
