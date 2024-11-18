@@ -1,6 +1,7 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { AuthorizationException } from '@src/auth/exception/AuthorizationException';
+import { UserRole } from '@src/user/user.role';
 
 @Injectable()
 export class AdminGuard extends JwtAuthGuard {
@@ -14,7 +15,7 @@ export class AdminGuard extends JwtAuthGuard {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (!user || user.role !== 'admin') {
+    if (!user || user.role !== UserRole.ADMIN) {
       throw new AuthorizationException('관리자 권한이 없습니다.');
     }
 
