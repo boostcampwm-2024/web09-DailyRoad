@@ -15,14 +15,23 @@ services:
         hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
+      - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
+      - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
+      - ./init-index.sh:/usr/share/elasticsearch/init-index.sh
     ports:
       - "9200:9200"
+    command: >
+      /bin/bash -c "
+      chmod +x /usr/share/elasticsearch/init-index.sh &&
+      /usr/share/elasticsearch/init-index.sh &
+      exec /usr/local/bin/docker-entrypoint.sh
+      "
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.16.0
     container_name: kibana
     environment:
-      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
