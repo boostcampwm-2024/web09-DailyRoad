@@ -1,4 +1,30 @@
 services:
+  setup:
+    profiles:
+      - setup
+    build:
+      context: .
+    init: true
+    volumes:
+      - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
+      - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
+      - ./init-es.prod.sh:/usr/share/elasticsearch/init-es.prod.sh
+    command: >
+      /bin/bash -c '
+        until curl -s -XGET "http://elasticsearch:9200/_cluster/health" -u "elastic:${ELASTIC_PASSWORD}" | grep "\"status\":\"green\"" > /dev/null; do
+          echo "Waiting for Elasticsearch to be ready..."
+          sleep 5
+        done
+        chmod +x /usr/share/elasticsearch/init-es.prod.sh &&
+        curl -X POST "http://elasticsearch:9200/_security/user/kibana_user" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\", \"roles\": [\"kibana_system\", \"kibana_user\"]}" || echo "Kibana user already exists." &&
+        curl -X POST "http://elasticsearch:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\"}" || echo "kibana_system password already set." &&
+        /usr/share/elasticsearch/init-es.prod.sh
+      '
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    depends_on:
+      - elasticsearch
+
   elasticsearch:
     build:
       context: .
@@ -15,29 +41,15 @@ services:
         hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
-      - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
       - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
-      - ./init-index.sh:/usr/share/elasticsearch/init-index.sh
     ports:
       - "9200:9200"
-    command: >
-      /bin/bash -c "
-      chmod +x /usr/share/elasticsearch/init-index.sh &&
-      /usr/share/elasticsearch/init-index.sh &
-      exec /usr/local/bin/docker-entrypoint.sh
-      "
-    healthcheck:
-      test: [ "CMD", "curl", "-s", "-XGET", "http://localhost:9200/_cluster/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.16.0
     container_name: kibana
     depends_on:
-      elasticsearch:
-        condition: service_healthy
+      - elasticsearch
     environment:
       - SERVER_NAME=kibana
       - ELASTICSEARCH_USERNAME=kibana_system
