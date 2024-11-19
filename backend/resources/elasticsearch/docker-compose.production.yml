@@ -5,6 +5,7 @@ services:
     build:
       context: .
     init: true
+    user: root
     volumes:
       - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
       - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
