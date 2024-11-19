@@ -10,7 +10,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
-  ) {}
+  ) {
+  }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
@@ -25,7 +26,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       namingStrategy: new CustomNamingStrategy(),
       extra: {
         connectTimeout: 15000,
-        queryTimeout: 10000,
       },
       timezone: '+09:00',
       logger: new PinoTypeORMLogger(this.logger),
