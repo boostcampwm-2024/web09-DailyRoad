@@ -10,8 +10,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
-  ) {
-  }
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
