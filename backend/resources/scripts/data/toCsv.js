@@ -1,6 +1,13 @@
 const fs = require("fs");
 const { createObjectCsvWriter } = require("csv-writer");
 
+const category = {
+  100: "명소",
+  300: "맛집",
+  400: "카페",
+  500: "숙소",
+};
+
 async function jsonToCsv(inputJsonPath, outputCsvPath) {
   const jsonData = JSON.parse(fs.readFileSync(inputJsonPath, "utf-8"));
 
@@ -28,7 +35,7 @@ async function jsonToCsv(inputJsonPath, outputCsvPath) {
     longitude: parseFloat(item.longitude),
     latitude: parseFloat(item.latitude),
     formatted_address: item.address || null,
-    category: item.type || null,
+    category: category[item.type] || null,
     description: item.description || null,
     detail_page_url: item.googleURL || null,
   }));
