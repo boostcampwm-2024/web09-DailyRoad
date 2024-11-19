@@ -15,8 +15,7 @@ export class PlaceListResponse {
     readonly thumbnail_url?: string,
     readonly rating?: number,
     readonly formed_address?: string,
-  ) {
-  }
+  ) {}
 
   static from(place: Place): PlaceListResponse {
     return new PlaceListResponse(
