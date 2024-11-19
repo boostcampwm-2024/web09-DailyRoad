@@ -14,13 +14,31 @@ services:
         until curl -s -XGET "http://elasticsearch:9200/_cluster/health" -u "elastic:${ELASTIC_PASSWORD}" | grep "\"status\":\"green\"" > /dev/null; do
           echo "Waiting for Elasticsearch to be ready..."
           sleep 5
-        done
+        done &&
+        curl -X POST "http://elasticsearch:9200/_security/role/custom_role" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{
+                  \"cluster\": [\"all\"],
+                  \"indices\": [
+                    {
+                      \"names\": [\"*\"],
+                      \"privileges\": [\"all\"]
+                    }
+                  ],
+                  \"applications\": [
+                    {
+                      \"application\": \"kibana-.kibana\",
+                      \"privileges\": [\"all\"],
+                      \"resources\": [\"*\"]
+                    }
+                  ],
+                  \"run_as\": [\"*\"]
+                }" &&
+      
+        curl -X POST "http://elasticsearch:9200/_security/user/${CUSTOM_USERNAME}" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\", \"roles\": [\"custom_role\", \"kibana_system\"]}" &&
         chmod +x /usr/share/elasticsearch/init-es.prod.sh &&
-        curl -X POST "http://elasticsearch:9200/_security/user/kibana_user" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\", \"roles\": [\"kibana_system\", \"kibana_user\"]}" || echo "Kibana user already exists." &&
-        curl -X POST "http://elasticsearch:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\"}" || echo "kibana_system password already set." &&
         /usr/share/elasticsearch/init-es.prod.sh
       '
     environment:
+      - CUSTOM_USERNAME=${CUSTOM_USERNAME}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     depends_on:
       - elasticsearch
@@ -52,7 +70,7 @@ services:
       - elasticsearch
     environment:
       - SERVER_NAME=kibana
-      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_USERNAME=${CUSTOM_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
