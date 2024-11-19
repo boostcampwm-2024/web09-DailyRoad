@@ -10,6 +10,9 @@ echo "Checking if 'place' index exists..."
 response=$(curl -s -o /dev/null -w "%{http_code}" -XGET "http://localhost:9200/place")
 
 if [ "$response" -eq 404 ]; then
+  echo "Setting kibana_system password";
+  until curl -s -X POST -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elastic:9200/_security/user/kibana_system/_password -d "{\"password\":\"${ELASTIC_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+  echo "All done!";
   echo "Index 'place' does not exist. Creating it..."
   curl -X PUT "http://localhost:9200/place" \
        -H "Content-Type: application/json" \
