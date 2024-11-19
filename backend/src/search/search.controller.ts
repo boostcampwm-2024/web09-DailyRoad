@@ -16,9 +16,4 @@ export class SearchController {
   ) {
     return await this.searchService.search(query, lat, lon, page, limit);
   }
-
-  @Get('index/place')
-  async indexPlace() {
-    return await this.searchService.indexPlace();
-  }
 }

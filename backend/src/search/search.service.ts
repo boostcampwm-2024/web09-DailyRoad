@@ -1,50 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceRepository } from '@src/place/place.repository';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { PinoLogger } from 'nestjs-pino';
+import { PlaceSearchResponse } from '@src/search/dto/PlaceSearchResponse';
+import { PlaceSearchHit } from '@src/search/search.type';
 
 @Injectable()
 export class SearchService {
   private readonly PLACE_INDEX = 'place';
   private readonly PLACE_ANALYZER = 'nori_with_synonym';
 
-  constructor(
-    private placeRepository: PlaceRepository,
-    private readonly logger: PinoLogger,
-    private readonly esService: ElasticsearchService,
-  ) {}
-
-  // 데이터를 인덱스(엘라스틱서치 형태로 주입)
-  async indexData(indexName: string, data: any) {
-    return await this.esService.index({
-      index: indexName,
-      document: data,
-    });
-  }
-
-  async indexPlace() {
-    const startTime = new Date().toISOString();
-    this.logger.info(`Indexing 시작: ${startTime}`);
-    const places = await this.placeRepository.find();
-    for (const place of places) {
-      const data = {
-        ...place,
-        location: {
-          lat: place.latitude,
-          lon: place.longitude,
-        },
-      };
-      delete data.latitude;
-      delete data.longitude;
-
-      await this.indexData(this.PLACE_INDEX, data);
-    }
-    const endTime = new Date().toISOString();
-    this.logger.info(`Indexing 완료: ${endTime}`);
-    this.logger.info(
-      `소요 시간: ${new Date(endTime).getTime() - new Date(startTime).getTime()}ms`,
-    );
-  }
+  constructor(private readonly esService: ElasticsearchService) {}
 
   async search(
     query: string,
@@ -56,8 +20,9 @@ export class SearchService {
     const from = (page - 1) * size;
     const tokens = await this.tokenizeQuery(query);
     const location = !isNaN(lat) && !isNaN(lon) ? { lat, lon } : null;
+    let result = [];
 
-    const result = await this.esService.search({
+    const searched = await this.esService.search({
       index: 'place',
       from,
       size,
@@ -136,8 +101,8 @@ export class SearchService {
     });
 
     // 결과가 없으면 prefix 검색 (name, formattedAddress)
-    if (result.hits?.hits.length === 0) {
-      const prefixResult = await this.esService.search({
+    if (searched.hits?.hits.length === 0) {
+      const prefixSearched = await this.esService.search({
         index: 'place',
         query: {
           bool: {
@@ -160,10 +125,41 @@ export class SearchService {
           },
         },
       });
-      return prefixResult.hits?.hits || [];
+      result = prefixSearched.hits?.hits || [];
+    } else {
+      result = searched.hits?.hits || [];
     }
+    return {
+      places: result.map((hit: PlaceSearchHit) => {
+        const { _source } = hit;
+        const {
+          id,
+          name,
+          location,
+          googlePlaceId,
+          category,
+          description,
+          detailPageUrl,
+          thumbnailUrl,
+          rating,
+          formattedAddress,
+        } = _source;
 
-    return result.hits?.hits || [];
+        return new PlaceSearchResponse(
+          id,
+          name,
+          location ? { latitude: location.lat, longitude: location.lon } : null,
+          googlePlaceId,
+          category,
+          description,
+          detailPageUrl,
+          thumbnailUrl,
+          rating,
+          formattedAddress,
+        );
+      }),
+      total_count: result.length,
+    };
   }
 
   private async tokenizeQuery(query: string): Promise<string[]> {
