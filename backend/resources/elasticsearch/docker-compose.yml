@@ -16,13 +16,13 @@ services:
       - esdata:/usr/share/elasticsearch/data
       - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
       - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
-      - ./init-index.sh:/usr/share/elasticsearch/init-index.sh
+      - ./init-es.local.sh:/usr/share/elasticsearch/init-es.local.sh
     ports:
       - "9200:9200"
     command: >
       /bin/bash -c "
-      chmod +x /usr/share/elasticsearch/init-index.sh &&
-      /usr/share/elasticsearch/init-index.sh &
+      chmod +x /usr/share/elasticsearch/init-es.local &&
+      /usr/share/elasticsearch/init-es.local &
       exec /usr/local/bin/docker-entrypoint.sh
       "
 
