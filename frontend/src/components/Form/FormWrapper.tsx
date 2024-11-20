@@ -37,8 +37,8 @@ const FormWrapper = ({
             }
             className="h-[41px] w-[144px] rounded border px-3 py-2"
           >
-            <option value="map">지도</option>
-            <option value="course">코스</option>
+            <option value="MAP">지도</option>
+            <option value="COURSE">코스</option>
           </select>
         )}
       </div>
