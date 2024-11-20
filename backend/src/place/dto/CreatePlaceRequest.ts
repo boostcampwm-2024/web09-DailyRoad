@@ -51,7 +51,11 @@ export class CreatePlaceRequest {
   @IsString()
   photoReference: string;
 
-  toEntity(thumbnailUrl: string) {
+  @IsOptional()
+  @IsUrl()
+  thumbnailUrl?: string;
+
+  toEntity(thumbnailUrl: string = this.thumbnailUrl): Place {
     return new Place(
       this.googlePlaceId,
       this.name,

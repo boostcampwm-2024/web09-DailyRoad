@@ -28,8 +28,10 @@ export class PlaceService {
     }
 
     const place = createPlaceRequest.toEntity(
-      await this.getGoogleThumbnailUrl(createPlaceRequest.photoReference),
+      createPlaceRequest.thumbnailUrl ||
+        (await this.getGoogleThumbnailUrl(createPlaceRequest.photoReference)),
     );
+
     const savedPlace = await this.placeRepository.save(place);
     return { id: savedPlace.id };
   }
