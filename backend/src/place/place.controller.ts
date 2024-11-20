@@ -20,7 +20,7 @@ export class PlaceController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async addPlace(@Body() createPlaceDto: CreatePlaceRequest) {
+  async importPlace(@Body() createPlaceDto: CreatePlaceRequest) {
     return this.placeService.addPlace(createPlaceDto);
   }
 
@@ -42,7 +42,7 @@ export class PlaceController {
   }
 
   @Get()
-  async getPlaces(
+  async searchAvailablePlaces(
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(5)) limit?: number,
@@ -51,7 +51,7 @@ export class PlaceController {
   }
 
   @Get('/:id')
-  async getPlace(@Param('id') id: number) {
+  async getSinglePlace(@Param('id') id: number) {
     return this.placeService.getPlace(id);
   }
 }
