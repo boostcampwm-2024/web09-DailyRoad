@@ -60,17 +60,10 @@ export class ElasticSearchQuery {
             // 위치 정보 가중치
             ...(location
               ? [
-                  {
-                    gauss: {
-                      location: {
-                        origin: `${location.lat},${location.long}`,
-                        scale: '10km',
-                        offset: '2km',
-                        decay: 0.5,
-                      },
-                    },
-                    weight: 20,
-                  },
+                  ElasticSearchQueryBuilder.GAUSS_LOCATION(
+                    location.lat,
+                    location.long,
+                  ),
                 ]
               : []),
           ],
