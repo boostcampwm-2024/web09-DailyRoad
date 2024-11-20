@@ -1,17 +1,20 @@
-import BaseWrapper from '../common/BaseWrapper';
 import { useStore } from '@/store/useStore';
 import PlaceItem from './PlaceItem';
 import TextInputArea from '../common/TextInputArea';
 import { useState } from 'react';
 import Box from '../common/Box';
-import Marker from '../Marker/Marker';
+
 import DashBoardHeader from '../common/DashBoardHeader';
 import { CreateMapType, CustomPlace, MarkerColor } from '@/types';
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
 import { useLocation, useParams } from 'react-router-dom';
 
-const DetailPlaceForm = () => {
+type DetailPlaceFormProps = {
+  oncloseModal: () => void;
+};
+
+const DetailPlaceForm = ({ oncloseModal }: DetailPlaceFormProps) => {
   const place = useStore((state) => state.place);
   const addToast = useStore((state) => state.addToast);
 
@@ -36,6 +39,7 @@ const DetailPlaceForm = () => {
       {
         onSuccess: () => {
           addToast('장소가 추가되었습니다.', '', 'success');
+          oncloseModal();
         },
       },
     );
@@ -43,10 +47,10 @@ const DetailPlaceForm = () => {
 
   return (
     place.id && (
-      <BaseWrapper position="" top="" left="" className="w-1/2">
+      <>
         <Box role="region" aria-label="장소 상세 정보">
           <header className="flex gap-2">
-            <DashBoardHeader title="장소 추가하기" />
+            <DashBoardHeader title="장소 추가하기" hasNavButton={false} />
           </header>
           <PlaceItem place={place} isDetailPage={true} />
         </Box>
@@ -75,14 +79,7 @@ const DetailPlaceForm = () => {
             완료
           </button>
         </Box>
-        <Marker
-          key={place.google_place_id}
-          position={{
-            lat: place.location.latitude,
-            lng: place.location.longitude,
-          }}
-        />
-      </BaseWrapper>
+      </>
     )
   );
 };
