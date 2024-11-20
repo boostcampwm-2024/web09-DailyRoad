@@ -5,7 +5,11 @@ let toastId = 0;
 
 export type ToastState = {
   toastList: ToastType[];
-  addToast: (message: string, attributes: string, variant: string) => number;
+  addToast: (
+    message: string,
+    attributes: string,
+    variant: 'success' | 'error' | 'warning' | 'info',
+  ) => number;
   removeToast: (id: number) => void;
 };
 
@@ -20,9 +24,9 @@ export const createToastSlice: StateCreator<StoreState, [], [], ToastState> = (
   set,
 ) => ({
   toastList: [],
-  addToast: (message, attributes, varint) => {
+  addToast: (message, attributes, variant = 'info') => {
     const id = ++toastId;
-    const newToast: ToastType = { id, message, attributes, variant: 'info' };
+    const newToast: ToastType = { id, message, attributes, variant };
     set((state) => ({ toastList: [...state.toastList, newToast] }));
     return id;
   },
