@@ -1,5 +1,6 @@
 import useDeletePlaceMutation from '@/hooks/api/useDeletePlaceMutation';
 import { useStore } from '@/store/useStore';
+import { CreateMapType } from '@/types';
 import { useParams } from 'react-router-dom';
 
 type DeletePlaceButtonProps = {
@@ -8,7 +9,8 @@ type DeletePlaceButtonProps = {
 
 const DeletePlaceButton = ({ placeId }: DeletePlaceButtonProps) => {
   const id = Number(useParams<string>().id);
-  const deletePlaceMutation = useDeletePlaceMutation();
+  const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
+  const deletePlaceMutation = useDeletePlaceMutation(mode);
   const addToast = useStore((state) => state.addToast);
   const onClick = () => {
     deletePlaceMutation.mutate(
@@ -20,7 +22,11 @@ const DeletePlaceButton = ({ placeId }: DeletePlaceButtonProps) => {
       },
     );
   };
-  return <button onClick={onClick}>삭제</button>;
+  return (
+    <button type="button" onClick={onClick} aria-label="장소 삭제">
+      삭제
+    </button>
+  );
 };
 
 export default DeletePlaceButton;
