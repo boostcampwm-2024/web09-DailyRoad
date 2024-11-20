@@ -10,14 +10,14 @@ export class SearchService {
   async search(
     query: string,
     lat?: number,
-    lon?: number,
+    long?: number,
     page: number = 1,
     size: number = 10,
   ) {
     const searched = await this.elasticSearchQuery.searchPlace(
       query,
       lat,
-      lon,
+      long,
       page,
       size,
     );
@@ -36,7 +36,7 @@ export class SearchService {
           _source.location
             ? {
                 latitude: _source.location.lat,
-                longitude: _source.location.lon,
+                longitude: _source.location.long,
               }
             : null,
           _source.googlePlaceId,
