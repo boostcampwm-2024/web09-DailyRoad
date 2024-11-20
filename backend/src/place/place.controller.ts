@@ -1,16 +1,18 @@
 import {
-  Body,
   Controller,
   Get,
   Param,
-  Post,
   Query,
   UseGuards,
+  BadRequestException,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
-import { JwtAuthGuard } from '../auth/JwtAuthGuard';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
+import { Throttle } from '@nestjs/throttler';
+import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
 
 @Controller('places')
 export class PlaceController {
@@ -20,6 +22,23 @@ export class PlaceController {
   @Post()
   async addPlace(@Body() createPlaceDto: CreatePlaceRequest) {
     return this.placeService.addPlace(createPlaceDto);
+  }
+
+  // Todo. 커스텀 스로틀러 구현
+  @Throttle({
+    default: {
+      limit: 60,
+      ttl: 60000,
+      getTracker: () => 'global',
+      generateKey: () => 'global',
+    },
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  async searchPlacesToImport(@Query('query') query: string) {
+    if (!query) throw new BadRequestException('검색어를 입력해 주세요.');
+
+    return this.placeService.searchPlacesInGoogle(query);
   }
 
   @Get()
