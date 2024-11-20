@@ -13,6 +13,8 @@ export class PlaceCreateRequestFixture {
     category: 'Park',
     description: 'A large public park in New York City.',
     detailPageUrl: 'https://example.com/central_park',
+    thumbnailUrl: 'https://example.com/central_park.jpg',
+    photoReference: 'photoReference',
   };
 
   static create(
@@ -29,7 +31,8 @@ export class PlaceCreateRequestFixture {
     request.category = mergedValues.category;
     request.description = mergedValues.description;
     request.detailPageUrl = mergedValues.detailPageUrl;
-    request.photoReference = null;
+    request.thumbnailUrl = mergedValues.thumbnailUrl;
+    request.photoReference = mergedValues.photoReference;
 
     return request;
   }
