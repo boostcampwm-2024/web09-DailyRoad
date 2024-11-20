@@ -7,6 +7,7 @@ import { PlaceCreateRequestFixture } from './fixture/PlaceCreateRequest.fixture'
 import { initDataSource } from '../config/datasource.config';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { DataSource } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
@@ -25,6 +26,12 @@ describe('PlaceService', () => {
           provide: PlaceRepository,
           useValue: new PlaceRepository(dataSource),
         },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(() => 'mocked-config-value'),
+          },
+        },
       ],
     }).compile();
 
@@ -41,6 +48,10 @@ describe('PlaceService', () => {
   });
 
   describe('장소 등록', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('이미 존재하는 googlePlaceId로 장소를 등록하려고 하면 예외를 던진다', async () => {
       const createPlaceRequest = PlaceCreateRequestFixture.create({
         googlePlaceId: 'googlePlaceId_1',
@@ -70,6 +81,10 @@ describe('PlaceService', () => {
   });
 
   describe('장소 검색', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('쿼리가 없는 경우 전체 장소를 페이지네이션하여 반환한다', async () => {
       await placeRepository.save(
         PlaceCreateRequestFixture.create({
@@ -141,6 +156,10 @@ describe('PlaceService', () => {
   });
 
   describe('장소 조회', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('존재하지 않는 id로 장소를 조회하려고 하면 예외를 던진다', async () => {
       const nonExistentId = 999;
 

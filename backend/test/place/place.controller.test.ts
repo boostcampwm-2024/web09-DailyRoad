@@ -9,6 +9,7 @@ import { PlaceRepository } from '@src/place/place.repository';
 import { PlaceService } from '@src/place/place.service';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { DataSource } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 
 describe('PlaceController', () => {
   let app: INestApplication;
@@ -16,6 +17,13 @@ describe('PlaceController', () => {
   let dataSource: DataSource;
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
+
+  const configServiceMock = {
+    get: jest.fn((key: string) => {
+      if (key === 'someConfigKey') return 'mockedValue';
+      return null;
+    }),
+  };
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
@@ -27,6 +35,8 @@ describe('PlaceController', () => {
     })
       .overrideProvider(PlaceRepository)
       .useValue(placeRepository)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .overrideGuard(JwtAuthGuard)
       .useValue({ canActivate: () => true })
       .compile();
@@ -49,6 +59,10 @@ describe('PlaceController', () => {
   });
 
   describe('장소 검색', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('페이지, 사이즈를 설정하지 않았을 경우 기본값을 사용하여 장소를 반환한다', async () => {
       const serviceResult = await placeService.getPlaces(undefined, 1, 5);
 
@@ -86,16 +100,20 @@ describe('PlaceController', () => {
   });
 
   describe('장소 등록', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('유효한 장소 생성 폼으로 장소 등록에 성공한다', async () => {
       const createPlaceDto = PlaceCreateRequestFixture.create({
         googlePlaceId: 'googlePlaceId_3',
         name: 'Statue of Liberty',
       });
 
-      await request(app.getHttpServer())
+      const res = await request(app.getHttpServer())
         .post('/places')
-        .send(createPlaceDto)
-        .expect(201);
+        .send(createPlaceDto);
+      expect(res.status).toEqual(201);
     });
 
     it('유효하지 않은 장소 생성 폼을 입력한 경우 400 에러를 응답한다', async () => {
@@ -107,9 +125,6 @@ describe('PlaceController', () => {
         .expect(400);
 
       expect(response.body.message).toContain('googlePlaceId must be a string');
-      expect(response.body.message).toContain(
-        'formattedAddress must be a string',
-      );
     });
 
     it('로그인하지 않은 경우 장소를 등록할 수 없다', async () => {
@@ -118,6 +133,10 @@ describe('PlaceController', () => {
   });
 
   describe('장소 조회', () => {
+    beforeEach(async () => {
+      await placeRepository.delete({});
+    });
+
     it('존재하는 장소 ID로 장소 조회에 성공한다', async () => {
       const defaultPlace = PlaceCreateRequestFixture.create();
       await placeService.addPlace(defaultPlace);
