@@ -28,9 +28,6 @@ export async function loadGoogleMapsApi() {
     'maps',
   )) as google.maps.MapsLibrary;
 
-  const { Marker } = (await google.maps.importLibrary(
-    'marker',
-  )) as google.maps.MarkerLibrary;
   const { AdvancedMarkerElement } = (await google.maps.importLibrary(
     'marker',
   )) as google.maps.MarkerLibrary;

@@ -1,11 +1,7 @@
 import { INITIAL_MAP_CONFIG } from '@/constants/map';
 import { StateCreator } from 'zustand';
 import { StoreState } from '@/types';
-import {
-  getGoogleMapClass,
-  getMarkerClass,
-  getPlaceClass,
-} from '@/lib/googleMapsAPI-loader';
+import { getGoogleMapClass, getPlaceClass } from '@/lib/googleMapsAPI-loader';
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
@@ -46,7 +42,6 @@ export const createGoogleMapSlice: StateCreator<
       return;
     }
     const Place = getPlaceClass();
-    const AdvancedMarkerElement = getMarkerClass();
     const request: google.maps.places.SearchByTextRequest = {
       textQuery: query,
       language: 'ko',
@@ -55,6 +50,6 @@ export const createGoogleMapSlice: StateCreator<
       maxResultCount: 7,
     };
     const { places } = await Place.searchByText(request);
-    console.log(places);
+    return places;
   },
 });
