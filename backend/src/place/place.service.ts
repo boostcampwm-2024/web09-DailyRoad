@@ -94,4 +94,21 @@ export class PlaceService {
     };
   }
 
+  private async getGoogleThumbnailUrl(
+    photoReference: string,
+  ): Promise<string | null> {
+    if (!photoReference) return null;
+    const url = `${this.GOOGLE_PLACE_PHOTO_BASE_URL}?maxwidth=1200&photoreference=${photoReference}&key=${this.GOOGLE_API_KEY}`;
+
+    try {
+      const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      if (response.ok && response.url !== url) return response.url;
+
+      return null;
+    } catch (error) {
+      throw new BadGatewayException(
+        'Google API 호출 중 오류가 발생했습니다.' + error,
+      );
+    }
+  }
 }
