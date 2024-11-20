@@ -1,6 +1,7 @@
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
 import { Injectable } from '@nestjs/common';
+import { ElasticSearchQueryBuilder } from '@src/search/query/builder/ElasticSearchQueryBuilder';
 
 @Injectable()
 export class ElasticSearchQuery {
@@ -26,32 +27,15 @@ export class ElasticSearchQuery {
             bool: {
               should: [
                 // 완전 일치
-                {
-                  match: {
-                    name: {
-                      query: query,
-                      fuzziness: 1,
-                    },
-                  },
-                },
+                ElasticSearchQueryBuilder.MATCH_NAME(query),
                 // name에 대한 토큰 매칭
-                ...tokens.map((token) => ({
-                  match: {
-                    name: {
-                      query: token,
-                      fuzziness: 1,
-                    },
-                  },
-                })),
+                ...tokens.map((token) =>
+                  ElasticSearchQueryBuilder.MATCH_NAME(token),
+                ),
                 // formattedAddress에 대한 토큰 매칭
-                ...tokens.map((token) => ({
-                  match: {
-                    formattedAddress: {
-                      query: token,
-                      fuzziness: 1,
-                    },
-                  },
-                })),
+                ...tokens.map((token) =>
+                  ElasticSearchQueryBuilder.MATCH_FORMATTED_ADDRESS(token),
+                ),
               ],
             },
           },
