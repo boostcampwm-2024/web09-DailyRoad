@@ -1,4 +1,4 @@
-import { BaseMap, MapList, Map, Course } from '@/types';
+import { BaseMap, MapList, Course } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
