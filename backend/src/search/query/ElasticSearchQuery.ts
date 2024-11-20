@@ -1,5 +1,5 @@
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ESconfig } from '@src/config/ESconfig';
+import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
 
 export class ElasticSearchQuery {
   constructor(private readonly esService: ElasticsearchService) {}
@@ -15,7 +15,7 @@ export class ElasticSearchQuery {
     const location = !isNaN(lat) && !isNaN(lon) ? { lat, lon } : null;
     const from = (page - 1) * size;
     return await this.esService.search({
-      index: ESconfig.PLACE_INDEX,
+      index: ElasticSearchConfig.PLACE_INDEX,
       from,
       size,
       query: {
@@ -95,7 +95,7 @@ export class ElasticSearchQuery {
 
   async searchPlaceWithPrefix(query: string) {
     return await this.esService.search({
-      index: ESconfig.PLACE_INDEX,
+      index: ElasticSearchConfig.PLACE_INDEX,
       query: {
         bool: {
           should: [
@@ -121,8 +121,8 @@ export class ElasticSearchQuery {
 
   private async tokenizeQuery(query: string): Promise<string[]> {
     const analysis = await this.esService.indices.analyze({
-      index: ESconfig.PLACE_INDEX,
-      analyzer: ESconfig.PLACE_ANALYZER,
+      index: ElasticSearchConfig.PLACE_INDEX,
+      analyzer: ElasticSearchConfig.PLACE_ANALYZER,
       text: query,
     });
     return analysis.tokens?.map((token) => token.token) || [];
