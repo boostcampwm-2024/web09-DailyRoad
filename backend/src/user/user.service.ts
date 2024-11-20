@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserRequest } from './dto/CreateUserRequest';
+import { UserIconResponse } from '@src/user/dto/UserIconResponse';
 
 @Injectable()
 export class UserService {
@@ -21,5 +22,10 @@ export class UserService {
     const user = userInfo.toEntity();
     const newUser = await this.userRepository.save(user);
     return { userId: newUser.id, role: newUser.role };
+  }
+
+  async getUserInfo(userId: number) {
+    const user = await this.userRepository.findById(userId);
+    return UserIconResponse.from(user);
   }
 }
