@@ -4,8 +4,13 @@ import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { StrictMode } from 'react';
+import { loadGoogleMapsApi } from './lib/googleMapsAPI-loader';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+
+(async () => {
+  await loadGoogleMapsApi();
+})();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
