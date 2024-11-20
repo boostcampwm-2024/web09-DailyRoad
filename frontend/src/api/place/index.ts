@@ -58,3 +58,16 @@ export const deletePlaceToMap = async ({
   );
   return { placeId: data.deletedId, id };
 };
+
+export const deletePlaceToCourse = async ({
+  id,
+  placeId,
+}: {
+  id: number;
+  placeId: number;
+}) => {
+  const { data } = await axiosInstance.delete<DeletePlaceResponse>(
+    END_POINTS.DELETE_PLACE_TO_COURSE(id, placeId),
+  );
+  return { placeId: data.deletedId, id };
+};
