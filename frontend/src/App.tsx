@@ -10,41 +10,49 @@ import MapDetailPage from './pages/MapDetail/MapDetailPage';
 import { Suspense } from 'react';
 import MapEditPage from './pages/MapEditPage';
 import ToastContainer from './components/common/Toast/ToastContainer';
+import ErrorBoundary from './components/Error/ErrorBoundary';
+import ErrorFallback from './components/Error/ErrorFallback';
+import RedirectPage from './pages/RedirectPage';
 
 function App() {
   return (
-    <Router>
-      <ToastContainer />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
+    <ErrorBoundary Fallback={ErrorFallback}>
+      <Router>
+        <ToastContainer />
+        <Routes>
+          <Route path="/" element={<Homepage />} />
 
-        <Route
-          path="/map"
-          element={
-            <Suspense fallback={<div>Loading...</div>}>
-              <LayoutCreate />
-            </Suspense>
-          }
-        >
-          <Route path=":id" element={<MapDetailPage />} />
-        </Route>
+          <Route
+            path="/map"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <LayoutCreate />
+              </Suspense>
+            }
+          >
+            <Route path=":id" element={<MapDetailPage />} />
+          </Route>
 
-        <Route path="/create" element={<LayoutCreate />}>
-          <Route index element={<MapPage />} />
-          <Route path="map/:id" element={<MapCreateMapPage />} />
-          <Route path="course/:id" element={<MapCreateCoursePage />} />
-          <Route path="map/:id/:placeId" element={<PlaceCreatePage />} />
-          <Route path="course/:id/:placeId" element={<PlaceCreatePage />} />
-        </Route>
-        <Route path="/edit" element={<LayoutCreate />}>
-          <Route path="map/:id" element={<MapEditPage />} />
-          <Route path="course/:id" element={<MapCreateCoursePage />} />
-          <Route path="map/:id/:placeId" element={<PlaceCreatePage />} />
-          <Route path="course/:id/:placeId" element={<PlaceCreatePage />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          <Route path="/create" element={<LayoutCreate />}>
+            <Route index element={<MapPage />} />
+            <Route path="map/:id" element={<MapCreateMapPage />} />
+            <Route path="map/:id/:placeId" element={<PlaceCreatePage />} />
+            <Route path="course/:id" element={<MapCreateCoursePage />} />
+            <Route path="course/:id/:placeId" element={<PlaceCreatePage />} />
+          </Route>
+
+          <Route path="/edit" element={<LayoutCreate />}>
+            <Route path="map/:id" element={<MapEditPage />} />
+            <Route path="course/:id" element={<MapCreateCoursePage />} />
+            <Route path="map/:id/:placeId" element={<PlaceCreatePage />} />
+            <Route path="course/:id/:placeId" element={<PlaceCreatePage />} />
+          </Route>
+
+          <Route path="/auth/callback" element={<RedirectPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
