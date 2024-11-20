@@ -15,16 +15,25 @@ export const END_POINTS = {
   ADD_PLACE_TO_MAP: (mapId: number) => `/maps/${mapId}/places`,
   EDIT_MAP_INFO: (mapId: number) => `/maps/${mapId}/info`,
   EDIT_MAP_VISIBILITY: (mapId: number) => `/maps/${mapId}/visibility`,
-  ADD_PLACE_TO_COURSE: (id: number) => `/courses/${id}/places`,
-  DELETE_PLACE_TO_MAP: (id: number, placeId: number) =>
-    `/maps/${id}/places/${placeId}`,
+  DELETE_PLACE_TO_MAP: (mapId: number, placeId: number) =>
+    `/maps/${mapId}/places/${placeId}`,
+
   COURSES: '/courses',
   COURSE: (courseId: number) => `/courses/${courseId}`,
+  ADD_PLACE_TO_COURSE: (courseId: number) => `/courses/${courseId}/places`,
+  EDIT_COURSE_INFO: (courseId: number) => `/courses/${courseId}/info`,
+  EDIT_COURSE_VISIBILITY: (courseId: number) =>
+    `/courses/${courseId}/visibility`,
+  DELETE_PLACE_TO_COURSE: (courseId: number, placeId: number) =>
+    `/courses/${courseId}/places/${placeId}`,
+
   GOOGLE_LOGIN: '/oauth/google/signIn',
   MY_MAP: '/maps/my',
+  MY_COURSE: '/courses/my',
   PLACE: '/places',
   IMAGES: '/images',
   PRE_SIGNED_POST: '/storage/preSignedPost',
+  USER_INFO: '/users/info',
 };
 
 export const IMAGE_EXTENSIONS = new Set([
