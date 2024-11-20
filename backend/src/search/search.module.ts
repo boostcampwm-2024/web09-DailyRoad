@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SearchController } from '@src/search/search.controller';
 import { SearchService } from '@src/search/search.service';
 import { PlaceModule } from '@src/place/place.module';
+import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { PlaceModule } from '@src/place/place.module';
       inject: [ConfigService],
     }),
   ],
-  providers: [SearchService],
+  providers: [SearchService, ElasticSearchQuery],
   controllers: [SearchController],
   exports: [],
 })

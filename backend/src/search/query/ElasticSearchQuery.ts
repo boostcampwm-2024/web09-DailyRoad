@@ -1,6 +1,8 @@
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ElasticSearchQuery {
   constructor(private readonly esService: ElasticsearchService) {}
 
