@@ -5,7 +5,6 @@ import { BaseMap, Map } from '@/types';
 import { useEditMapMutation } from '@/hooks/api/useEditMapMutation';
 import { useMapForm } from '@/hooks/useMapForm';
 
-import PlaceListPanel from '../Place/PlaceListPanel';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 
@@ -17,6 +16,7 @@ const EditMapForm = ({ mapData }: EditMapFormProps) => {
   const editMapMutation = useEditMapMutation();
   const navigate = useNavigate();
   const addToast = useStore((state) => state.addToast);
+
   const initialMapData: BaseMap = {
     title: mapData.title,
     description: mapData.description,
@@ -52,7 +52,6 @@ const EditMapForm = ({ mapData }: EditMapFormProps) => {
           isEditMode={true}
         />
       </BaseWrapper>
-      <PlaceListPanel places={mapData.places} />
     </>
   );
 };

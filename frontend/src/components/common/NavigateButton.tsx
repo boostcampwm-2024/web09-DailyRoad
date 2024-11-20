@@ -6,7 +6,7 @@ type NavigateButtonProps = {
   className?: string;
 };
 
-const NavigateButton = ({ text, to, className }: NavigateButtonProps) => {
+const NavigateButton = ({ text, to, className = '' }: NavigateButtonProps) => {
   const navigate = useNavigate();
   const handleNavigation = () => {
     navigate(to);
