@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserRequest } from './dto/CreateUserRequest';
 import { UserIconResponse } from '@src/user/dto/UserIconResponse';
+import { UserNotFoundException } from '@src/user/exception/UserNotFoundException';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,9 @@ export class UserService {
 
   async getUserInfo(userId: number) {
     const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new UserNotFoundException(userId);
+    }
     return UserIconResponse.from(user);
   }
 }
