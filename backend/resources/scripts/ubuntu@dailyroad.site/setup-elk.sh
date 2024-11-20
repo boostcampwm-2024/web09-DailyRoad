@@ -56,32 +56,6 @@ else
     exit 1
 fi
 
-# 초기 사용자 및 권한 설정
-echo "Setting up initial users and permissions..."
-docker-compose up setup
-
-# ELK 스택 시작
-echo "Starting ELK stack..."
-docker-compose up -d
-
-echo "Waiting for Elasticsearch to be ready..."
-until curl -s -o /dev/null -w "%{http_code}" -u elastic:"${ELASTIC_PASSWORD}" http://localhost:9200 | grep -q "200"; do
-    sleep 10
-    echo "Waiting for Elasticsearch..."
-done
-echo "Elasticsearch is ready."
-
-
-# Logstash 사용자에게 writer 권한 부여
-echo "Assigning writer role to Logstash user..."
-if ! curl -u elastic:"${ELASTIC_PASSWORD}" -X PUT "http://localhost:9200/_security/role/logstash_writer" \
-    -H "Content-Type: application/json" \
-    -d "{\"cluster\": [\"manage_index_templates\", \"monitor\", \"manage_ilm\"], \"indices\": [{\"names\": [\"${SERVICE_NAME}-*\"], \"privileges\": [\"write\", \"create_index\"]}]}"; then
-    echo "Failed to assign writer role to Logstash user."
-    exit 1
-fi
-
-
 # Elasticsearch 인덱스 템플릿 등록
 if [ -f "$TEMPLATE_FILE" ]; then
     echo "Registering Elasticsearch index template..."
@@ -93,14 +67,42 @@ else
     exit 1
 fi
 
+# Kibana Painless 스크립트 설정
+if [ -d "$KIBANA_SCRIPTS_DIR" ]; then
+    for SCRIPT in "$KIBANA_SCRIPTS_DIR"/*.painless; do
+        SCRIPT_NAME=$(basename "$SCRIPT" .painless)
+        echo "Adding Kibana Painless script: $SCRIPT_NAME"
+        curl -u elastic:"${ELASTIC_PASSWORD}" -X POST "http://localhost:9200/_scripts/$SCRIPT_NAME" \
+        -H "Content-Type: application/json" \
+        -d @"$SCRIPT"
+    done
+else
+    echo "Kibana scripts directory not found: $KIBANA_SCRIPTS_DIR"
+fi
+
+# 초기 사용자 및 권한 설정
+echo "Setting up initial users and permissions..."
+docker-compose up setup
+
+# ELK 스택 시작
+echo "Starting ELK stack..."
+docker-compose up -d
+
 # Kibana 초기화 대기
 echo "Waiting for Kibana to initialize..."
-until curl -s -o /dev/null -w "%{http_code}" -X GET http://localhost:5601/api/status | grep -q "200"; do
-    sleep 10
-    echo "Kibana is still initializing..."
-done
-echo "Kibana is ready."
+sleep 60
 
+# Logstash 사용자에게 writer 권한 부여
+echo "Assigning writer role to Logstash user..."
+curl -u elastic:"${ELASTIC_PASSWORD}" -X PUT "http://localhost:9200/_security/role/logstash_writer" -H "Content-Type: application/json" -d "{
+  \"cluster\": [\"manage_index_templates\", \"monitor\", \"manage_ilm\"],
+  \"indices\": [
+    {
+      \"names\": [\"${SERVICE_NAME}-*\"],
+      \"privileges\": [\"write\", \"create_index\"]
+    }
+  ]
+}"
 
 # ELK 스택 상태 확인
 docker-compose ps
