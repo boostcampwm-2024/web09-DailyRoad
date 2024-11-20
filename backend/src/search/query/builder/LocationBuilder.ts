@@ -1,4 +1,4 @@
-export const LocationQueryBuilder = {
+export const LocationQueryBuilders = {
   GAUSS_LOCATION: (
     lat: number,
     long: number,
