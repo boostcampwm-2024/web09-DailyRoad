@@ -7,11 +7,12 @@ export const useAddMapMutation = (mode: CreateMapType) => {
   const queryClient = useQueryClient();
 
   const mutationFn = mode === 'MAP' ? createMap : createCourse;
+  const queryKey = mode === 'MAP' ? 'maps' : 'courses';
 
   const addMapMutation = useMutation({
     mutationFn: mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['maps'] });
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
