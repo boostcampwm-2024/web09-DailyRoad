@@ -22,7 +22,7 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
   const activePlace = useStore((state) => state.place);
   const customPlace = useMemo(
     () => places.find((place) => place.id === activePlace.id),
-    [places, activePlace],
+    [places, activePlace.id],
   );
 
   return (
@@ -32,7 +32,11 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
           <div className="flex justify-between">
             <DashBoardHeader title="나의 지도" />
             <div className="flex gap-1 text-center">
-              <EditMapButton mapId={mapData.id} text="수정" />
+              <EditMapButton
+                mapId={mapData.id}
+                text="수정"
+                to={`/edit/map/${mapData.id}`}
+              />
               <p>|</p>
               <DeleteMapButton mapId={mapData.id} text="삭제" />
             </div>
@@ -43,6 +47,11 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
           <p>{description}</p>
         </Box>
         <Box>
+          <EditMapButton
+            mapId={mapData.id}
+            text="수정"
+            to={`/create/map/${mapData.id}`}
+          />
           {places.map((place) => (
             <div key={place.id} onClick={() => setIsSidePanelOpen(true)}>
               <PlaceItem key={place.id} place={place} isDetailPage={true} />
