@@ -10,10 +10,10 @@ export class SearchController {
   async search(
     @Query('query') query: string,
     @Query('lat') lat?: number,
-    @Query('lon') lon?: number,
+    @Query('long') long?: number,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
   ) {
-    return await this.searchService.search(query, lat, lon, page, limit);
+    return await this.searchService.search(query, lat, long, page, limit);
   }
 }

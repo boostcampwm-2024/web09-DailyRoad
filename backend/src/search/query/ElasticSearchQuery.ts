@@ -9,12 +9,12 @@ export class ElasticSearchQuery {
   async searchPlace(
     query: string,
     lat?: number,
-    lon?: number,
+    long?: number,
     page: number = 1,
     size: number = 10,
   ) {
     const tokens = await this.tokenizeQuery(query);
-    const location = !isNaN(lat) && !isNaN(lon) ? { lat, lon } : null;
+    const location = !isNaN(lat) && !isNaN(long) ? { lat, long: long } : null;
     const from = (page - 1) * size;
     return await this.esService.search({
       index: ElasticSearchConfig.PLACE_INDEX,
@@ -79,7 +79,7 @@ export class ElasticSearchQuery {
                   {
                     gauss: {
                       location: {
-                        origin: `${location.lat},${location.lon}`,
+                        origin: `${location.lat},${location.long}`,
                         scale: '10km',
                         offset: '2km',
                         decay: 0.5,
