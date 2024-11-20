@@ -6,8 +6,9 @@ import {
   Min,
   Max,
   IsUrl,
+  IsOptional,
 } from 'class-validator';
-import { Place } from '../entity/place.entity';
+import { Place } from '@src/place/entity/place.entity';
 
 export class CreatePlaceRequest {
   @IsString()
@@ -18,9 +19,7 @@ export class CreatePlaceRequest {
   @IsNotEmpty()
   name: string;
 
-  @IsUrl()
-  thumbnailUrl?: string;
-
+  @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(5)
@@ -33,23 +32,30 @@ export class CreatePlaceRequest {
     latitude: number;
   };
 
+  @IsOptional()
   @IsString()
   formattedAddress?: string;
 
+  @IsOptional()
   @IsString()
   category?: string;
 
+  @IsOptional()
   @IsString()
   description?: string;
 
+  @IsOptional()
   @IsUrl()
   detailPageUrl?: string;
 
-  toEntity() {
+  @IsString()
+  photoReference: string;
+
+  toEntity(thumbnailUrl: string) {
     return new Place(
       this.googlePlaceId,
       this.name,
-      this.thumbnailUrl,
+      thumbnailUrl,
       this.rating,
       this.location.longitude,
       this.location.latitude,

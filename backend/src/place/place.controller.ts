@@ -18,6 +18,7 @@ import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   @Post()
   async importPlace(@Body() createPlaceDto: CreatePlaceRequest) {
