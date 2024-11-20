@@ -43,20 +43,15 @@ export class ElasticSearchQuery {
           score_mode: 'sum',
           functions: [
             // 완전 일치에 가중치 조정
-            {
-              filter: { term: { 'name.keyword': query } },
-              weight: 20,
-            },
+            ElasticSearchQueryBuilder.FILTER_TERM_NAME_KEYWORD(query),
             // name의 토큰 매칭 가중치
-            ...tokens.map((token) => ({
-              filter: { match: { name: token } },
-              weight: 15,
-            })),
+            ...tokens.map((token) =>
+              ElasticSearchQueryBuilder.FILTER_MATCH_NAME(token),
+            ),
             // formattedAddress의 토큰 매칭 가중치
-            ...tokens.map((token) => ({
-              filter: { match: { formattedAddress: token } },
-              weight: 10,
-            })),
+            ...tokens.map((token) =>
+              ElasticSearchQueryBuilder.FILTER_MATCH_FORMATTED_ADDRESS(token),
+            ),
             // 위치 정보 가중치
             ...(location
               ? [
@@ -78,20 +73,8 @@ export class ElasticSearchQuery {
       query: {
         bool: {
           should: [
-            {
-              prefix: {
-                name: {
-                  value: query,
-                },
-              },
-            },
-            {
-              prefix: {
-                formattedAddress: {
-                  value: query,
-                },
-              },
-            },
+            ElasticSearchQueryBuilder.PREFIX_NAME(query),
+            ElasticSearchQueryBuilder.PREFIX_FORMATTED_ADDRESS(query),
           ],
         },
       },
