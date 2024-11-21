@@ -44,12 +44,13 @@ sed -i "s/^ELASTIC_VERSION=.*/ELASTIC_VERSION=${ELASTIC_VERSION}/" .env
 sed -i "s/^ELASTIC_PASSWORD=.*/ELASTIC_PASSWORD=${ELASTIC_PASSWORD}/" .env
 sed -i "s/^LOGSTASH_PASSWORD=.*/LOGSTASH_PASSWORD=${LOGSTASH_PASSWORD}/" .env
 sed -i "s/^KIBANA_PASSWORD=.*/KIBANA_PASSWORD=${KIBANA_PASSWORD}/" .env
-sed -i "s/^SERVICE_NAME=.*/SERVICE_NAME=${SERVICE_NAME}/" .env
+
 sed -i "s/'//g" .env # 작은 따옴표 제거
 
 # Logstash 구성 복사
 if [ -f "$LOGSTASH_CONFIG" ]; then
     echo "Copying Logstash configuration..."
+    sed -i "s|%SERVICE_NAME%|${SERVICE_NAME}|g" "$LOGSTASH_CONFIG"
     cp "$LOGSTASH_CONFIG" logstash/pipeline/logstash.conf
 else
     echo "Logstash configuration file not found: $LOGSTASH_CONFIG"
