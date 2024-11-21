@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, ILike } from 'typeorm';
+import { DataSource, ILike, Repository } from 'typeorm';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 import { Course } from './entity/course.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CoursePlace } from '@src/course/entity/course-place.entity';
 
 @Injectable()
 export class CourseRepository extends SoftDeleteRepository<Course, number> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    @InjectRepository(CoursePlace)
+    private coursePlaceRepository: Repository<CoursePlace>,
+  ) {
     super(Course, dataSource.createEntityManager());
   }
 
@@ -56,5 +62,21 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
     thumbnailUrl: string,
   ) {
     return this.update(id, { title, description, thumbnailUrl });
+  }
+
+  async updateCoursePlaceById(course: Course) {
+    await this.coursePlaceRepository
+      .createQueryBuilder()
+      .delete()
+      .where('course_id = :courseId', { courseId: course.id })
+      .execute();
+
+    return this.coursePlaceRepository
+      .createQueryBuilder()
+      .insert()
+      .into(CoursePlace)
+      .values(course.coursePlaces)
+      .orUpdate(['order'], ['course_id', 'place_id'])
+      .execute();
   }
 }

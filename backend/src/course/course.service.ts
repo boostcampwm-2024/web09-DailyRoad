@@ -118,7 +118,7 @@ export class CourseService {
     );
 
     course.setPlaces(setPlacesOfCourseRequest.places);
-    await this.courseRepository.save(course); // Todo. Q.바로 장소 조회하면 장소 정보가 없음.. (장소 참조만 객체에 저장했기 때문)
+    await this.courseRepository.updateCoursePlaceById(course);
     const reloadedCourse = await this.courseRepository.findById(course.id);
 
     return {
