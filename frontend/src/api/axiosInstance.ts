@@ -9,6 +9,6 @@ export const axiosInstance = axios.create({
   withCredentials: true,
   useAuth: true,
 });
-axiosInstance.interceptors.request.use(checkAndSetToken);
+//axiosInstance.interceptors.request.use(checkAndSetToken);
 
 axiosInstance.interceptors.response.use((response) => response, handleAPIError);
