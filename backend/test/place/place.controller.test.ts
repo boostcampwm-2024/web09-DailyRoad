@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
-import { ValidationPipe, INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { initDataSource } from '@test/config/datasource.config';
@@ -10,6 +10,9 @@ import { PlaceService } from '@src/place/place.service';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SearchModule } from '@src/search/search.module';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('PlaceController', () => {
   let app: INestApplication;
@@ -17,6 +20,11 @@ describe('PlaceController', () => {
   let dataSource: DataSource;
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
+
+  const eventEmitterMock = {
+    emit: jest.fn(),
+    on: jest.fn(),
+  };
 
   const configServiceMock = {
     get: jest.fn((key: string) => {
@@ -26,13 +34,16 @@ describe('PlaceController', () => {
   };
 
   beforeAll(async () => {
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
     placeRepository = new PlaceRepository(dataSource);
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PlaceModule],
+      imports: [PlaceModule, SearchModule],
     })
+      .overrideProvider(EventEmitter2)
+      .useValue(eventEmitterMock)
       .overrideProvider(PlaceRepository)
       .useValue(placeRepository)
       .overrideProvider(ConfigService)

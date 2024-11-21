@@ -1,13 +1,15 @@
 import { PlaceFixture } from './fixture/place.fixture';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { PlaceRepository } from '@src/place/place.repository';
-import { initDataSource } from '../config/datasource.config';
+import { initDataSource } from '@test/config/datasource.config';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('PlaceRepository', () => {
   let container: StartedMySqlContainer;
   let placeRepository: PlaceRepository;
 
   beforeAll(async () => {
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     placeRepository = new PlaceRepository(await initDataSource(container));
   });

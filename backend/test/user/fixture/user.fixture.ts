@@ -1,5 +1,5 @@
-import { UserRole } from '../../../src/user/user.role';
-import { User } from '../../../src/user/entity/user.entity';
+import { UserRole } from '@src/user/user.role';
+import { User } from '@src/user/entity/user.entity';
 import { UserFixtureType } from './user.fixture.type';
 
 export class UserFixture {

@@ -1,10 +1,11 @@
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { MapRepository } from '../../src/map/map.repository';
+import { MapRepository } from '@src/map/map.repository';
 import { DataSource } from 'typeorm';
-import { User } from '../../src/user/entity/user.entity';
-import { initDataSource } from '../config/datasource.config';
-import { UserFixture } from '../user/fixture/user.fixture';
-import { MapFixture } from './fixture/map.fixture';
+import { User } from '@src/user/entity/user.entity';
+import { initDataSource } from '@test/config/datasource.config';
+import { UserFixture } from '@test/user/fixture/user.fixture';
+import { MapFixture } from '@test/map/fixture/map.fixture';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('MapRepository', () => {
   let container: StartedMySqlContainer;
@@ -13,6 +14,7 @@ describe('MapRepository', () => {
   let fakeUser1: User;
   let fakeUser2: User;
   beforeAll(async () => {
+    initializeTransactionalContext();
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
     container = await new MySqlContainer().withReuse().start();
