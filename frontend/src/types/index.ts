@@ -18,6 +18,8 @@ export type Place = {
   category?: string;
 };
 
+export type CoursePlace = Place & CustomPlace & CourseOrder;
+
 export type CourseOrder = {
   order: number;
 };
@@ -41,7 +43,7 @@ export type Course = {
   thumbnailUrl: string;
   description: string;
   pinCount: number;
-  places: (Place & CustomPlace & CourseOrder)[];
+  places: CoursePlace[];
 };
 
 export type MapList = {
