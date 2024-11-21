@@ -7,9 +7,11 @@ type LogInResponse = {
 };
 
 export const postLogIn = async (code: string) => {
+  const encodedCode = encodeURIComponent(code);
   const { data } = await axiosInstance.post<LogInResponse>(
     END_POINTS.GOOGLE_LOGIN,
-    { code },
+    { code: encodedCode },
+    { useAuth: false },
   );
   return data;
 };

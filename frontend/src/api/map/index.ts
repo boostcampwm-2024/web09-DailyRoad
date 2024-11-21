@@ -16,7 +16,9 @@ type EditVisResponse = {
 };
 
 export const getMap = async (mapId: number) => {
-  const { data } = await axiosInstance.get<Map>(END_POINTS.MAP(mapId));
+  const { data } = await axiosInstance.get<Map>(END_POINTS.MAP(mapId), {
+    useAuth: false,
+  });
   return data;
 };
 
