@@ -8,10 +8,6 @@ import { loadGoogleMapsApi } from './lib/googleMapsAPI-loader';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-(async () => {
-  await loadGoogleMapsApi();
-})();
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -27,9 +23,7 @@ const queryClient = new QueryClient({
 
 root.render(
   <QueryClientProvider client={queryClient}>
-    <StrictMode>
-      <App />
-      {isDevelopment && <ReactQueryDevtools initialIsOpen={false} />}
-    </StrictMode>
+    <App />
+    {isDevelopment && <ReactQueryDevtools initialIsOpen={false} />}
   </QueryClientProvider>,
 );
