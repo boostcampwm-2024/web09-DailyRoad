@@ -8,6 +8,7 @@ import {
   HttpExceptionFilter,
   BaseExceptionFilter,
 } from './common/exception/filter/GlobalExceptionFilter';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 process.env.NODE_ENV =
   process.env.NODE_ENV && process.env.NODE_ENV.trim().toLowerCase() === 'prod'
@@ -15,6 +16,8 @@ process.env.NODE_ENV =
     : 'develop';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const logger = app.get(Logger);
 
