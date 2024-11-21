@@ -9,7 +9,7 @@ export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
   if (!config.useAuth || !config.headers || config.headers.Authorization)
     return config;
 
-  const accessToken = import.meta.env.VITE_TEST_ACCESS_TOKEN;
+  const accessToken = localStorage.getItem(`ACCESS_TOKEN_KEY`);
   if (!accessToken) {
     window.location.href = ROUTES.ROOT;
     throw new Error('토큰이 유효하지 않습니다');
