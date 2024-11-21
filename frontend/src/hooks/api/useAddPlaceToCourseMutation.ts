@@ -1,5 +1,4 @@
-import { addPlaceToCourse, addPlaceToMap } from '@/api/place';
-import { CreateMapType } from '@/types';
+import { addPlaceToCourse } from '@/api/place';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useAddPlaceToCourseMutation = () => {
