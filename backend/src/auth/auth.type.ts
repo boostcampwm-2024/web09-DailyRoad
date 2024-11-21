@@ -1,3 +1,9 @@
+export type OAuthUserInfo = {
+  oauthId: string;
+  nickname: string;
+  profileImageUrl: string;
+};
+
 export type googleTokenResponse = {
   access_token: string;
 };
