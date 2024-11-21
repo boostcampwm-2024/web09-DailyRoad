@@ -1,7 +1,11 @@
 import { INITIAL_MAP_CONFIG } from '@/constants/map';
 import { StateCreator } from 'zustand';
 import { StoreState } from '@/types';
-import { getGoogleMapClass, getPlaceClass } from '@/lib/googleMapsAPI-loader';
+import {
+  getGoogleMapClass,
+  getPlaceClass,
+  loadGoogleMapsApi,
+} from '@/lib/googleMapsAPI-loader';
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
@@ -23,7 +27,8 @@ export const createGoogleMapSlice: StateCreator<
 
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
-  initializeMap: (container: HTMLElement) => {
+  initializeMap: async (container: HTMLElement) => {
+    await loadGoogleMapsApi();
     const GoogleMap = getGoogleMapClass();
     const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
     set({ googleMap: map });
