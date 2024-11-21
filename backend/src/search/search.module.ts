@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SearchController } from '@src/search/search.controller';
@@ -8,7 +8,7 @@ import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 
 @Module({
   imports: [
-    PlaceModule,
+    forwardRef(() => PlaceModule),
     ElasticsearchModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -25,6 +25,6 @@ import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
   ],
   providers: [SearchService, ElasticSearchQuery],
   controllers: [SearchController],
-  exports: [],
+  exports: [SearchService],
 })
 export class SearchModule {}
