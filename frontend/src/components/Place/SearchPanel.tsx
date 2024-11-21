@@ -11,7 +11,7 @@ import SideContainer from '../common/SideContainer';
 import DetailPlaceForm from './DetailPlaceForm';
 import { useOverlay } from '@/hooks/useOverlay';
 import Modal from '@/components/common/Modal/Modal';
-import { Course, Map } from '@/types';
+import type { Course, CoursePlace, CustomPlace, Map, Place } from '@/types';
 import PlaceListPanel from './PlaceListPanel';
 
 type SearchPanelProps = {
@@ -21,6 +21,7 @@ type SearchPanelProps = {
 const SearchPanel = ({ mapData }: SearchPanelProps) => {
   const [query, setQuery] = useState('');
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+
   const {
     isOpen: isFormModalOpen,
     close: closeFormModal,
@@ -41,11 +42,18 @@ const SearchPanel = ({ mapData }: SearchPanelProps) => {
           <AddPlaceButton onClick={openFormModal} />
         </BaseWrapper>
         {isSidePanelOpen && (
-          <PlaceListPanel places={mapData.places} isDeleteMode={true} />
+          <PlaceListPanel
+            places={mapData.places}
+            isDeleteMode={true}
+            isDraggable={mapData instanceof Map ? false : true}
+          />
         )}
       </SideContainer>
       <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
-        <DetailPlaceForm oncloseModal={closeFormModal} />
+        <DetailPlaceForm
+          oncloseModal={closeFormModal}
+          placeList={mapData.places as CoursePlace[]}
+        />
       </Modal>
     </>
   );
