@@ -5,7 +5,7 @@ import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
 import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
 import { ConfigService } from '@nestjs/config';
-import { SearchService } from '@src/search/search.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class PlaceService {
   constructor(
     private readonly placeRepository: PlaceRepository,
     private readonly configService: ConfigService,
-    private readonly searchService: SearchService,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     this.GOOGLE_API_KEY = this.configService.get(<string>'GOOGLE_MAPS_API_KEY');
   }
@@ -37,7 +37,7 @@ export class PlaceService {
     );
 
     const savedPlace = await this.placeRepository.save(place);
-    await this.searchService.savePlace(savedPlace);
+    this.eventEmitter.emit('place.created', savedPlace);
     return { id: savedPlace.id };
   }
 
