@@ -1,5 +1,5 @@
 import { END_POINTS } from '@/constants/api';
-import { CoursePlace, CustomPlace, Place } from '@/types';
+import { CoursePlace, CustomPlace, Place, PlaceWithOrder } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 
 export const getPlace = async (queryString: string, pageParam: number) => {
@@ -34,11 +34,11 @@ export const addPlaceToCourse = async ({
   places,
 }: {
   id: number;
-  places: CoursePlace[];
+  places: PlaceWithOrder[];
 }) => {
   const { data } = await axiosInstance.put<CoursePlace[]>(
     END_POINTS.ADD_PLACE_TO_COURSE(id),
-    places,
+    { places },
   );
   return { ...data, id };
 };
