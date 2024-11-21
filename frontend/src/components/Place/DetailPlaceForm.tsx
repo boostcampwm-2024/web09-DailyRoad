@@ -5,16 +5,18 @@ import { useState } from 'react';
 import Box from '../common/Box';
 
 import DashBoardHeader from '../common/DashBoardHeader';
-import { CreateMapType, CustomPlace, MarkerColor } from '@/types';
+import { CoursePlace, CreateMapType, CustomPlace, MarkerColor } from '@/types';
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
 import { useLocation, useParams } from 'react-router-dom';
+import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMutation';
 
 type DetailPlaceFormProps = {
   oncloseModal: () => void;
+  placeList: CoursePlace[];
 };
 
-const DetailPlaceForm = ({ oncloseModal }: DetailPlaceFormProps) => {
+const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
   const place = useStore((state) => state.place);
   const addToast = useStore((state) => state.addToast);
 
@@ -25,7 +27,8 @@ const DetailPlaceForm = ({ oncloseModal }: DetailPlaceFormProps) => {
   const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
   const id = Number(useParams().id);
 
-  const addPlaceMutation = useAddPlaceMutation(mode);
+  const addPlaceMutation = useAddPlaceMutation();
+  const addPlaceToCourseMutation = useAddPlaceToCourseMutation();
 
   const placeMarker: CustomPlace = {
     placeId: place.id,
@@ -33,9 +36,25 @@ const DetailPlaceForm = ({ oncloseModal }: DetailPlaceFormProps) => {
     comment: description,
   };
 
+  const newPlaceList = [
+    ...placeList,
+    { ...place, ...placeMarker, order: placeList.length + 1 },
+  ];
   const onSubmit = () => {
-    addPlaceMutation.mutate(
-      { id, ...placeMarker },
+    if (mode === 'MAP') {
+      addPlaceMutation.mutate(
+        { id, ...placeMarker },
+        {
+          onSuccess: () => {
+            addToast('장소가 추가되었습니다.', '', 'success');
+            oncloseModal();
+          },
+        },
+      );
+      return;
+    }
+    addPlaceToCourseMutation.mutate(
+      { id, places: newPlaceList },
       {
         onSuccess: () => {
           addToast('장소가 추가되었습니다.', '', 'success');
