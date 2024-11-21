@@ -20,9 +20,14 @@ import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMuta
 type DetailPlaceFormProps = {
   oncloseModal: () => void;
   placeList: CoursePlace[];
+  mode: CreateMapType;
 };
 
-const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
+const DetailPlaceForm = ({
+  oncloseModal,
+  placeList,
+  mode,
+}: DetailPlaceFormProps) => {
   const place = useStore((state) => state.place);
   const setPlace = useStore((state) => state.setPlace);
   const addToast = useStore((state) => state.addToast);
@@ -30,8 +35,6 @@ const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
   const [description, setDescription] = useState('');
   const [activeColor, setActiveColor] = useState<MarkerColor | null>(null);
 
-  const location = useLocation();
-  const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
   const id = Number(useParams().id);
 
   const addPlaceMutation = useAddPlaceMutation();
@@ -45,7 +48,7 @@ const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
 
   const newPlaceList = [
     ...placeList.map((place) => ({
-      placeId: place.placeId,
+      placeId: place.id,
       comment: place.comment,
       order: place.order + 1,
     })),
@@ -74,6 +77,7 @@ const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
       {
         onSuccess: () => {
           addToast('장소가 추가되었습니다.', '', 'success');
+          setPlace({} as Place);
           oncloseModal();
         },
       },
