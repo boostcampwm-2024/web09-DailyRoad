@@ -58,6 +58,7 @@ describe('CourseService', () => {
       countByUserId: jest.fn(),
       updateIsPublicById: jest.fn(),
       updateInfoById: jest.fn(),
+      updateCoursePlaceById: jest.fn(),
       existById: jest.fn(),
       softDelete: jest.fn(),
     };

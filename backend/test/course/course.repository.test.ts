@@ -2,21 +2,27 @@ import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { initDataSource } from '../config/datasource.config';
 import { CourseRepository } from '../../src/course/course.repository';
 import { CourseFixture } from './fixture/course.fixture';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../../src/user/entity/user.entity';
 import { UserFixture } from '../user/fixture/user.fixture';
+import { CoursePlace } from '@src/course/entity/course-place.entity';
 
 describe('CourseRepository', () => {
   let container: StartedMySqlContainer;
-  let courseRepository: CourseRepository;
   let datasource: DataSource;
+
+  let courseRepository: CourseRepository;
+  let coursePlaceRepository: Repository<CoursePlace>;
+
   let fakeUser1: User;
   let fakeUser2: User;
 
   beforeAll(async () => {
     container = await new MySqlContainer().withReuse().start();
     datasource = await initDataSource(container);
-    courseRepository = new CourseRepository(datasource);
+
+    coursePlaceRepository = datasource.getRepository(CoursePlace);
+    courseRepository = new CourseRepository(datasource, coursePlaceRepository);
 
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
