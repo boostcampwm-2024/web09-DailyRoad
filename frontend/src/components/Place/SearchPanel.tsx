@@ -11,8 +11,9 @@ import SideContainer from '../common/SideContainer';
 import DetailPlaceForm from './DetailPlaceForm';
 import { useOverlay } from '@/hooks/useOverlay';
 import Modal from '@/components/common/Modal/Modal';
-import type { Course, CoursePlace, CustomPlace, Map, Place } from '@/types';
+import type { Course, CoursePlace, CreateMapType, Map } from '@/types';
 import PlaceListPanel from './PlaceListPanel';
+import { useLocation } from 'react-router-dom';
 
 type SearchPanelProps = {
   mapData: Map | Course;
@@ -21,6 +22,8 @@ type SearchPanelProps = {
 const SearchPanel = ({ mapData }: SearchPanelProps) => {
   const [query, setQuery] = useState('');
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+  const location = useLocation();
+  const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
 
   const {
     isOpen: isFormModalOpen,
@@ -41,16 +44,17 @@ const SearchPanel = ({ mapData }: SearchPanelProps) => {
           </Box>
           <AddPlaceButton onClick={openFormModal} />
         </BaseWrapper>
-        {isSidePanelOpen && (
+        {isSidePanelOpen && mapData.places.length && (
           <PlaceListPanel
             places={mapData.places}
             isDeleteMode={true}
-            isDraggable={mapData instanceof Map ? false : true}
+            isDraggable={mode === 'MAP' ? false : true}
           />
         )}
       </SideContainer>
       <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
         <DetailPlaceForm
+          mode={mode}
           oncloseModal={closeFormModal}
           placeList={mapData.places as CoursePlace[]}
         />
