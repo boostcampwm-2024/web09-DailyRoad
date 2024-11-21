@@ -14,6 +14,6 @@ export class SearchController {
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
   ) {
-    return await this.searchService.search(query, lat, long, page, limit);
+    return await this.searchService.searchPlace(query, lat, long, page, limit);
   }
 }
