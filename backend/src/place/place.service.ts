@@ -1,10 +1,12 @@
-import { Injectable, BadGatewayException } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import { PlaceRepository } from './place.repository';
 import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
 import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
 import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
 import { ConfigService } from '@nestjs/config';
+import { SearchService } from '@src/search/search.service';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class PlaceService {
@@ -17,10 +19,12 @@ export class PlaceService {
   constructor(
     private readonly placeRepository: PlaceRepository,
     private readonly configService: ConfigService,
+    private readonly searchService: SearchService,
   ) {
     this.GOOGLE_API_KEY = this.configService.get(<string>'GOOGLE_MAPS_API_KEY');
   }
 
+  @Transactional()
   async addPlace(createPlaceRequest: CreatePlaceRequest) {
     const { googlePlaceId } = createPlaceRequest;
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {
@@ -33,6 +37,7 @@ export class PlaceService {
     );
 
     const savedPlace = await this.placeRepository.save(place);
+    await this.searchService.savePlace(savedPlace);
     return { id: savedPlace.id };
   }
 
