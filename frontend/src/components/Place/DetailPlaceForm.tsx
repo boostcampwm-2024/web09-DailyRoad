@@ -37,8 +37,16 @@ const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
   };
 
   const newPlaceList = [
-    ...placeList,
-    { ...place, ...placeMarker, order: placeList.length + 1 },
+    ...placeList.map((place) => ({
+      placeId: place.placeId,
+      comment: place.comment,
+      order: place.order + 1,
+    })),
+    {
+      placeId: place.id,
+      comment: placeMarker.comment,
+      order: placeList.length + 1,
+    },
   ];
   const onSubmit = () => {
     if (mode === 'MAP') {

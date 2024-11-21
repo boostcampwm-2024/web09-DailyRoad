@@ -20,6 +20,12 @@ export type Place = {
 
 export type CoursePlace = Place & CustomPlace & CourseOrder;
 
+export type PlaceWithOrder = {
+  placeId: number;
+  comment: string;
+  order: number;
+};
+
 export type CourseOrder = {
   order: number;
 };
