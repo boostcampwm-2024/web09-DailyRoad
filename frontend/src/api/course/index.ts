@@ -26,7 +26,10 @@ export const createCourse = async (baseCourseData: Omit<BaseMap, 'mode'>) => {
 };
 
 export const getCourse = async (courseId: number) => {
-  const { data } = await axiosInstance.get<Course>(END_POINTS.COURSE(courseId));
+  const { data } = await axiosInstance.get<Course>(
+    END_POINTS.COURSE(courseId),
+    { useAuth: false },
+  );
   return data;
 };
 
@@ -35,6 +38,7 @@ export const getCourseList = async (pageParam: number) => {
     params: {
       page: pageParam,
     },
+    useAuth: false,
   });
   return data;
 };

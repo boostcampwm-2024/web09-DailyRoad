@@ -1,5 +1,5 @@
 import { END_POINTS } from '@/constants/api';
-import { CustomPlace, Place } from '@/types';
+import { CoursePlace, CustomPlace, Place } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 
 export const getPlace = async (queryString: string, pageParam: number) => {
@@ -8,6 +8,7 @@ export const getPlace = async (queryString: string, pageParam: number) => {
       query: queryString,
       page: pageParam,
     },
+    useAuth: false,
   });
 
   return data;
@@ -27,13 +28,17 @@ export const addPlaceToMap = async ({
   );
   return { ...data, id };
 };
+
 export const addPlaceToCourse = async ({
   id,
-  ...placeMarkerData
-}: AddPlaceParams) => {
-  const { data } = await axiosInstance.post<CustomPlace>(
+  places,
+}: {
+  id: number;
+  places: CoursePlace[];
+}) => {
+  const { data } = await axiosInstance.put<CoursePlace[]>(
     END_POINTS.ADD_PLACE_TO_COURSE(id),
-    placeMarkerData,
+    places,
   );
   return { ...data, id };
 };
