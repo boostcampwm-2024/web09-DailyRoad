@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { OAuthProviders } from './OAuthProviders';
+import { OAuthUserInfo } from '@src/auth/auth.type';
 
 export abstract class OAuthProvider {
   protected readonly clientId: string;
@@ -25,5 +26,5 @@ export abstract class OAuthProvider {
 
   abstract getAuthUrl(): string;
 
-  abstract getUserInfo(token: string): Promise<any>;
+  abstract getUserInfo(token: string): Promise<OAuthUserInfo>;
 }

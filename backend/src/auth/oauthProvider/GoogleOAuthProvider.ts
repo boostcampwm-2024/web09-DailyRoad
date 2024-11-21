@@ -1,7 +1,11 @@
 import { OAuthProvider } from './OAuthProvider';
 import { addBearerToken } from '../utils';
 import { AuthenticationException } from '../exception/AuthenticationException';
-import { isGoogleTokenResponse, isGoogleUserResponse } from '../auth.type';
+import {
+  isGoogleTokenResponse,
+  isGoogleUserResponse,
+  OAuthUserInfo,
+} from '../auth.type';
 import { ConfigService } from '@nestjs/config';
 import { OAuthProviders } from './OAuthProviders';
 
@@ -41,7 +45,7 @@ export class GoogleOAuthProvider extends OAuthProvider {
     return data.access_token;
   }
 
-  async getUserInfo(code: string): Promise<any> {
+  async getUserInfo(code: string): Promise<OAuthUserInfo> {
     const token = await this.getToken(code);
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
@@ -59,8 +63,8 @@ export class GoogleOAuthProvider extends OAuthProvider {
     }
     return {
       oauthId: data.id,
-      name: data.name,
-      picture: data.picture,
+      nickname: data.name,
+      profileImageUrl: data.picture,
     };
   }
 }
