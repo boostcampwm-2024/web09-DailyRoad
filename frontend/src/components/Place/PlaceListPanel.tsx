@@ -34,7 +34,8 @@ const PlaceListPanel = ({
     items.splice(result.destination.index, 0, reorderedItem);
 
     const newPlaces = items.map((place, index) => ({
-      ...place,
+      placeId: place.id,
+      comment: place.comment,
       order: index + 1,
     }));
     addPlaceToCourseMutation.mutate(
