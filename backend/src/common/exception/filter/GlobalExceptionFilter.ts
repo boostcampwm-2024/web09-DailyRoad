@@ -90,6 +90,8 @@ export class UnknownExceptionFilter implements ExceptionFilter {
       });
     }
 
+    console.error(exception);
+
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       code: -1,
       message: 'Internal server error',
