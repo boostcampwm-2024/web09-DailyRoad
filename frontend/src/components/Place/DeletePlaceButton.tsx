@@ -2,6 +2,7 @@ import useDeletePlaceMutation from '@/hooks/api/useDeletePlaceMutation';
 import { useStore } from '@/store/useStore';
 import { CreateMapType } from '@/types';
 import { useParams } from 'react-router-dom';
+import DeleteIcon from '../common/Icon/DeleteIcon';
 
 type DeletePlaceButtonProps = {
   placeId: number;
@@ -23,8 +24,13 @@ const DeletePlaceButton = ({ placeId }: DeletePlaceButtonProps) => {
     );
   };
   return (
-    <button type="button" onClick={onClick} aria-label="장소 삭제">
-      삭제
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="장소 삭제"
+      className="absolute right-2 top-2"
+    >
+      <DeleteIcon width={16} height={16} className="hover:fill-red-600" />
     </button>
   );
 };
