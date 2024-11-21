@@ -1,11 +1,11 @@
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { initDataSource } from '../config/datasource.config';
-import { CourseRepository } from '../../src/course/course.repository';
-import { CourseFixture } from './fixture/course.fixture';
+import { CourseRepository } from '@src/course/course.repository';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '../../src/user/entity/user.entity';
-import { UserFixture } from '../user/fixture/user.fixture';
+import { User } from '@src/user/entity/user.entity';
 import { CoursePlace } from '@src/course/entity/course-place.entity';
+import { initDataSource } from '@test/config/datasource.config';
+import { CourseFixture } from '@test/course/fixture/course.fixture';
+import { UserFixture } from '@test/user/fixture/user.fixture';
 
 describe('CourseRepository', () => {
   let container: StartedMySqlContainer;

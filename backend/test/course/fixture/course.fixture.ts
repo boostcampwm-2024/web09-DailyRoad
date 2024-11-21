@@ -1,4 +1,4 @@
-import { Course } from '../../../src/course/entity/course.entity';
+import { Course } from '@src/course/entity/course.entity';
 import { CourseFixtureType } from './course.fixture.type';
 
 export class CourseFixture {

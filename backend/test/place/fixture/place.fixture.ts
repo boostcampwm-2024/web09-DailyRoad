@@ -1,5 +1,5 @@
 import { Place } from '@src/place/entity/place.entity';
-import { PlaceFixtureType } from './place.fixture.type';
+import { PlaceFixtureType } from '@test/place/fixture/place.fixture.type';
 
 export class PlaceFixture {
   static createPlace = ({

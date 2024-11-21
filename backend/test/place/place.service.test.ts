@@ -3,11 +3,12 @@ import { PlaceService } from '@src/place/place.service';
 import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
 import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundException';
 import { PlaceRepository } from '@src/place/place.repository';
-import { PlaceCreateRequestFixture } from './fixture/PlaceCreateRequest.fixture';
-import { initDataSource } from '../config/datasource.config';
+import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
+import { initDataSource } from '@test/config/datasource.config';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
@@ -16,6 +17,7 @@ describe('PlaceService', () => {
   let dataSource: DataSource;
 
   beforeAll(async () => {
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
 
