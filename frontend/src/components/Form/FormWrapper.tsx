@@ -25,29 +25,32 @@ const FormWrapper = ({
   const { title, description, isPublic, mode, thumbnailUrl } = mapInfo;
 
   return (
-    <div className="h-full">
-      <DashBoardHeader title={header} />
-      <div className="flex h-[200px] gap-4 p-4">
-        <ImageUploader />
-        {!isEditMode && (
-          <select
-            value={mode}
-            onChange={(e) =>
-              updateMapInfo('mode', e.target.value as CreateMapType)
-            }
-            className="h-[41px] w-[144px] rounded border px-3 py-2"
-          >
-            <option value="MAP">지도</option>
-            <option value="COURSE">코스</option>
-          </select>
-        )}
-      </div>
+    <div className="h-full bg-gray-100">
+      <Box>
+        <DashBoardHeader title={header} />
+        <div className="flex gap-4">
+          <ImageUploader />
+          {!isEditMode && (
+            <select
+              value={mode}
+              onChange={(e) =>
+                updateMapInfo('mode', e.target.value as CreateMapType)
+              }
+              className="h-[41px] w-[144px] rounded border px-3 py-2"
+            >
+              <option value="MAP">지도</option>
+              <option value="COURSE">코스</option>
+            </select>
+          )}
+        </div>
+      </Box>
 
       <form
         className="flex flex-col gap-4 bg-gray-100"
         onSubmit={onSubmitHandler}
       >
         <Box>
+          <p className="text-lg font-semibold">지도 제목</p>
           <TextInputArea
             value={title}
             onChange={(value) => updateMapInfo('title', value)}

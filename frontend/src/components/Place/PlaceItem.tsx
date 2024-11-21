@@ -2,7 +2,6 @@ import { useStore } from '@/store/useStore';
 import { Place } from '@/types';
 
 import DeletePlaceButton from './DeletePlaceButton';
-
 type PlaceItemProps = {
   place: Place;
   isDetailPage?: boolean;
@@ -29,7 +28,7 @@ const PlaceItem = ({
       role="button"
       tabIndex={0}
       onClick={onPlaceClick}
-      className={`flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4`}
+      className={`relative flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4`}
     >
       <img
         src="/src/assets/Map.jpg"
@@ -38,9 +37,9 @@ const PlaceItem = ({
       />
       <div className="ml-4" aria-label={`${place.name} 정보`}>
         <h4 className="text-lg font-semibold">{place.name}</h4>
-        <p className="text-gray-500">{place.formed_address}</p>
+        <p className="text-sm text-gray-500">{place.formed_address}</p>
         <div
-          className="flex items-center text-center text-yellow-500"
+          className="flex items-center text-center text-sm text-yellow-500"
           aria-label={`평점 ${place.rating}점`}
         >
           ⭐️{place.rating}

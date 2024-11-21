@@ -24,6 +24,7 @@ const PlaceListPanel = ({
   const id = Number(useParams().id);
   const addPlaceToCourseMutation = useAddPlaceToCourseMutation();
   const addToast = useStore((state) => state.addToast);
+
   const handleDragend = (result: any) => {
     if (!result.destination) {
       return;
@@ -54,15 +55,24 @@ const PlaceListPanel = ({
 
   return (
     <DragDropContext onDragEnd={handleDragend}>
-      <BaseWrapper position="" top="" left="" className="h-2/3 w-1/2">
-        {isDeleteMode && (
-          <button onClick={handleDeleteModeToggle}>
-            {isDeleteModeActive ? '취소' : '삭제'}
-          </button>
-        )}
+      <BaseWrapper
+        position=""
+        top=""
+        left=""
+        className="scrollbar-thumb-rounded-lg h-2/3 w-1/2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500"
+      >
         <Droppable key="placeList" droppableId="placeList">
           {(provided, snapshot) => (
             <Box ref={provided.innerRef} {...provided.droppableProps}>
+              <h2 className="text-lg font-semibold">{`나의 장소 리스트`}</h2>
+              {isDeleteMode && (
+                <button
+                  className="border-bg-c_button_gray rounded-md border-[0.5px]"
+                  onClick={handleDeleteModeToggle}
+                >
+                  {isDeleteModeActive ? '취소' : '삭제모드'}
+                </button>
+              )}
               {places.map((place, index) => (
                 <Draggable
                   isDragDisabled={!isDraggable}
