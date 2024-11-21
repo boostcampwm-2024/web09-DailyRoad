@@ -3,14 +3,13 @@ import { axiosInstance } from '../axiosInstance';
 import { User } from '@/types';
 
 type LogInResponse = {
-  token: string;
+  accessToken: string;
 };
 
 export const postLogIn = async (code: string) => {
-  const encodedCode = encodeURIComponent(code);
   const { data } = await axiosInstance.post<LogInResponse>(
     END_POINTS.GOOGLE_LOGIN,
-    { code: encodedCode },
+    { code },
     { useAuth: false },
   );
   return data;

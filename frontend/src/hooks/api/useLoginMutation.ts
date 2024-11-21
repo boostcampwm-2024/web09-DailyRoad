@@ -11,10 +11,10 @@ export const useLogInMutation = () => {
 
   const logInMutation = useMutation({
     mutationFn: postLogIn,
-    onSuccess: ({ token }) => {
-      console.log('token', token);
-      localStorage.setItem(`ACCESS_TOKEN_KEY`, token);
-      axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
+    onSuccess: ({ accessToken }) => {
+      console.log('token', accessToken);
+      localStorage.setItem(`ACCESS_TOKEN_KEY`, accessToken);
+      axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
       logIn();
     },
     onSettled: () => {
