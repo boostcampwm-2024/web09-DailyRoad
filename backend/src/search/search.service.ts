@@ -16,7 +16,7 @@ export class SearchService {
     private readonly logger: PinoLogger,
   ) {}
 
-  async savePlace(place: Place): Promise<any> {
+  async savePlace(place: Place): Promise<void> {
     const data = ESPlaceSaveDTO.from(place);
     try {
       await this.elasticSearchService.index({
