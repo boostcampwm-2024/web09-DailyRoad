@@ -38,9 +38,9 @@ const TextInputArea = ({
             aria-label={placeholder || '텍스트 입력 영역'}
             role="textbox"
             aria-multiline="true"
-            className="gray bg-customGray h-full w-full rounded-lg border-none p-2 text-base focus:outline-none"
+            className="gray h-full w-full resize-none rounded-lg border-none p-2 text-base outline-none focus:outline-none"
           />
-          <div className="flex h-full flex-col-reverse text-xs text-c_placeholder_gray">
+          <div className="flex h-full flex-col-reverse p-1 text-xs text-c_placeholder_gray">
             <p>
               {value.length}/{maxLength}
             </p>
@@ -55,9 +55,9 @@ const TextInputArea = ({
             placeholder={placeholder}
             maxLength={maxLength}
             aria-label={placeholder || '텍스트 입력'}
-            className="bg-customGray w-full rounded-lg border-none p-2 text-sm focus:outline-none"
+            className="w-full rounded-lg border-none p-2 text-sm focus:outline-none"
           />
-          <div className="text-xs text-c_placeholder_gray">
+          <div className="p-1 text-xs text-c_placeholder_gray">
             {value.length}/{maxLength}
           </div>
         </>

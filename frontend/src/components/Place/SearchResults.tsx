@@ -27,9 +27,9 @@ const SearchResults = ({ query }: SearchResultsProps) => {
 
   return (
     <div className="max-h-[600px] flex-grow">
-      {query && <p className="text-base">"{query}"에 대한 검색결과</p>}
+      {query && <p className="p-1 text-base">"{query}"에 대한 검색결과</p>}
       {!isEmpty ? (
-        <div className="scrollbar-thumb-rounded-lg flex max-h-[600px] flex-col space-y-4 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
+        <div className="scrollbar-thumb-rounded-lg flex max-h-[600px] flex-col space-y-4 overflow-y-auto p-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
           {data?.pages.map((page, index) => (
             <React.Fragment key={index}>
               {page.map((place: Place) => (
