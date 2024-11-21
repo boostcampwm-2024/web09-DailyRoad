@@ -18,6 +18,8 @@ import { StorageModule } from './storage/storage.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CustomLoggerModule } from './common/log/CustomLoggerModule';
 import { SearchModule } from './search/search.module';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -25,6 +27,11 @@ import { SearchModule } from './search/search.module';
     CustomLoggerModule,
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
+      async dataSourceFactory(options) {
+        const dataSource = new DataSource(options);
+        await dataSource.initialize();
+        return addTransactionalDataSource(dataSource);
+      },
     }),
     ThrottlerModule.forRoot([
       {
