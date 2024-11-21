@@ -5,7 +5,13 @@ import { useState } from 'react';
 import Box from '../common/Box';
 
 import DashBoardHeader from '../common/DashBoardHeader';
-import { CoursePlace, CreateMapType, CustomPlace, MarkerColor } from '@/types';
+import {
+  CoursePlace,
+  CreateMapType,
+  CustomPlace,
+  MarkerColor,
+  Place,
+} from '@/types';
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
 import { useLocation, useParams } from 'react-router-dom';
@@ -18,6 +24,7 @@ type DetailPlaceFormProps = {
 
 const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
   const place = useStore((state) => state.place);
+  const setPlace = useStore((state) => state.setPlace);
   const addToast = useStore((state) => state.addToast);
 
   const [description, setDescription] = useState('');
@@ -55,6 +62,7 @@ const DetailPlaceForm = ({ oncloseModal, placeList }: DetailPlaceFormProps) => {
         {
           onSuccess: () => {
             addToast('장소가 추가되었습니다.', '', 'success');
+            setPlace({} as Place);
             oncloseModal();
           },
         },
