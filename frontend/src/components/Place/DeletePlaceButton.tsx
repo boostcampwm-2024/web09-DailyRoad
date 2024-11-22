@@ -2,7 +2,7 @@ import useDeletePlaceMutation from '@/hooks/api/useDeletePlaceMutation';
 import { useStore } from '@/store/useStore';
 import { CreateMapType } from '@/types';
 import { useParams } from 'react-router-dom';
-import DeleteIcon from '@/components/common/Icon/DeleteIcon';
+import DeleteIcon from '../common/DeleteIcon';
 
 type DeletePlaceButtonProps = {
   placeId: number;
