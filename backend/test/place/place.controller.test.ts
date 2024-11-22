@@ -21,18 +21,6 @@ describe('PlaceController', () => {
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
 
-  const eventEmitterMock = {
-    emit: jest.fn(),
-    on: jest.fn(),
-  };
-
-  const configServiceMock = {
-    get: jest.fn((key: string) => {
-      if (key === 'someConfigKey') return 'mockedValue';
-      return null;
-    }),
-  };
-
   beforeAll(async () => {
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
@@ -41,13 +29,25 @@ describe('PlaceController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [PlaceModule, SearchModule],
+      providers: [
+        PlaceService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(() => 'mocked-config-value'),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+            on: jest.fn(),
+          },
+        },
+      ],
     })
-      .overrideProvider(EventEmitter2)
-      .useValue(eventEmitterMock)
       .overrideProvider(PlaceRepository)
       .useValue(placeRepository)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
       .overrideGuard(JwtAuthGuard)
       .useValue({ canActivate: () => true })
       .compile();
