@@ -14,7 +14,7 @@ import {
 } from '@/types';
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMutation';
 
 type DetailPlaceFormProps = {
