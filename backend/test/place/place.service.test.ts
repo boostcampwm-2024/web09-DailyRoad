@@ -9,6 +9,7 @@ import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
@@ -32,6 +33,13 @@ describe('PlaceService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn(() => 'mocked-config-value'),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+            on: jest.fn(),
           },
         },
       ],
