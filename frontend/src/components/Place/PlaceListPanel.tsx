@@ -2,7 +2,7 @@ import { CustomPlace, Place } from '@/types';
 import BaseWrapper from '../common/BaseWrapper';
 import Box from '../common/Box';
 import PlaceItem from './PlaceItem';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Marker from '../Marker/Marker';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMutation';
