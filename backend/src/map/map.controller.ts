@@ -20,6 +20,7 @@ import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
 import { AuthUser } from '@src/auth/AuthUser.decorator';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
+import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
 
 @Controller('/maps')
 export class MapController {
@@ -54,7 +55,7 @@ export class MapController {
     return await this.mapService.createMap(user.userId, createMapRequest);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Post('/:id/places')
   async addPlaceToMap(
     @Param('id') id: number,
@@ -64,6 +65,7 @@ export class MapController {
     return await this.mapService.addPlace(id, placeId, color, comment);
   }
 
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Put('/:id/places/:placeId')
   async updatePlaceInMap(
     @Param('id') id: number,
@@ -88,6 +90,7 @@ export class MapController {
     return await this.mapService.deletePlace(id, placeId);
   }
 
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Patch('/:id/info')
   async updateMapInfo(
     @Param('id') id: number,
@@ -101,6 +104,7 @@ export class MapController {
     return { id, ...updateMapInfoRequest };
   }
 
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Patch('/:id/visibility')
   async updateMapVisibility(
     @Param('id') id: number,
@@ -114,6 +118,7 @@ export class MapController {
     return { id, isPublic };
   }
 
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Delete('/:id')
   async deleteMap(@Param('id') id: number) {
     return await this.mapService.deleteMap(id);
