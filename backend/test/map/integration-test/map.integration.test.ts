@@ -925,16 +925,10 @@ describe('MapController', () => {
   });
   describe('deleteMap 메소드 테스트', () => {
     let publicMap: Map;
-    let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
-      testPlace = {
-        placeId: 5,
-        comment: 'Beautiful park with a lake',
-        color: 'BLUE',
-      };
       const fakeUserInfo = await userRepository.findById(1);
       payload = {
         userId: fakeUserInfo.id,
