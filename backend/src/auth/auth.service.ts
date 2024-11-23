@@ -35,15 +35,19 @@ export class AuthService {
     );
   }
 
-  getSignInUrl(providerName: OAuthProviderName) {
+  getSignInUrl(providerName: OAuthProviderName, origin: string) {
     const provider = this.getProvider(providerName);
-    return provider.getAuthUrl();
+    return provider.getAuthUrl(origin);
   }
 
-  async signInWith(providerName: OAuthProviderName, code: string) {
+  async signInWith(
+    providerName: OAuthProviderName,
+    origin: string,
+    code: string,
+  ) {
     const provider = this.getProvider(providerName);
 
-    const userInfo = await provider.getUserInfo(code);
+    const userInfo = await provider.getUserInfo(origin, code);
 
     // Todo. 아래 로직 포함하는 메서드를 유저 서비스에서 제공
     const user = new CreateUserRequest({
@@ -53,6 +57,26 @@ export class AuthService {
     });
     const { userId, role } = await this.userService.addUser(user);
     return await this.generateTokens(userId, role);
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    const tokenEntity = await this.refreshTokenRepository.findOne({
+      where: { token: refreshToken },
+    });
+
+    if (!tokenEntity) {
+      throw new AuthenticationException('유효하지 않은 리프레시 토큰입니다.');
+    }
+
+    const isTokenValid = this.jwtHelper.verifyToken(refreshToken);
+    if (!isTokenValid) {
+      throw new AuthenticationException('리프레시 토큰이 만료되었습니다.');
+    }
+
+    return this.jwtHelper.generateToken(this.accessTokenExpiration, {
+      userId: tokenEntity.user.id,
+      role: tokenEntity.user.role,
+    });
   }
 
   private getProvider(providerName: OAuthProviderName) {
@@ -85,25 +109,5 @@ export class AuthService {
     );
 
     return { accessToken, refreshToken };
-  }
-
-  async refreshAccessToken(refreshToken: string) {
-    const tokenEntity = await this.refreshTokenRepository.findOne({
-      where: { token: refreshToken },
-    });
-
-    if (!tokenEntity) {
-      throw new AuthenticationException('유효하지 않은 리프레시 토큰입니다.');
-    }
-
-    const isTokenValid = this.jwtHelper.verifyToken(refreshToken);
-    if (!isTokenValid) {
-      throw new AuthenticationException('리프레시 토큰이 만료되었습니다.');
-    }
-
-    return this.jwtHelper.generateToken(this.accessTokenExpiration, {
-      userId: tokenEntity.user.id,
-      role: tokenEntity.user.role,
-    });
   }
 }
