@@ -25,6 +25,6 @@ import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
   ],
   providers: [SearchService, ElasticSearchQuery],
   controllers: [SearchController],
-  exports: [SearchService],
+  exports: [SearchService, ElasticSearchQuery, ElasticsearchModule],
 })
 export class SearchModule {}

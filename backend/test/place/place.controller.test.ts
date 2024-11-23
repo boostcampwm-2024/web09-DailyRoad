@@ -10,9 +10,10 @@ import { PlaceService } from '@src/place/place.service';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SearchModule } from '@src/search/search.module';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { SearchService } from '@src/search/search.service';
+import { SearchModule } from '@src/search/search.module';
+import { LoggerModule, PinoLogger } from 'nestjs-pino';
 
 describe('PlaceController', () => {
   let app: INestApplication;
@@ -20,6 +21,7 @@ describe('PlaceController', () => {
   let dataSource: DataSource;
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
+  let searchService: SearchService;
 
   beforeAll(async () => {
     initializeTransactionalContext();
@@ -28,9 +30,24 @@ describe('PlaceController', () => {
     placeRepository = new PlaceRepository(dataSource);
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PlaceModule, SearchModule],
+      imports: [
+        PlaceModule,
+        SearchModule,
+        LoggerModule.forRoot({
+          pinoHttp: {
+            transport: {
+              target: 'pino-pretty',
+              options: {
+                singleLine: true,
+              },
+            },
+            level: 'debug',
+          },
+        }),
+      ],
       providers: [
         PlaceService,
+        SearchService,
         {
           provide: ConfigService,
           useValue: {
@@ -38,10 +55,9 @@ describe('PlaceController', () => {
           },
         },
         {
-          provide: EventEmitter2,
+          provide: PinoLogger,
           useValue: {
-            emit: jest.fn(),
-            on: jest.fn(),
+            error: jest.fn(),
           },
         },
       ],
@@ -58,6 +74,7 @@ describe('PlaceController', () => {
     );
     await app.init();
     placeService = module.get<PlaceService>(PlaceService);
+    searchService = module.get<SearchService>(SearchService);
   });
 
   afterAll(async () => {
@@ -94,6 +111,7 @@ describe('PlaceController', () => {
         name: 'Times Square',
       });
 
+      jest.spyOn(searchService, 'savePlace').mockResolvedValue(undefined);
       await placeService.addPlace(defaultPlace1);
       await placeService.addPlace(defaultPlace2);
 
