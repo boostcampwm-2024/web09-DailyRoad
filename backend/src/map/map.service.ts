@@ -45,6 +45,7 @@ export class MapService {
 
   async getOwnMaps(userId: number, page: number = 1, pageSize: number = 10) {
     // Todo. 그룹 기능 추가
+    await this.checkUserExist(userId);
     const totalCount = await this.mapRepository.count({
       where: { user: { id: userId } },
     });
@@ -70,9 +71,9 @@ export class MapService {
   }
 
   async createMap(userId: number, createMapForm: CreateMapRequest) {
+    await this.checkUserExist(userId);
     const user = { id: userId } as User;
     const map = createMapForm.toEntity(user);
-
     return { id: (await this.mapRepository.save(map)).id };
   }
 
@@ -92,7 +93,7 @@ export class MapService {
 
   async updateMapVisibility(id: number, isPublic: boolean) {
     await this.checkExists(id);
-
+    await this.checkPublicType(isPublic);
     return this.mapRepository.update(id, { isPublic });
   }
 
@@ -160,5 +161,28 @@ export class MapService {
     if (map.hasPlace(placeId)) {
       throw new DuplicatePlaceToMapException(placeId);
     }
+  }
+
+  private async checkUserExist(userId: number) {
+    if (!(await this.userRepository.findById(userId))) {
+      throw new UserNotFoundException(userId);
+    }
+  }
+
+  private async checkPublicType(isPublic: any) {
+    if (typeof isPublic === 'boolean') {
+      return;
+    }
+    throw new TypeException('isPublic', 'boolean', typeof isPublic);
+  }
+
+  async deletePlace(id: number, placeId: number) {
+    const map = await this.mapRepository.findById(id);
+    if (!map) throw new MapNotFoundException(id);
+
+    map.deletePlace(placeId);
+    await this.mapRepository.save(map);
+
+    return { deletedId: placeId };
   }
 }
