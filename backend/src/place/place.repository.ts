@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { DataSource, ILike } from 'typeorm';
+import { DataSource, ILike, MoreThan } from 'typeorm';
 import { Place } from './entity/place.entity';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
 
@@ -36,6 +36,19 @@ export class PlaceRepository extends SoftDeleteRepository<Place, number> {
       ],
       skip: (page - 1) * pageSize,
       take: pageSize,
+    });
+  }
+
+  public async findUpdatedPlacesForTwoHours(): Promise<Place[]> {
+    const twoHoursAgo = new Date();
+    twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
+
+    return this.find({
+      where: [
+        { createdAt: MoreThan(twoHoursAgo) },
+        { updatedAt: MoreThan(twoHoursAgo) },
+        { deletedAt: MoreThan(twoHoursAgo) },
+      ],
     });
   }
 
