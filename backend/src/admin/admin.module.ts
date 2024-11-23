@@ -22,5 +22,7 @@ import { AuthModule } from '@src/auth/auth.module';
       },
     ]),
   ],
+  providers: [AdminGuard],
+  exports: [AdminGuard],
 })
 export class AdminModule {}

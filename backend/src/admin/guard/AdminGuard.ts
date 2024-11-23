@@ -11,14 +11,17 @@ export class AdminGuard extends JwtAuthGuard {
     if (!isAuthenticated) {
       return false;
     }
-
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-
-    if (!user || user.role !== UserRole.ADMIN) {
+    if (!this.isAdmin(context)) {
       throw new AuthorizationException('관리자 권한이 없습니다.');
     }
 
     return true;
+  }
+
+  isAdmin(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    return user?.role === UserRole.ADMIN;
   }
 }
