@@ -30,7 +30,7 @@ export class MapController {
   async getMapList(
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
-    @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
+    @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
   ) {
     return await this.mapService.searchMap(query, page, limit);
   }
