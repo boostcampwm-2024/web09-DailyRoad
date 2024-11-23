@@ -13,6 +13,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { ConfigModule } from '@nestjs/config';
 import * as request from 'supertest';
+import * as jwt from 'jsonwebtoken';
 import {
   createPlace,
   createPrivateMaps,
@@ -101,7 +102,18 @@ describe('MapController', () => {
         },
         JWTHelper,
       ],
-    }).compile();
+    })
+      .overrideProvider(JWTHelper)
+      .useValue({
+        jwtSecretKey: 'test-key',
+        generateToken: (expiresIn: string | number, payload: any = {}) => {
+          return jwt.sign(payload, 'test-key', { expiresIn });
+        },
+        verifyToken: (refreshToken: string) => {
+          return jwt.verify(refreshToken, 'test-key');
+        },
+      })
+      .compile();
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
     jwtHelper = app.get<JWTHelper>(JWTHelper);
