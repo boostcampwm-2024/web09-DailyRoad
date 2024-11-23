@@ -2,30 +2,40 @@ import { ICONS } from '@/constants/icon';
 import { useStore } from '@/store/useStore';
 import { useEffect, useState } from 'react';
 
-type MarkerEventProps = {
+type MarkerCustomProps = {
   onClick?: (e: google.maps.MapMouseEvent) => void;
+  color?: string;
+  category?: string;
+  order?: number;
 };
 
 export type MarkerProps = Omit<
   google.maps.marker.AdvancedMarkerElementOptions,
   'map'
 > &
-  MarkerEventProps;
+  MarkerCustomProps;
 
 export const useMarker = (props: MarkerProps) => {
   const [marker, setMarker] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
   const map = useStore((state) => state.googleMap);
 
-  const { onClick, ...markerOptions } = props;
+  const { onClick, category, color, order, ...markerOptions } = props;
+  const contentDiv = document.createElement('div');
   useEffect(() => {
     if (!map) {
       return;
     }
-    const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = ICONS.RED_PIN();
-    contentDiv.style.borderRadius = '50%';
-    contentDiv.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+    const categoryCode =
+      categoryObj[(category as keyof typeof categoryObj) ?? '기본'];
+    console.log(color?.toLocaleLowerCase(), category);
+    console.log(categoryCode ?? 'pin', color?.toLocaleLowerCase() ?? 'defualt');
+    contentDiv.innerHTML = order
+      ? `
+    <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black;">${order}</div>
+    `
+      : `<img width='36' height='36' src=https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png />`;
+
     const newMarker = new google.maps.marker.AdvancedMarkerElement({
       ...markerOptions,
       content: contentDiv,
@@ -41,9 +51,13 @@ export const useMarker = (props: MarkerProps) => {
 
   useEffect(() => {
     if (!marker) return;
-
+    google.maps.event.addListener(marker, 'click', () => {
+      console.log(1);
+    });
     if (onClick) {
-      google.maps.event.addListener(marker, 'click', onClick);
+      google.maps.event.addListener(marker, 'click', () => {
+        console.log(1);
+      });
     }
 
     return () => {
@@ -51,4 +65,11 @@ export const useMarker = (props: MarkerProps) => {
     };
   }, [marker, onClick]);
   return marker;
+};
+
+const categoryObj = {
+  명소: 'camera',
+  맛집: 'restaurant',
+  카페: 'cafe',
+  기본: 'pin',
 };
