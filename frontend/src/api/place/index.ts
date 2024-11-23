@@ -14,6 +14,22 @@ export const getPlace = async (queryString: string, pageParam: number) => {
   return data;
 };
 
+export type GooglePlaceResponse = {
+  photoReference: string;
+} & Place;
+
+export const getGooglePlace = async (query: string) => {
+  const { data } = await axiosInstance.get<GooglePlaceResponse[]>(
+    END_POINTS.GOOGLE_PLACE_SEARCH,
+    {
+      params: {
+        query,
+      },
+    },
+  );
+  return data;
+};
+
 type AddPlaceParams = {
   id: number;
 } & CustomPlace;

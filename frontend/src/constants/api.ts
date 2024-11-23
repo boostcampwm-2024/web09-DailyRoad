@@ -26,7 +26,7 @@ export const END_POINTS = {
     `/courses/${courseId}/visibility`,
   DELETE_PLACE_TO_COURSE: (courseId: number, placeId: number) =>
     `/courses/${courseId}/places/${placeId}`,
-
+  GOOGLE_PLACE_SEARCH: '/places/search',
   GOOGLE_LOGIN: '/oauth/google/signIn',
   LOGOUT: 'oauth/signOut',
   MY_MAP: '/maps/my',
