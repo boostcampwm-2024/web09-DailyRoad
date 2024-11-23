@@ -5,17 +5,20 @@ import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundExcept
 import { PlaceRepository } from '@src/place/place.repository';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { initDataSource } from '@test/config/datasource.config';
-import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
+import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SearchService } from '@src/search/search.service';
+import { LoggerModule, PinoLogger } from 'nestjs-pino';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
+  let dataSource: DataSource;
+
   let placeService: PlaceService;
   let placeRepository: PlaceRepository;
-  let dataSource: DataSource;
+  let searchService: SearchService;
 
   beforeAll(async () => {
     initializeTransactionalContext();
@@ -23,11 +26,30 @@ describe('PlaceService', () => {
     dataSource = await initDataSource(container);
 
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        LoggerModule.forRoot({
+          pinoHttp: {
+            transport: {
+              target: 'pino-pretty',
+              options: {
+                singleLine: true,
+              },
+            },
+            level: 'debug',
+          },
+        }),
+      ],
       providers: [
         PlaceService,
         {
           provide: PlaceRepository,
           useValue: new PlaceRepository(dataSource),
+        },
+        {
+          provide: SearchService,
+          useValue: {
+            savePlace: jest.fn().mockResolvedValue(undefined),
+          },
         },
         {
           provide: ConfigService,
@@ -36,10 +58,9 @@ describe('PlaceService', () => {
           },
         },
         {
-          provide: EventEmitter2,
+          provide: PinoLogger,
           useValue: {
-            emit: jest.fn(),
-            on: jest.fn(),
+            error: jest.fn(),
           },
         },
       ],
@@ -47,6 +68,7 @@ describe('PlaceService', () => {
 
     placeService = module.get<PlaceService>(PlaceService);
     placeRepository = module.get<PlaceRepository>(PlaceRepository);
+    searchService = module.get<SearchService>(SearchService);
   });
 
   afterAll(async () => {
@@ -69,7 +91,9 @@ describe('PlaceService', () => {
         formattedAddress: 'New York',
       });
 
-      await placeRepository.save(createPlaceRequest.toEntity());
+      const place = createPlaceRequest.toEntity();
+      await placeRepository.save(place);
+      jest.spyOn(searchService, 'savePlace').mockResolvedValue(undefined);
 
       await expect(placeService.addPlace(createPlaceRequest)).rejects.toThrow(
         PlaceAlreadyExistsException,
@@ -82,6 +106,7 @@ describe('PlaceService', () => {
         name: 'Tower Park',
         formattedAddress: 'London',
       });
+      await searchService.savePlace(createPlaceRequest.toEntity());
 
       const result = await placeService.addPlace(createPlaceRequest);
 

@@ -4,18 +4,13 @@ import { PlaceService } from './place.service';
 import { PlaceRepository } from './place.repository';
 import { ConfigModule } from '@nestjs/config';
 import { SearchModule } from '@src/search/search.module';
-import { PlaceCreatedListener } from '@src/place/eventListener/PlaceCreatedListener';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SearchService } from '@src/search/search.service';
+import { PinoLogger } from 'nestjs-pino';
 
 @Module({
   imports: [ConfigModule, forwardRef(() => SearchModule)],
   controllers: [PlaceController],
-  providers: [
-    PlaceService,
-    PlaceRepository,
-    PlaceCreatedListener,
-    EventEmitter2,
-  ],
+  providers: [PlaceService, PlaceRepository, SearchService, PinoLogger],
   exports: [PlaceRepository],
 })
 export class PlaceModule {}

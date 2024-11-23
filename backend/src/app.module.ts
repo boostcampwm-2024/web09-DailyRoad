@@ -20,7 +20,6 @@ import { CustomLoggerModule } from './common/log/CustomLoggerModule';
 import { SearchModule } from './search/search.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -33,11 +32,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         await dataSource.initialize();
         return addTransactionalDataSource(dataSource);
       },
-    }),
-    EventEmitterModule.forRoot({
-      maxListeners: 15,
-      verboseMemoryLeak: true,
-      ignoreErrors: true,
     }),
     ThrottlerModule.forRoot([
       {

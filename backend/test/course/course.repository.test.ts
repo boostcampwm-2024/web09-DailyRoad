@@ -6,6 +6,7 @@ import { CoursePlace } from '@src/course/entity/course-place.entity';
 import { initDataSource } from '@test/config/datasource.config';
 import { CourseFixture } from '@test/course/fixture/course.fixture';
 import { UserFixture } from '@test/user/fixture/user.fixture';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('CourseRepository', () => {
   let container: StartedMySqlContainer;
@@ -18,6 +19,7 @@ describe('CourseRepository', () => {
   let fakeUser2: User;
 
   beforeAll(async () => {
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     datasource = await initDataSource(container);
 

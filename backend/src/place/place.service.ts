@@ -1,12 +1,13 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
-import { PlaceRepository } from './place.repository';
-import { CreatePlaceRequest } from './dto/CreatePlaceRequest';
-import { PlaceNotFoundException } from './exception/PlaceNotFoundException';
-import { PlaceAlreadyExistsException } from './exception/PlaceAlreadyExistsException';
-import { PlaceSearchResponse } from './dto/PlaceSearchResponse';
+import { PlaceRepository } from '@src/place/place.repository';
+import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundException';
+import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
+import { PlaceSearchResponse } from '@src/place/dto/PlaceSearchResponse';
 import { ConfigService } from '@nestjs/config';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Transactional } from 'typeorm-transactional';
+import { SearchService } from '@src/search/search.service';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class PlaceService {
@@ -19,7 +20,8 @@ export class PlaceService {
   constructor(
     private readonly placeRepository: PlaceRepository,
     private readonly configService: ConfigService,
-    private readonly eventEmitter: EventEmitter2,
+    private readonly searchService: SearchService,
+    private readonly logger: PinoLogger,
   ) {
     this.GOOGLE_API_KEY = this.configService.get(<string>'GOOGLE_MAPS_API_KEY');
   }
@@ -37,7 +39,11 @@ export class PlaceService {
     );
 
     const savedPlace = await this.placeRepository.save(place);
-    this.eventEmitter.emit('place.created', savedPlace);
+    this.searchService.savePlace(place).catch((error) => {
+      this.logger.error(
+        `ElasticSearch에 장소 정보를 저장하는 중 오류가 발생했습니다. ${error}`,
+      );
+    });
     return { id: savedPlace.id };
   }
 
