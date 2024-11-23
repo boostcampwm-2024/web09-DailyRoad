@@ -34,8 +34,8 @@ export const getMapList = async (pageParam: number) => {
   const { data } = await axiosInstance.get<MapList>(END_POINTS.MAPS, {
     params: {
       page: pageParam,
-      useAuth: false,
     },
+    useAuth: false,
   });
   return data;
 };
