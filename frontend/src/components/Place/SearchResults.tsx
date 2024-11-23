@@ -1,15 +1,16 @@
 import { getPlace } from '@/api/place';
-import React from 'react';
-import { Place } from '@/types';
+import React, { useMemo } from 'react';
+import { CustomPlace, Place } from '@/types';
 import PlaceItem from './PlaceItem';
 import Marker from '@/components/Marker/Marker';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 
 type SearchResultsProps = {
   query: string;
+  places: (Place & CustomPlace)[];
 };
 
-const SearchResults = ({ query }: SearchResultsProps) => {
+const SearchResults = ({ query, places }: SearchResultsProps) => {
   const { ref, data, isFetchingNextPage, hasNextPage } = useInfiniteScroll<
     Place[]
   >({
@@ -25,6 +26,11 @@ const SearchResults = ({ query }: SearchResultsProps) => {
 
   const isEmpty = isEmptyResults(data);
 
+  const placesSet = useMemo(
+    () => new Set(places.map((place) => place.id)),
+    [places],
+  );
+
   return (
     <div className="max-h-[600px] flex-grow">
       {query && <p className="p-1 text-base">"{query}"에 대한 검색결과</p>}
@@ -35,13 +41,15 @@ const SearchResults = ({ query }: SearchResultsProps) => {
               {page.map((place: Place) => (
                 <React.Fragment key={place.id}>
                   <PlaceItem key={place.id} place={place} />
-                  <Marker
-                    key={place.google_place_id}
-                    position={{
-                      lat: place.location.latitude,
-                      lng: place.location.longitude,
-                    }}
-                  />
+                  {!placesSet.has(place.id) && (
+                    <Marker
+                      key={place.google_place_id}
+                      position={{
+                        lat: place.location.latitude,
+                        lng: place.location.longitude,
+                      }}
+                    />
+                  )}
                 </React.Fragment>
               ))}
             </React.Fragment>
