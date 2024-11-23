@@ -96,8 +96,8 @@ export class PlaceService {
       name: name,
       rating: rating || null,
       location: {
-        longitude: geometry.location.lng,
-        latitude: geometry.location.lat,
+        longitude: geometry.location.longitude,
+        latitude: geometry.location.latitude,
       },
       formattedAddress: formatted_address || null,
       category: types?.[0] || null,

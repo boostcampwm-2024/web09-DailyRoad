@@ -9,11 +9,17 @@ export class SearchController {
   @Get()
   async search(
     @Query('query') query: string,
-    @Query('lat') lat?: number,
-    @Query('long') long?: number,
+    @Query('latitude') latitude?: number,
+    @Query('longitude') longitude?: number,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
   ) {
-    return await this.searchService.searchPlace(query, lat, long, page, limit);
+    return await this.searchService.searchPlace(
+      query,
+      latitude,
+      longitude,
+      page,
+      limit,
+    );
   }
 }

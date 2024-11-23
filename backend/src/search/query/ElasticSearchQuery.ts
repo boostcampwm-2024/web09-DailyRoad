@@ -9,13 +9,19 @@ export class ElasticSearchQuery {
 
   async searchPlace(
     query: string,
-    lat?: number,
-    long?: number,
+    latitude?: number,
+    longitude?: number,
     page: number = 1,
     size: number = 10,
   ) {
     const tokens = await this.tokenizeQuery(query);
-    const location = !isNaN(lat) && !isNaN(long) ? { lat, long: long } : null;
+    const location =
+      !isNaN(latitude) && !isNaN(longitude)
+        ? {
+            latitude: latitude,
+            longitude: longitude,
+          }
+        : null;
     const from = (page - 1) * size;
     return await this.esService.search({
       index: ElasticSearchConfig.PLACE_INDEX,
@@ -56,8 +62,8 @@ export class ElasticSearchQuery {
             ...(location
               ? [
                   ElasticSearchQueryBuilder.GAUSS_LOCATION(
-                    location.lat,
-                    location.long,
+                    location.latitude,
+                    location.longitude,
                   ),
                 ]
               : []),

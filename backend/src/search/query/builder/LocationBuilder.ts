@@ -1,7 +1,7 @@
 export const LocationQueryBuilders = {
   GAUSS_LOCATION: (
-    lat: number,
-    long: number,
+    latitude: number,
+    longitude: number,
     scale = '10km',
     offset = '2km',
     decay = 0.5,
@@ -9,7 +9,7 @@ export const LocationQueryBuilders = {
   ) => ({
     gauss: {
       location: {
-        origin: `${lat},${long}`,
+        origin: `${latitude},${longitude}`,
         scale: scale,
         offset: offset,
         decay: decay,
