@@ -10,6 +10,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
+        isGlobal: true,
         pinoHttp: {
           logger: createLogger(
             configService.get('LOG_HOST'),
