@@ -7,6 +7,7 @@ interface ErrorResponseData {
 
 export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
   if (!config.useAuth || !config.headers || config.headers.Authorization) {
+    console.log(config);
     return config;
   }
 
