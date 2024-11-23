@@ -10,7 +10,6 @@ export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
     console.log(config);
     return config;
   }
-
   const accessToken = localStorage.getItem(`ACCESS_TOKEN_KEY`);
   if (!accessToken) {
     window.location.href = ROUTES.ROOT;
