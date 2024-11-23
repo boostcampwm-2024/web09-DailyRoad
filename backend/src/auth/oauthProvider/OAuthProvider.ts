@@ -1,11 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { OAuthProviders } from './OAuthProviders';
 import { OAuthUserInfo } from '@src/auth/auth.type';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
 
 export abstract class OAuthProvider {
   protected readonly clientId: string;
   protected readonly clientSecret: string;
-  protected readonly redirectUri: string;
+  protected readonly allowedOrigins: string[];
 
   protected constructor(
     readonly providerName: OAuthProviders,
@@ -19,12 +20,27 @@ export abstract class OAuthProvider {
     this.clientSecret = this.configService.get<string>(
       `${upperCaseProviderName}_CLIENT_SECRET`,
     );
-    this.redirectUri = this.configService.get<string>(
-      `${upperCaseProviderName}_REDIRECT_URI`,
+
+    const origins = this.configService.get<string>(
+      `${upperCaseProviderName}_ALLOWED_ORIGINS`,
     );
+    this.allowedOrigins = origins
+      ? origins.split(',').map((origin) => origin.trim())
+      : [];
   }
 
-  abstract getAuthUrl(): string;
+  abstract getAuthUrl(origin: string): string;
 
-  abstract getUserInfo(token: string): Promise<OAuthUserInfo>;
+  abstract getUserInfo(origin: string, token: string): Promise<OAuthUserInfo>;
+
+  protected getRedirectUrl(origin: string): string {
+    const OAUTH_CALLBACK_PATH = '/auth/callback';
+
+    if (!this.allowedOrigins.includes(origin)) {
+      throw new AuthenticationException(
+        `[${this.providerName.toUpperCase()}] 허용되지 않은 도메인 입니다. : ${origin}`,
+      );
+    }
+    return origin + OAUTH_CALLBACK_PATH;
+  }
 }

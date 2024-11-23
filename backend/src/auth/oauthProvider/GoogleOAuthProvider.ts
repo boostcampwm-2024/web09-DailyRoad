@@ -14,16 +14,16 @@ export class GoogleOAuthProvider extends OAuthProvider {
     super(OAuthProviders.GOOGLE, configService);
   }
 
-  getAuthUrl(): string {
+  getAuthUrl(origin: string): string {
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     url.searchParams.append('client_id', this.clientId);
-    url.searchParams.append('redirect_uri', this.redirectUri);
+    url.searchParams.append('redirect_uri', this.getRedirectUrl(origin));
     url.searchParams.append('response_type', 'code');
     url.searchParams.append('scope', 'openid profile');
     return url.toString();
   }
 
-  private async getToken(code: string): Promise<string> {
+  private async getToken(origin: string, code: string): Promise<string> {
     const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -33,7 +33,7 @@ export class GoogleOAuthProvider extends OAuthProvider {
         code: decodeURIComponent(code),
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        redirect_uri: this.redirectUri,
+        redirect_uri: this.getRedirectUrl(origin),
         grant_type: 'authorization_code',
       }),
     });
@@ -45,8 +45,8 @@ export class GoogleOAuthProvider extends OAuthProvider {
     return data.access_token;
   }
 
-  async getUserInfo(code: string): Promise<OAuthUserInfo> {
-    const token = await this.getToken(code);
+  async getUserInfo(origin: string, code: string): Promise<OAuthUserInfo> {
+    const token = await this.getToken(origin, code);
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       {

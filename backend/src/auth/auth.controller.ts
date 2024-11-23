@@ -11,18 +11,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get(':provider/signIn')
-  async getSignInUrl(@Param('provider') provider: string) {
-    return this.authService.getSignInUrl(getOAuthProviderNameByValue(provider));
+  async getSignInUrl(
+    @Param('provider') provider: string,
+    @Req() request: Request,
+  ) {
+    const origin = request.headers.origin;
+
+    return this.authService.getSignInUrl(
+      getOAuthProviderNameByValue(provider),
+      origin,
+    );
   }
 
   @Post(':provider/signIn')
   async handleCallback(
     @Param('provider') provider: string,
     @Body('code') code: string,
+    @Req() request: Request,
     @Res() response: Response,
   ) {
+    const origin = request.headers.origin;
     const tokens = await this.authService.signInWith(
       getOAuthProviderNameByValue(provider),
+      origin,
       code,
     );
 
