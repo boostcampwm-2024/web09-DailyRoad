@@ -6,8 +6,8 @@ export type PlaceSearchHit = {
     id: string;
     name: string;
     location: {
-      lat: number;
-      long: number;
+      latitude: number;
+      longitude: number;
     };
     googlePlaceId: string;
     category: string | null;

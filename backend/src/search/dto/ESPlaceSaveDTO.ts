@@ -8,8 +8,8 @@ export class ESPlaceSaveDTO {
     readonly thumbnailUrl: string,
     readonly rating: number,
     readonly location: {
-      lat: number;
-      lon: number;
+      latitude: number;
+      longitude: number;
     },
     readonly formattedAddress: string,
     readonly category: string,
@@ -28,8 +28,8 @@ export class ESPlaceSaveDTO {
       place.thumbnailUrl,
       place.rating,
       {
-        lat: place.latitude,
-        lon: place.longitude,
+        latitude: place.latitude,
+        longitude: place.longitude,
       },
       place.formattedAddress,
       place.category,
