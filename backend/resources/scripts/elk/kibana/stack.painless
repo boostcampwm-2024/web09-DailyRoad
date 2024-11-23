@@ -1,23 +1,20 @@
+String keyword = "stack";
+
+String key = "\"" + keyword + "\":\"";
+
 if (!params['_source'].containsKey('message')) {
-  emit("no message");
+  emit("no stack");
   return;
 }
 
 String message = params['_source']['message'];
 if (message == null) {
-  emit("no message");
+  emit("no stack");
   return;
 }
 
-// "msg":" 를 기준으로 값 추출
-int startIndex = message.indexOf("\"msg\":\"");
-int key_length = "\"msg\":\"".length();
-
-// 없다면 "message":" 를 기준으로 값 추출
-if (startIndex == -1) {
-  startIndex = message.indexOf("\"message\":\"");
-  key_length = "\"message\":\"".length();
-}
+int startIndex = message.indexOf(key);
+int key_length =key.length();
 
 if (startIndex == -1) {
   emit("no message");
