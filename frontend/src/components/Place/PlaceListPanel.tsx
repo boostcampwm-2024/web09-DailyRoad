@@ -2,12 +2,13 @@ import { CustomPlace, Place } from '@/types';
 import BaseWrapper from '../common/BaseWrapper';
 import Box from '../common/Box';
 import PlaceItem from './PlaceItem';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Marker from '../Marker/Marker';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMutation';
 import { useParams } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
+import Polyline from '../Marker/Polyline';
 
 type PlaceListPanelProps = {
   places: (Place & CustomPlace)[];
@@ -24,6 +25,13 @@ const PlaceListPanel = ({
   const id = Number(useParams().id);
   const addPlaceToCourseMutation = useAddPlaceToCourseMutation();
   const addToast = useStore((state) => state.addToast);
+
+  const points = useMemo(() => {
+    return places.map((place) => ({
+      lat: place.location.latitude,
+      lng: place.location.longitude,
+    }));
+  }, [places]);
 
   const handleDragend = (result: any) => {
     if (!result.destination) {
@@ -101,15 +109,19 @@ const PlaceListPanel = ({
           )}
         </Droppable>
       </BaseWrapper>
-      {places.map((place) => (
+      {places.map((place, index) => (
         <Marker
           key={place.id}
           position={{
             lat: place.location.latitude,
             lng: place.location.longitude,
           }}
+          category={place.category}
+          color={place.color}
+          order={index + 1}
         />
       ))}
+      {isDraggable && <Polyline points={points} color="red" />}
     </DragDropContext>
   );
 };
