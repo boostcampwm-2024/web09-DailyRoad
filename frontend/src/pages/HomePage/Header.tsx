@@ -7,7 +7,7 @@ const Header = () => {
   const isLogged = useStore((state) => state.isLogged);
   const setUser = useStore((state) => state.setUser);
   const handleLogin = () => {
-    window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL_TEST;
+    window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
   };
   const handleAdminLogin = () => {
     localStorage.setItem(
