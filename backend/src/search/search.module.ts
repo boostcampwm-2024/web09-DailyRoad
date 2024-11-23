@@ -5,6 +5,7 @@ import { SearchController } from '@src/search/search.controller';
 import { SearchService } from '@src/search/search.service';
 import { PlaceModule } from '@src/place/place.module';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
+import { PinoLogger } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
       inject: [ConfigService],
     }),
   ],
-  providers: [SearchService, ElasticSearchQuery],
+  providers: [SearchService, ElasticSearchQuery, PinoLogger],
   controllers: [SearchController],
   exports: [SearchService, ElasticSearchQuery, ElasticsearchModule],
 })

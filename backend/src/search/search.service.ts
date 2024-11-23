@@ -7,12 +7,14 @@ import { ElasticSearchException } from '@src/search/exception/ElasticSearchExcep
 import { Place } from '@src/place/entity/place.entity';
 import { ESPlaceSaveDTO } from '@src/search/dto/ESPlaceSaveDTO';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class SearchService {
   constructor(
     private readonly elasticSearchQuery: ElasticSearchQuery,
     private readonly elasticSearchService: ElasticsearchService,
+    private readonly logger: PinoLogger,
   ) {}
 
   async savePlace(place: Place): Promise<void> {
@@ -71,5 +73,28 @@ export class SearchService {
       }),
       total_count: result.length,
     };
+  }
+
+  async syncPlaceToElasticSearch(places: Place[]) {
+    const bulkOperations = [];
+
+    places.forEach((place) => {
+      bulkOperations.push(
+        { update: { _index: ElasticSearchConfig.PLACE_INDEX, _id: place.id } },
+        { doc: place, doc_as_upsert: true },
+      );
+    });
+
+    if (bulkOperations.length <= 0) {
+      this.logger.debug(`동기화할 장소가 없습니다.`);
+      return;
+    }
+    const response = await this.elasticSearchService.bulk({
+      operations: bulkOperations,
+    });
+
+    this.logger.debug(
+      `Elasticsearch에 동기화된 장소의 갯수: ${response.items.length}`,
+    );
   }
 }

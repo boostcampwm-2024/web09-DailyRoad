@@ -20,6 +20,8 @@ import { CustomLoggerModule } from './common/log/CustomLoggerModule';
 import { SearchModule } from './search/search.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
+import { BatchModule } from './batch/batch.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { DataSource } from 'typeorm';
         limit: 500,
       },
     ]),
+    ScheduleModule.forRoot(),
     AuthModule,
     UserModule,
     PlaceModule,
@@ -48,6 +51,7 @@ import { DataSource } from 'typeorm';
     AdminModule,
     StorageModule,
     SearchModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [
