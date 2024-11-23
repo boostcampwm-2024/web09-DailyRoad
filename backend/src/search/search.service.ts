@@ -25,7 +25,10 @@ export class SearchService {
         id: `${place.id}`,
         document: data,
       });
-    } catch (e) {
+    } catch (error) {
+      this.logger.error(
+        `Elasticsearch에 장소 저장 중 에러가 발생했습니다: ${error}`,
+      );
       throw new ElasticSearchException(place.id);
     }
   }
