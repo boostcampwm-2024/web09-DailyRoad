@@ -31,6 +31,7 @@
     "reflect-metadata": "^0.2.0",
     "nestjs-pino": "^4.1.0",
     "pino-http": "^10.3.0",
+    "pino-socket": "^7.4.0",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "@nestjs/elasticsearch": "^10.0.2",

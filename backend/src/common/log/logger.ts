@@ -1,5 +1,4 @@
 import pino from 'pino';
-import * as net from 'node:net';
 
 const baseLoggerOptions = {
   timestamp: () => `,"time":"${new Date().toISOString()}"`,
@@ -27,7 +26,7 @@ const consoleLoggerOptions = {
   },
 };
 
-const logstashLoggerOptions = {
+const logstashLoggerOptions = (host: string, port: number) => ({
   ...baseLoggerOptions,
   level: 'info',
   formatters: {
@@ -35,26 +34,35 @@ const logstashLoggerOptions = {
     bindings() {
       return {};
     },
-    log(object: object) {
+    log(object: Record<string, unknown>) {
       return Object.keys(object)
         .filter((key) => !ignoredFields.includes(key))
-        .reduce((acc, key) => {
-          acc[key] = object[key];
-          return acc;
-        }, {});
+        .reduce(
+          (acc, key) => {
+            acc[key] = object[key];
+            return acc;
+          },
+          {} as Record<string, unknown>,
+        );
     },
   },
-};
+  transport: {
+    target: 'pino-socket',
+    options: {
+      address: host,
+      port,
+      mode: 'tcp',
+      reconnect: true,
+      timeout: 5000,
+      recover: true,
+    },
+  },
+});
 
 export function createLogger(host: string, port: number) {
   if (process.env.NODE_ENV === 'prod') {
-    const stream = net.createConnection({ host, port, timeout: 5000 });
-    stream.on('error', (err) => {
-      const timestamp = new Date().toISOString();
-      console.error(`[${timestamp}] Log Stream connection error:`, err);
-    });
-
-    return pino(logstashLoggerOptions, stream);
+    return pino(logstashLoggerOptions(host, port));
   }
+
   return pino(consoleLoggerOptions);
 }
