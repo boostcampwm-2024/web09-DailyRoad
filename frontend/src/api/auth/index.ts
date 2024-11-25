@@ -21,6 +21,6 @@ export const getUserInfo = async () => {
 };
 
 export const deleteLogOut = async () => {
-  const { data } = await axiosInstance.delete('');
+  const { data } = await axiosInstance.delete(END_POINTS.LOGOUT);
   return data;
 };

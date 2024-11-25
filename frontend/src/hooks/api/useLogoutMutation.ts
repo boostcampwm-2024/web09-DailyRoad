@@ -2,6 +2,7 @@ import { useStore } from '@/store/useStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { deleteLogOut } from '@/api/auth';
+
 export const useLogOutMutation = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
