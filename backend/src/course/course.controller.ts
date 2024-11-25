@@ -20,6 +20,7 @@ import { AuthUser } from '../auth/AuthUser.decorator';
 import { CoursePermissionGuard } from './guards/CoursePermissionGuard';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UpdatePlaceInCourseRequest } from '@src/course/dto/UpdatePlaceInCourseRequest';
+import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
 
 @Controller('/courses')
 export class CourseController {
@@ -78,7 +79,7 @@ export class CourseController {
   ) {
     const { comment } = updatePlaceInCourseRequest;
     if (updatePlaceInCourseRequest.isEmpty()) {
-      throw new BadRequestException('수정할 정보가 없습니다.');
+      throw new EmptyRequestException('수정');
     }
 
     await this.courseService.updatePlace(id, placeId, comment);
@@ -93,7 +94,7 @@ export class CourseController {
     @Body() updateCourseInfoRequest: UpdateCourseInfoRequest,
   ) {
     if (updateCourseInfoRequest.isEmpty()) {
-      throw new BadRequestException('수정할 정보가 없습니다.');
+      throw new EmptyRequestException('수정');
     }
 
     await this.courseService.updateCourseInfo(id, updateCourseInfoRequest);
