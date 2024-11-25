@@ -16,6 +16,7 @@ import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
+import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
 
 @Controller('/maps')
 export class MapController {
@@ -63,7 +64,7 @@ export class MapController {
     @Body() updatePlaceInMapRequest: UpdatePlaceInMapRequest,
   ) {
     if (updatePlaceInMapRequest.isEmpty()) {
-      throw new BadRequestException('수정할 정보가 없습니다.');
+      throw new EmptyRequestException('수정');
     }
     const { color, comment } = updatePlaceInMapRequest;
 
@@ -85,7 +86,7 @@ export class MapController {
     @Body() updateMapInfoRequest: UpdateMapInfoRequest,
   ) {
     if (updateMapInfoRequest.isEmpty()) {
-      throw new BadRequestException('수정할 정보가 없습니다.');
+      throw new EmptyRequestException('수정');
     }
 
     await this.mapService.updateMapInfo(id, updateMapInfoRequest);
