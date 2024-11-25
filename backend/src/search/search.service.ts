@@ -3,7 +3,7 @@ import { PlaceSearchResponse } from '@src/search/dto/PlaceSearchResponse';
 import { PlaceSearchHit } from '@src/search/search.type';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ElasticSearchException } from '@src/search/exception/ElasticSearchException';
+import { ElasticSearchSaveException } from '@src/search/exception/ElasticSearchSaveException';
 import { Place } from '@src/place/entity/place.entity';
 import { ESPlaceSaveDTO } from '@src/search/dto/ESPlaceSaveDTO';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
@@ -29,7 +29,7 @@ export class SearchService {
       this.logger.error(
         `Elasticsearch에 장소 저장 중 에러가 발생했습니다: ${error}`,
       );
-      throw new ElasticSearchException(place.id);
+      throw new ElasticSearchSaveException(place.id);
     }
   }
 
