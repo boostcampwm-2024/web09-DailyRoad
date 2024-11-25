@@ -3,6 +3,7 @@ import { BaseEntity } from '../../common/BaseEntity';
 import { User } from '../../user/entity/user.entity';
 import { CoursePlace } from './course-place.entity';
 import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
+import { PlaceInCourseNotFoundException } from '@src/course/exception/PlaceInCourseNotFoundException';
 
 @Entity()
 export class Course extends BaseEntity {
@@ -56,6 +57,21 @@ export class Course extends BaseEntity {
     this.coursePlaces = coursePlaces.map((item, index) => {
       return CoursePlace.of(index + 1, item.placeId, this, item.comment);
     });
+  }
+
+  getPlace(placeId: number) {
+    const coursePlace = this.coursePlaces.find((cp) => cp.placeId === placeId);
+    if (!coursePlace) {
+      throw new PlaceInCourseNotFoundException(this.id, placeId);
+    }
+    return coursePlace;
+  }
+
+  updatePlace(placeId: number, comment?: string) {
+    const updated = this.getPlace(placeId).update(comment);
+    this.coursePlaces = this.coursePlaces.map((coursePlace) =>
+      coursePlace.placeId === placeId ? updated : coursePlace,
+    );
   }
 
   async getPlacesWithComment() {

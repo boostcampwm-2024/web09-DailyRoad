@@ -56,8 +56,7 @@ export class CourseService {
   }
 
   async getCourseById(id: number) {
-    const course = await this.courseRepository.findById(id);
-    if (!course) throw new CourseNotFoundException(id);
+    const course = await this.getCourseOrElseThrowNotFound(id);
 
     return await CourseDetailResponse.from(course);
   }
@@ -102,18 +101,12 @@ export class CourseService {
     return this.courseRepository.updateIsPublicById(id, isPublic);
   }
 
-  private async validateCourseExistsById(id: number) {
-    if (!(await this.courseRepository.existById(id)))
-      throw new CourseNotFoundException(id);
-  }
-
   @Transactional()
   async setPlacesOfCourse(
     id: number,
     setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
   ) {
-    const course = await this.courseRepository.findById(id);
-    if (!course) throw new CourseNotFoundException(id);
+    const course = await this.getCourseOrElseThrowNotFound(id);
 
     await this.validatePlacesForCourse(
       setPlacesOfCourseRequest.places.map((p) => p.placeId),
@@ -126,6 +119,24 @@ export class CourseService {
     return {
       places: await getPlacesResponseOfCourseWithOrder(reloadedCourse),
     };
+  }
+
+  async updatePlace(id: number, placeId: number, comment?: string) {
+    const course = await this.getCourseOrElseThrowNotFound(id);
+
+    course.updatePlace(placeId, comment);
+    return this.courseRepository.save(course);
+  }
+
+  private async getCourseOrElseThrowNotFound(id: number) {
+    const course = await this.courseRepository.findById(id);
+    if (!course) throw new CourseNotFoundException(id);
+    return course;
+  }
+
+  private async validateCourseExistsById(id: number) {
+    if (!(await this.courseRepository.existById(id)))
+      throw new CourseNotFoundException(id);
   }
 
   private async validatePlacesForCourse(placeIds: number[]) {

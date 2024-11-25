@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/JwtAuthGuard';
 import { AuthUser } from '../auth/AuthUser.decorator';
 import { CoursePermissionGuard } from './guards/CoursePermissionGuard';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { UpdatePlaceInCourseRequest } from '@src/course/dto/UpdatePlaceInCourseRequest';
 
 @Controller('/courses')
 export class CourseController {
@@ -66,6 +67,23 @@ export class CourseController {
       id,
       setPlacesOfCourseRequest,
     );
+  }
+
+  @Put('/:id/places/:placeId')
+  @UseGuards(JwtAuthGuard, CoursePermissionGuard)
+  async updatePlaceInCourse(
+    @Param('id') id: number,
+    @Param('placeId') placeId: number,
+    @Body() updatePlaceInCourseRequest: UpdatePlaceInCourseRequest,
+  ) {
+    const { comment } = updatePlaceInCourseRequest;
+    if (updatePlaceInCourseRequest.isEmpty()) {
+      throw new BadRequestException('수정할 정보가 없습니다.');
+    }
+
+    await this.courseService.updatePlace(id, placeId, comment);
+
+    return { courseId: id, placeId: placeId, comment: comment };
   }
 
   @Patch('/:id/info')
