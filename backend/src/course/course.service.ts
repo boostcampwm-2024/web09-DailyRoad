@@ -13,6 +13,7 @@ import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
 import { PagedCourseResponse } from './dto/PagedCourseResponse';
 import { User } from '../user/entity/user.entity';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class CourseService {
@@ -68,6 +69,7 @@ export class CourseService {
     return course.user.id;
   }
 
+  @Transactional()
   async createCourse(userId: number, createCourseForm: CreateCourseRequest) {
     const user = { id: userId } as User;
     const course = createCourseForm.toEntity(user);
@@ -75,6 +77,7 @@ export class CourseService {
     return { id: (await this.courseRepository.save(course)).id };
   }
 
+  @Transactional()
   async deleteCourse(id: number) {
     await this.validateCourseExistsById(id);
 
@@ -82,6 +85,7 @@ export class CourseService {
     return { id };
   }
 
+  @Transactional()
   async updateCourseInfo(
     id: number,
     updateCourseForm: UpdateCourseInfoRequest,
@@ -96,6 +100,7 @@ export class CourseService {
     );
   }
 
+  @Transactional()
   async updateCourseVisibility(id: number, isPublic: boolean) {
     await this.validateCourseExistsById(id);
     return this.courseRepository.updateIsPublicById(id, isPublic);
@@ -106,6 +111,7 @@ export class CourseService {
       throw new CourseNotFoundException(id);
   }
 
+  @Transactional()
   async setPlacesOfCourse(
     id: number,
     setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
