@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JWTHelper } from './JWTHelper';
-import { CreateUserRequest } from '../user/dto/CreateUserRequest';
-import { UserService } from '../user/user.service';
-import { RefreshTokenRepository } from './refresh-token.repository';
-import { OAuthProvider } from './oauthProvider/OAuthProvider';
-import { AuthenticationException } from './exception/AuthenticationException';
-import { UserRole } from '../user/user.role';
+import { JWTHelper } from '@src/auth/JWTHelper';
+import { CreateUserRequest } from '@src/user/dto/CreateUserRequest';
+import { UserService } from '@src/user/user.service';
+import { RefreshTokenRepository } from '@src/auth/refresh-token.repository';
+import { OAuthProvider } from '@src/auth/oauthProvider/OAuthProvider';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
+import { UserRole } from '@src/user/user.role';
 import {
   OAuthProviderName,
   getOAuthProviders,
-} from './oauthProvider/OAuthProviders';
+} from '@src/auth/oauthProvider/OAuthProviders';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +41,7 @@ export class AuthService {
     return provider.getAuthUrl(origin);
   }
 
+  @Transactional()
   async signInWith(
     providerName: OAuthProviderName,
     origin: string,
@@ -87,6 +89,7 @@ export class AuthService {
     return provider;
   }
 
+  @Transactional()
   private async generateTokens(userId: number, role: string) {
     const accessToken = this.jwtHelper.generateToken(
       this.accessTokenExpiration,

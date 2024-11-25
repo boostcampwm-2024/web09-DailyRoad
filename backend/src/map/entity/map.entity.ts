@@ -54,11 +54,11 @@ export class Map extends BaseEntity {
     this.mapPlaces.push(MapPlace.of(placeId, this, color, description));
   }
 
-  async deletePlace(placeId: number) {
+  deletePlace(placeId: number) {
     this.mapPlaces = this.mapPlaces.filter((p) => p.placeId !== placeId);
   }
 
-  async hasPlace(placeId: number) {
+  hasPlace(placeId: number) {
     return this.mapPlaces.some((p) => p.placeId === placeId);
   }
 
