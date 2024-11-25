@@ -8,10 +8,9 @@ import { OAuthProvider } from '@src/auth/oauthProvider/OAuthProvider';
 import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
 import { UserRole } from '@src/user/user.role';
 import {
-  OAuthProviderName,
   getOAuthProviders,
+  OAuthProviderName,
 } from '@src/auth/oauthProvider/OAuthProviders';
-import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +40,6 @@ export class AuthService {
     return provider.getAuthUrl(origin);
   }
 
-  @Transactional()
   async signInWith(
     providerName: OAuthProviderName,
     origin: string,
@@ -89,7 +87,6 @@ export class AuthService {
     return provider;
   }
 
-  @Transactional()
   private async generateTokens(userId: number, role: string) {
     const accessToken = this.jwtHelper.generateToken(
       this.accessTokenExpiration,
