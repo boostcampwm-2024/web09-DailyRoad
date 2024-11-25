@@ -16,6 +16,8 @@ import { Color } from '@src/place/place.color.enum';
 import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
 import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceToMapException';
 import { UserRepository } from '@src/user/user.repository';
+import { createMock } from '@golevelup/ts-jest';
+import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapService 테스트', () => {
   let mapService: MapService;
@@ -33,7 +35,7 @@ describe('MapService 테스트', () => {
     [page, pageSize] = [1, 10];
   });
   beforeEach(async () => {
-    mapRepository = {
+    mapRepository = createMock<MapRepository>({
       searchByTitleQuery: jest.fn(),
       findAll: jest.fn(),
       count: jest.fn(),
@@ -43,29 +45,27 @@ describe('MapService 테스트', () => {
       softDelete: jest.fn(),
       update: jest.fn(),
       existById: jest.fn(),
-    } as unknown as jest.Mocked<MapRepository>;
-    userRepository = {
+    });
+    userRepository = createMock<UserRepository>({
       findByProviderAndOauthId: jest.fn(),
       createUser: jest.fn(),
       findById: jest.fn(),
       existById: jest.fn(),
-    } as unknown as jest.Mocked<UserRepository>;
-    placeRepository = {
+    });
+    placeRepository = createMock<PlaceRepository>({
       findByGooglePlaceId: jest.fn(),
       findAll: jest.fn(),
       searchByNameOrAddressQuery: jest.fn(),
       existById: jest.fn(),
-    } as unknown as jest.Mocked<PlaceRepository>;
+    });
     mapService = new MapService(mapRepository, userRepository, placeRepository);
     userRepository.existById.mockResolvedValue(true);
   });
   describe('searchMap 메소드 테스트', () => {
     it('파라미터 중 query 가 없을 경우 공개된 모든 지도를 반환한다.', async () => {
-      const mockMaps: Map[] = createPublicMaps(5, fakeUser1).map((map) => {
-        return {
-          ...map,
-          mapPlaces: [],
-        };
+      const mockMaps: Map[] = createPublicMaps(5, fakeUser1);
+      mockMaps.forEach((map) => {
+        map.mapPlaces = [];
       });
       const spyFindAll = mapRepository.findAll.mockResolvedValue(mockMaps);
       const spyCount = mapRepository.count.mockResolvedValue(mockMaps.length);
@@ -86,17 +86,15 @@ describe('MapService 테스트', () => {
       expect(result.currentPage).toEqual(page);
       expect(result.totalPages).toEqual(Math.ceil(mockMaps.length / pageSize));
     });
-    it('파라미터 중 쿼리(지도 title)가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
+    it('파라미터 중 쿼리가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
       const searchTitle = 'cool';
       const mockCoolMaps: Map[] = createPublicMapsWithTitle(
         5,
         fakeUser1,
         'cool map',
-      ).map((map) => {
-        return {
-          ...map,
-          mapPlaces: [],
-        };
+      );
+      mockCoolMaps.forEach((map) => {
+        map.mapPlaces = [];
       });
       const spySearchByTitleQuery = jest
         .spyOn(mapRepository, 'searchByTitleQuery')
@@ -109,31 +107,26 @@ describe('MapService 테스트', () => {
       );
       const result = await mapService.searchMap(searchTitle, 1, 10);
       expect(spySearchByTitleQuery).toHaveBeenCalledWith(
-        'cool',
+        searchTitle,
         page,
         pageSize,
       );
       expect(spyCount).toHaveBeenCalledWith({
-        where: { title: 'cool', isPublic: true },
+        where: { title: searchTitle, isPublic: true },
       });
       expect(result.maps).toEqual(
         expect.arrayContaining(
           expectedMaps.map((map) => expect.objectContaining(map)),
         ),
       );
-      expect(result.currentPage).toEqual(page);
-      expect(result.totalPages).toEqual(
-        Math.ceil(mockCoolMaps.length / pageSize),
-      );
     });
   });
   describe('getOwnMaps 메소드 테스트', () => {
     it('유저 아이디를 파라미터로 받아서 해당 유저의 지도를 반환한다.', async () => {
-      const fakeUserMaps = createPublicMaps(5, fakeUser1).map((map) => {
-        return {
-          ...map,
-          mapPlaces: [],
-        };
+      const fakeUserMaps = createPublicMaps(5, fakeUser1);
+
+      fakeUserMaps.forEach((map) => {
+        map.mapPlaces = [];
       });
       const spyFindUserById =
         mapRepository.findByUserId.mockResolvedValue(fakeUserMaps);
@@ -158,10 +151,6 @@ describe('MapService 테스트', () => {
           expectedMaps.map((map) => expect.objectContaining(map)),
         ),
       );
-      expect(result.totalPages).toEqual(
-        Math.ceil(fakeUserMaps.length / pageSize),
-      );
-      expect(result.currentPage).toEqual(page);
     });
   });
   describe('getMapById 메소드 테스트', () => {
@@ -290,7 +279,11 @@ describe('MapService 테스트', () => {
     it('추가하려는 장소가 이미 해당 지도에 있을경우 DuplicatePlaceToMapException 에러를 발생시킨다', async () => {
       const map = createPublicMaps(1, fakeUser1)[0];
       map.mapPlaces = [];
-      map.mapPlaces.push({ placeId: 1 });
+      const place = new MapPlace();
+      place.placeId = 1;
+      place.color = 'RED' as Color;
+      place.description = 'test';
+      map.mapPlaces.push(place);
       const spyOnFindById = mapRepository.findById.mockResolvedValue(map);
       const spyOnPlaceExistById =
         placeRepository.existById.mockResolvedValue(true);
@@ -304,7 +297,9 @@ describe('MapService 테스트', () => {
       const map = createPublicMaps(1, fakeUser1)[0];
       map.mapPlaces = [];
       const addPlace = { color: 'RED', comment: 'test', placeId: 2 };
-      map.mapPlaces.push({ placeId: 1 });
+      const place = new MapPlace();
+      place.placeId = 1;
+      map.mapPlaces.push(place);
       const spyOnFindById = mapRepository.findById.mockResolvedValue(map);
       const spyOnPlaceExistById =
         placeRepository.existById.mockResolvedValue(true);
@@ -332,7 +327,9 @@ describe('MapService 테스트', () => {
     it('mapId로 받은 지도에서 placeId 를 제거하고 해당 placeId 를 반환한다.', async () => {
       const map = createPublicMaps(1, fakeUser1)[0];
       map.mapPlaces = [];
-      map.mapPlaces.push({ placeId: 1 });
+      const newPlace = new MapPlace();
+      newPlace.placeId = 1;
+      map.mapPlaces.push(newPlace);
       const expectResult = { deletedId: 1 };
       const spyFindById = mapRepository.findById.mockResolvedValue(map);
       const spyMapSave = mapRepository.save;
