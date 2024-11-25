@@ -26,6 +26,7 @@
     "@nestjs/schedule": "^4.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "@golevelup/ts-jest": "^0.6.1",
     "google-auth-library": "^9.14.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
