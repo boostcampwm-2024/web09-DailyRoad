@@ -9,8 +9,8 @@ export class BaseException extends HttpException {
     this.code = exceptionType.code;
   }
 
-  getCode(): number {
-    return this.code;
+  getCode(): string {
+    return `E${this.code}`;
   }
 
   getMessage(): string {
