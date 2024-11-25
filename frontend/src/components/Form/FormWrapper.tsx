@@ -29,7 +29,7 @@ const FormWrapper = ({
       <Box>
         <DashBoardHeader title={header} />
         <div className="flex gap-4">
-          <ImageUploader />
+          <ImageUploader thumbnailUrl={thumbnailUrl} onUpload={updateMapInfo} />
           {!isEditMode && (
             <select
               value={mode}

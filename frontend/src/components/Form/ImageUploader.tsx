@@ -1,13 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageIcon from '@/components/Form/ImageIcon';
+import { uploadImage } from '@/api/image/index';
+import { BaseMap } from '@/types';
 
 interface FileChangeEvent extends React.ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
 
-const ImageUploader = () => {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+type ImageUploaderProps = {
+  onUpload: <K extends keyof BaseMap>(field: K, value: BaseMap[K]) => void;
+  thumbnailUrl?: string;
+};
+
+const ImageUploader = ({ onUpload, thumbnailUrl }: ImageUploaderProps) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    thumbnailUrl ?? null,
+  );
   const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -18,52 +28,39 @@ const ImageUploader = () => {
     };
   }, [previewUrl]);
 
-  const handleFileChange = (event: FileChangeEvent): void => {
+  const handleFileChange = async (event: FileChangeEvent): Promise<void> => {
     const file = event.target.files?.[0];
-    const maxSize = 2 * 1024 * 1024;
+    const maxSize = 3 * 1024 * 1024;
 
     if (file) {
       if (file.size > maxSize) {
-        setError('파일 크기는 2MB를 초과할 수 없습니다.');
+        setError('파일 크기는 3MB를 초과할 수 없습니다.');
         setPreviewUrl(null);
         return;
       }
 
-      const objectUrl = URL.createObjectURL(file);
-      const img = new Image();
+      setUploading(true);
+      setError('');
 
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 200;
-        const scaleSize = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH;
-        canvas.height = img.height * scaleSize;
-
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          canvas.toBlob(
-            (blob) => {
-              if (blob) {
-                const optimizedUrl = URL.createObjectURL(blob);
-                setPreviewUrl(optimizedUrl);
-                URL.revokeObjectURL(objectUrl);
-                setError('');
-              }
-            },
-            'image/jpeg',
-            0.7,
-          );
+      try {
+        let uploadedUrl = await uploadImage(file, 'profile');
+        if (
+          uploadedUrl.startsWith('https:/') &&
+          !uploadedUrl.startsWith('https://')
+        ) {
+          uploadedUrl = uploadedUrl.replace('https:/', 'https://');
         }
-      };
-
-      img.onerror = () => {
-        setError('이미지 로딩 중 오류가 발생했습니다.');
-        URL.revokeObjectURL(objectUrl);
-      };
-
-      img.src = objectUrl;
+        setPreviewUrl(uploadedUrl);
+        console.log(uploadedUrl);
+        onUpload('thumbnailUrl', uploadedUrl);
+      } catch (err) {
+        setError(
+          `이미지 업로드 중 오류가 발생했습니다: ${err instanceof Error ? err.message : '알 수 없는 오류'}`,
+        );
+        setPreviewUrl(null);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -82,18 +79,18 @@ const ImageUploader = () => {
       />
       <div
         onClick={handleButtonClick}
-        className="h-[128px] w-[168px] cursor-pointer rounded-md bg-c_button_gray"
+        className="flex h-[128px] w-[168px] cursor-pointer items-center justify-center rounded-md bg-c_button_gray transition duration-300 hover:brightness-50"
       >
-        {previewUrl ? (
+        {uploading ? (
+          <p>업로드 중...</p>
+        ) : previewUrl ? (
           <img
             src={previewUrl}
             alt="미리보기"
             className="h-full w-full rounded-md object-contain"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <ImageIcon />
-          </div>
+          <ImageIcon />
         )}
       </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
