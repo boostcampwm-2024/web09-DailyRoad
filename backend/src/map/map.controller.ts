@@ -67,6 +67,10 @@ export class MapController {
     @Param('id') id: number,
     @Body() updateMapInfoRequest: UpdateMapInfoRequest,
   ) {
+    if (updateMapInfoRequest.isEmpty()) {
+      throw new BadRequestException('수정할 정보가 없습니다.');
+    }
+
     await this.mapService.updateMapInfo(id, updateMapInfoRequest);
     return { id, ...updateMapInfoRequest };
   }

@@ -74,6 +74,10 @@ export class CourseController {
     @Param('id') id: number,
     @Body() updateCourseInfoRequest: UpdateCourseInfoRequest,
   ) {
+    if (updateCourseInfoRequest.isEmpty()) {
+      throw new BadRequestException('수정할 정보가 없습니다.');
+    }
+
     await this.courseService.updateCourseInfo(id, updateCourseInfoRequest);
     return { id, ...updateCourseInfoRequest };
   }
