@@ -31,7 +31,7 @@ import {
 } from '@test/map/integration-test/map.integration.expectExcptions';
 import { createInvalidToken } from '@test/map/integration-test/map.integration.util';
 
-describe('MapController', () => {
+describe('MapController 통합 테스트', () => {
   let app: INestApplication;
 
   let container: StartedMySqlContainer;
@@ -879,7 +879,7 @@ describe('MapController', () => {
           expect(response.body).toEqual(
             expect.objectContaining({
               statusCode: 400,
-              message: 'isPublic must be boolean not string.',
+              message: ['isPublic must be a boolean value'],
             }),
           );
         });
