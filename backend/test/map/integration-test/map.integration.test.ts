@@ -30,10 +30,10 @@ import {
   MAP_PERMISSION_EXCEPTION,
 } from '@test/map/integration-test/map.integration.expectExcptions';
 import { createInvalidToken } from '@test/map/integration-test/map.integration.util';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
-
   let container: StartedMySqlContainer;
   let dataSource: DataSource;
 
@@ -45,23 +45,36 @@ describe('MapController 통합 테스트', () => {
 
   let fakeUser1: User;
   let fakeUser2: User;
+
+  let fakeUser1Id: number;
+  let fakeUser2Id: number;
+
   let jwtHelper: JWTHelper;
   let token: string;
 
   beforeAll(async () => {
     token = null;
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
 
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
+    initializeTransactionalContext();
 
     mapRepository = new MapRepository(dataSource);
     placeRepository = new PlaceRepository(dataSource);
     userRepository = new UserRepository(dataSource);
 
-    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
-    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
+    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
     await userRepository.delete({});
-    await userRepository.save([fakeUser1, fakeUser2]);
+
+    const [fakeUser1Entity, fakeUser2Entity] = await userRepository.save([
+      fakeUser1,
+      fakeUser2,
+    ]);
+    fakeUser1Id = fakeUser1Entity.id;
+    fakeUser2Id = fakeUser2Entity.id;
+
     const places = createPlace(10);
     await placeRepository.save(places);
   });
@@ -114,10 +127,13 @@ describe('MapController 통합 테스트', () => {
         },
       })
       .compile();
+
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
     jwtHelper = app.get<JWTHelper>(JWTHelper);
     mapService = app.get<MapService>(MapService);
+
     await mapRepository.delete({});
     token = null;
     await app.init();
@@ -129,39 +145,42 @@ describe('MapController 통합 테스트', () => {
   afterAll(async () => {
     await mapRepository.delete({});
     await userRepository.delete({});
+    await placeRepository.delete({});
+    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
+    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
     await dataSource.destroy();
+    await app.close();
   });
   describe('getMyMapList 메소드 테스트', () => {
     it('GET /my 에 대한 요청에 해당 유저 ID 가 가지는 모든 지도의 정보를 반환한다.', async () => {
-      const fakeUser1 = await userRepository.findById(1);
-      const fakeUser2 = await userRepository.findById(2);
-
+      const fakeUser1 = await userRepository.findById(fakeUser1Id);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       const fakeUserOneMaps = createPublicMaps(3, fakeUser1);
       const fakeUserTwoMaps = createPublicMaps(3, fakeUser2);
       await mapRepository.save([...fakeUserOneMaps, ...fakeUserTwoMaps]);
-
       const userInfo = {
         userId: fakeUser1.id,
         role: fakeUser1.role,
       };
       token = jwtHelper.generateToken('24h', userInfo);
+
       return request(app.getHttpServer())
         .get('/maps/my')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(200)
         .then((response) => {
           const gotMaps = response.body.maps;
           expect(gotMaps.length).toEqual(fakeUserOneMaps.length);
           gotMaps.forEach((gotMaps, index) => {
             const expectedMap = fakeUserOneMaps[index];
-
             expect(gotMaps.id).toEqual(expectedMap.id);
             expect(gotMaps.title).toEqual(expectedMap.title);
             expect(gotMaps.isPublic).toEqual(expectedMap.isPublic);
             expect(gotMaps.thumbnailUrl).toEqual(expectedMap.thumbnailUrl);
             expect(gotMaps.description).toEqual(expectedMap.description);
             expect(gotMaps.pinCount).toEqual(0);
-
             expect(new Date(gotMaps.createdAt).toISOString()).toEqual(
               new Date(expectedMap.createdAt).toISOString(),
             );
@@ -175,18 +194,18 @@ describe('MapController 통합 테스트', () => {
       return request(app.getHttpServer()).get('/maps/my').expect(401);
     });
     it('GET /my 에 대한 요청에 토큰이 만료됐을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('1s', payload);
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       return request(app.getHttpServer())
         .get('/maps/my')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(401)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -195,23 +214,23 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('GET /my 에 대한 요청에 토큰이 조작됐을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('24h', payload);
       const invalidToken = createInvalidToken(token);
 
       return request(app.getHttpServer())
         .get('/maps/my')
         .set(`Authorization`, `Bearer ${invalidToken}`)
+
         .expect(401);
     });
     it('GET /my 에 대한 요청에 user id 에 해당하는 유저가 없을 경우 에러를 발생시킨다.', async () => {
       const invalidUserInfo = {
-        id: 3,
+        id: 999999,
         nickname: 'unknown',
         provider: 'GOOGLE',
         role: UserRole.ADMIN,
@@ -221,9 +240,11 @@ describe('MapController 통합 테스트', () => {
         role: invalidUserInfo.role,
       };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .get('/maps/my')
         .set(`Authorization`, `Bearer ${token}`)
+
         .expect(404);
     });
   });
@@ -232,8 +253,10 @@ describe('MapController 통합 테스트', () => {
       const publicMaps = createPublicMaps(5, fakeUser1);
       const privateMaps = createPrivateMaps(5, fakeUser1);
       await mapRepository.save([...publicMaps, ...privateMaps]);
+
       return request(app.getHttpServer())
         .get('/maps')
+
         .expect((response) => {
           const gotMaps = response.body.maps;
           expect(gotMaps.length).toEqual(publicMaps.length);
@@ -251,8 +274,10 @@ describe('MapController 통합 테스트', () => {
       const maps = createPublicMaps(5, fakeUser1);
       await mapRepository.save([...maps]);
       const EXPECT_MAP_ID = 3;
+
       return request(app.getHttpServer())
         .get(`/maps/${EXPECT_MAP_ID}`)
+
         .expect(200)
         .expect((response) => {
           const gotMap = response.body;
@@ -271,8 +296,10 @@ describe('MapController 통합 테스트', () => {
       const maps = createPublicMaps(5, fakeUser1);
       await mapRepository.save([...maps]);
       const EXPECT_MAP_ID = 55;
+
       const result = await request(app.getHttpServer())
         .get(`/maps/${EXPECT_MAP_ID}`)
+
         .expect(404);
       expect(result.body).toEqual(
         expect.objectContaining(MAP_NOT_FOUND_EXCEPTION(EXPECT_MAP_ID)),
@@ -289,18 +316,18 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(401);
       expect(result.body).toEqual(
         expect.objectContaining(EMPTY_TOKEN_EXCEPTION),
       );
     });
     it('POST /maps/ 요청에 대해서 조작된 토큰과 함께 요청이 발생할 경우 AuthenticationException 예외를 발생시킨다', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('24h', payload);
       const invalidToken = createInvalidToken(token);
 
@@ -313,6 +340,7 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(401)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -321,12 +349,11 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('POST /maps/ 요청에 대해서 만료된 토큰과 함께 요청이 발생할 경우 AuthenticationException 예외를 발생시킨다', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('1s', payload);
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -339,6 +366,7 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(401)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -347,7 +375,7 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('POST /maps/ 요청에 대해 유저 정보가 없을 경우 UserNotFoundException 에러를 발생시킨다.', async () => {
-      const INVALID_USER_ID = 3;
+      const INVALID_USER_ID = 99999;
       const invalidUserInfo = {
         id: INVALID_USER_ID,
         nickname: 'unknown',
@@ -359,6 +387,7 @@ describe('MapController 통합 테스트', () => {
         role: invalidUserInfo.role,
       };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .post('/maps/')
         .set(`Authorization`, `Bearer ${token}`)
@@ -368,6 +397,7 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(404)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -379,12 +409,11 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('/POST /maps 요청의 Body 에 title 이 없을 경우 Bad Request 예외를 발생시킨다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('24h', payload);
 
       return request(app.getHttpServer())
@@ -395,6 +424,7 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -406,12 +436,11 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('/POST /maps 요청의 Body 에 description 이 없을 경우 Bad Request 예외를 발생시킨다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('24h', payload);
 
       return request(app.getHttpServer())
@@ -422,6 +451,7 @@ describe('MapController 통합 테스트', () => {
           isPublic: true,
           thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
         })
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -433,12 +463,11 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('/POST /maps 에 올바른 Body 와 유효한 토큰을 설정한 요청에 대해서 적절하게 저장하고, 저장한 지도에 대한 id 를 반환한다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-
       token = jwtHelper.generateToken('24h', payload);
       const testMap = {
         title: 'Test Map',
@@ -446,10 +475,12 @@ describe('MapController 통합 테스트', () => {
         isPublic: true,
         thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
       };
+
       return request(app.getHttpServer())
         .post('/maps/')
         .set('Authorization', `Bearer ${token}`)
         .send(testMap)
+
         .expect(201)
         .expect(async (response) => {
           expect(response.body).toEqual(
@@ -480,13 +511,14 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
-      const fakeUserInfo = await userRepository.findById(1);
+      const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
       };
     });
     afterEach(async () => {
+      await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT=1;`);
       await mapRepository.delete({});
     });
     it('POST /maps/:id/places 요청의 Body의 placeId의 타입이 number가 아니라면 Bad Request 에러를 발생시킨다.', async () => {
@@ -496,10 +528,12 @@ describe('MapController 통합 테스트', () => {
         comment: 'update test description',
         color: 'BLUE',
       };
+
       return request(app.getHttpServer())
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(InvalidTestPlace)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -518,13 +552,13 @@ describe('MapController 통합 테스트', () => {
         comment: 9999999999,
         color: 'BLUE',
       };
-
       token = jwtHelper.generateToken('24h', payload);
 
       return request(app.getHttpServer())
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(InvalidTestPlace)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -547,6 +581,7 @@ describe('MapController 통합 테스트', () => {
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(InvalidTestPlace)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -567,10 +602,12 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
+
       return request(app.getHttpServer())
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(testPlace)
+
         .expect(409)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -583,16 +620,18 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가지지만 해당 유저의 지도가 아니라면 MapPermissionException 을 발생한다.', async () => {
-      const fakeUser2 = await userRepository.findById(2);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
         userId: fakeUser2.id,
         role: fakeUser2.role,
       };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(testPlace)
+
         .expect(403)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -607,6 +646,7 @@ describe('MapController 통합 테스트', () => {
         .post('/maps/1/places')
         .set('Authorization', `Bearer ${token}`)
         .send(testPlace)
+
         .expect(201)
         .expect((response) => {
           expect(response.body).toEqual(expect.objectContaining(testPlace));
@@ -617,7 +657,7 @@ describe('MapController 통합 테스트', () => {
     let payload: { userId: number; role: string };
     let testPlace: { placeId: number; comment: string; color: string };
     beforeEach(async () => {
-      const fakeUserOneInfo = await userRepository.findById(1);
+      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
       testPlace = {
@@ -636,13 +676,13 @@ describe('MapController 통합 테스트', () => {
         role: fakeUserOneInfo.role,
       };
     });
-
     it('DELETE /maps/:id/places/:placeId 요청의 지도의 id 를 찾지 못했을 경우 MapNotFoundException 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
       return request(app.getHttpServer())
         .delete('/maps/3/places/1')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(404)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -651,7 +691,7 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('DELETE /maps/:id/places/:placeId 요청에 올바른 토큰과 지도 id 를 설정했지만, 해당 유저의 지도가 아닐경우 MapPermissionException 을 발생한다.', async () => {
-      const fakeUser2 = await userRepository.findById(2);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
         userId: fakeUser2.id,
         role: fakeUser2.role,
@@ -661,6 +701,7 @@ describe('MapController 통합 테스트', () => {
       return request(app.getHttpServer())
         .delete('/maps/1/places/1')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(403)
         .expect(async (response) => {
           expect(response.body).toEqual(
@@ -672,8 +713,9 @@ describe('MapController 통합 테스트', () => {
       token = jwtHelper.generateToken('24h', payload);
 
       return request(app.getHttpServer())
-        .delete('/maps/1/places/1')
+        .delete(`/maps/1/places/1`)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(200)
         .expect(async (response) => {
           expect(response.body).toEqual(
@@ -704,7 +746,7 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
-      const fakeUserInfo = await userRepository.findById(1);
+      const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
@@ -718,10 +760,12 @@ describe('MapController 통합 테스트', () => {
       const updateMapInfo = {
         description: 'this is updated test map',
       };
+
       return request(app.getHttpServer())
         .patch('/maps/1/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -739,10 +783,12 @@ describe('MapController 통합 테스트', () => {
         title: 124124,
         description: 'this is updated test map',
       };
+
       return request(app.getHttpServer())
         .patch('/maps/1/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -760,10 +806,12 @@ describe('MapController 통합 테스트', () => {
         title: 'updated map title',
         description: 111111,
       };
+
       return request(app.getHttpServer())
         .patch('/maps/1/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -781,10 +829,12 @@ describe('MapController 통합 테스트', () => {
         title: 'updated map title',
         description: 'updated map description',
       };
+
       return request(app.getHttpServer())
         .patch('/maps/2/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(404)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -793,7 +843,7 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('/PATCH /:id/info 요청에 올바른 토큰과 적절한 요청 body, params 를 가지지만 해당 유저의 지도가 아닐경우 MapPermissionException 을 발생한다.', async () => {
-      const fakeUser2 = await userRepository.findById(2);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
         userId: fakeUser2.id,
         role: fakeUser2.role,
@@ -803,10 +853,12 @@ describe('MapController 통합 테스트', () => {
         title: 'updated map title',
         description: 'updated map description',
       };
+
       return request(app.getHttpServer())
         .patch('/maps/1/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(403)
         .expect(async (response) => {
           expect(response.body).toEqual(
@@ -820,10 +872,12 @@ describe('MapController 통합 테스트', () => {
         title: 'updated map title',
         description: 'updated map description',
       };
+
       return request(app.getHttpServer())
         .patch('/maps/1/info')
         .send(updateMapInfo)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(200)
         .expect(async (response) => {
           expect(response.body).toEqual({
@@ -858,7 +912,7 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
-      const fakeUserInfo = await userRepository.findById(1);
+      const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
@@ -870,10 +924,12 @@ describe('MapController 통합 테스트', () => {
     it('PATCH /maps/:id/visibility 요청의 body 의 isPublic 이 boolean 이 아닐경우 예외를 발생한다.', async () => {
       const updateIsPublic = { isPublic: 'NOT BOOLEAN' };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .patch('/maps/1/visibility')
         .send(updateIsPublic)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(400)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -887,10 +943,12 @@ describe('MapController 통합 테스트', () => {
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body가 있을 경우 지도의 id 와 변경된 isPublic 을 반환한다.', async () => {
       const updateIsPublic = { isPublic: false };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .patch('/maps/1/visibility')
         .send(updateIsPublic)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -902,17 +960,19 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body를 가지지만 해당 유저의 지도가 아닐 경우 MapPermissionException 을 발생한다.', async () => {
-      const fakeUser2 = await userRepository.findById(2);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
         userId: fakeUser2.id,
         role: fakeUser2.role,
       };
       const updateIsPublic = { isPublic: false };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .patch('/maps/1/visibility')
         .send(updateIsPublic)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(403)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -923,10 +983,12 @@ describe('MapController 통합 테스트', () => {
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body가 있지만 지도가 없을 경우 MapNotFoundException 을 발생한다.', async () => {
       const updateIsPublic = { isPublic: false };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .patch('/maps/5/visibility')
         .send(updateIsPublic)
         .set('Authorization', `Bearer ${token}`)
+
         .expect(404)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -941,7 +1003,7 @@ describe('MapController 통합 테스트', () => {
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
-      const fakeUserInfo = await userRepository.findById(1);
+      const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
@@ -952,9 +1014,11 @@ describe('MapController 통합 테스트', () => {
     });
     it('DELETE /maps/:id 요청에 적절한 토큰이 있지만 해당하는 지도가 없다면 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .delete('/maps/5/')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(404)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -963,15 +1027,17 @@ describe('MapController 통합 테스트', () => {
         });
     });
     it('DELETE /maps/:id 요청에 대해 적절한 토큰이 있지만, 해당 유저의 지도가 아닐 경우 MapPermissionException 을 발생한다.', async () => {
-      const fakeUser2 = await userRepository.findById(2);
+      const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
         userId: fakeUser2.id,
         role: fakeUser2.role,
       };
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .delete('/maps/1')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(403)
         .expect((response) => {
           expect(response.body).toEqual(
@@ -981,9 +1047,11 @@ describe('MapController 통합 테스트', () => {
     });
     it('DELETE /maps/:id 요청에 대해 적절한 토큰이 있고 id 에 해당하는 지도가 있으면 삭제하고 id를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
+
       return request(app.getHttpServer())
         .delete('/maps/1')
         .set('Authorization', `Bearer ${token}`)
+
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual(expect.objectContaining({ id: 1 }));
