@@ -28,18 +28,16 @@ export function createPublicMaps(quantity: number, user: User) {
   return createEntities((i) => createMapWithOptions(i, user), quantity);
 }
 
-export function createPrivateMaps(quantity: number, user: User) {
-  const maps = [];
-  for (let i = 1; i <= quantity + 1; i++) {
-    const map = MapFixture.createMap({
-      user: user,
-      title: `private test map ${i}`,
-      isPublic: false,
-    });
-    maps.push(map);
-  }
-  return maps;
-}
+export const createPrivateMaps = (count: number, user: User) => {
+  return createEntities(
+    (i) =>
+      createMapWithOptions(i, user, {
+        isPublic: false,
+        title: `private test map ${i}`,
+      }),
+    count,
+  );
+};
 
 export const createPlace = (quantity: number) => {
   return createEntities(
