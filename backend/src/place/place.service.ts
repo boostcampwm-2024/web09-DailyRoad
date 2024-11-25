@@ -5,7 +5,6 @@ import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundExcept
 import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
 import { PlaceSearchResponse } from '@src/place/dto/PlaceSearchResponse';
 import { ConfigService } from '@nestjs/config';
-import { Transactional } from 'typeorm-transactional';
 import { SearchService } from '@src/search/search.service';
 import { PinoLogger } from 'nestjs-pino';
 
