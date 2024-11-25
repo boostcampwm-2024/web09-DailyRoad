@@ -7,7 +7,7 @@ const useDeleteMapMutation = (mode: CreateMapType) => {
   const queryClient = useQueryClient();
 
   const mutationFn = mode === 'MAP' ? deleteMap : deleteCourse;
-  const queryKey = mode === 'MAP' ? 'maps' : 'courses';
+  const queryKey = mode === 'MAP' ? 'mapList' : 'courseList';
 
   const deleteMutation = useMutation({
     mutationFn: mutationFn,

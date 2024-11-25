@@ -14,7 +14,7 @@ const BaseWrapper = ({
   className = '',
 }: BaseWrapperProps) => (
   <div
-    className={`${position} ${left} ${top} flex h-full flex-col gap-0.5 bg-gray-200 shadow-md ${className}`}
+    className={`${position} ${left} ${top} flex h-full flex-col gap-0.5 bg-gray-200 ${className}`}
   >
     {children}
   </div>
