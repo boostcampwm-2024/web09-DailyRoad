@@ -4,9 +4,11 @@ import {
   IsNotEmpty,
   IsString,
   IsUrl,
-  ValidateIf,
+  IsOptional,
 } from 'class-validator';
 import { Course } from '../entity/course.entity';
+import { ReplaceEmptyWith } from '@src/common/decorator/ReplaceEmptyWith';
+import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 
 export class CreateCourseRequest {
   @IsString()
@@ -20,7 +22,8 @@ export class CreateCourseRequest {
   @IsString()
   description?: string;
 
-  @ValidateIf((object, value) => value !== '')
+  @ReplaceEmptyWith(DEFAULT_THUMBNAIL_URL)
+  @IsOptional()
   @IsUrl()
   thumbnailUrl?: string;
 
