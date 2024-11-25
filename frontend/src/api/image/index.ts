@@ -9,6 +9,10 @@ const generatePreSignedPost = async (dirName: string, extension: string) => {
     {
       dirName: dirName,
       extension: extension,
+      params: {
+        blocking: true,
+        result: true,
+      },
     },
   );
   return data;

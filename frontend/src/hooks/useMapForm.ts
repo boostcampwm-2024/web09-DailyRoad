@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 const defaultMapData: BaseMap = {
   title: '',
   description: '',
-  thumbnailUrl: 'https://example.com/map7.jpg',
+  thumbnailUrl: '',
   isPublic: true,
   mode: 'MAP',
 };
@@ -21,7 +21,7 @@ export const useMapForm = (initialMapData?: BaseMap) => {
 
   const validateInputs = () => {
     const { title, description, thumbnailUrl } = mapInfo;
-    const isUrlValid = !thumbnailUrl || /^https?:\/\/.+/.test(thumbnailUrl);
+    const isUrlValid = !thumbnailUrl || /^https?:\/.+/.test(thumbnailUrl);
     setIsMapInfoValid(!!title && !!description && isUrlValid);
   };
 
