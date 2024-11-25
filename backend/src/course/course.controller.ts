@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
@@ -83,6 +84,10 @@ export class CourseController {
     @Param('id') id: number,
     @Body('isPublic') isPublic: boolean,
   ) {
+    if (typeof isPublic !== 'boolean') {
+      throw new BadRequestException('공개 여부는 boolean 타입이어야 합니다.');
+    }
+
     await this.courseService.updateCourseVisibility(id, isPublic);
     return { id, isPublic };
   }
