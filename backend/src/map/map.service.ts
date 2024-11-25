@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { MapRepository } from './map.repository';
-import { User } from '../user/entity/user.entity';
-import { MapListResponse } from './dto/MapListResponse';
-import { MapDetailResponse } from './dto/MapDetailResponse';
-import { UserRepository } from '../user/user.repository';
-import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
-import { CreateMapRequest } from './dto/CreateMapRequest';
-import { MapNotFoundException } from './exception/MapNotFoundException';
-import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapException';
-import { PlaceRepository } from '../place/place.repository';
-import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
-import { Map } from './entity/map.entity';
-import { Color } from '../place/place.color.enum';
-import { UserRole } from '../user/user.role';
+import { MapRepository } from '@src/map/map.repository';
+import { User } from '@src/user/entity/user.entity';
+import { MapListResponse } from '@src/map/dto/MapListResponse';
+import { MapDetailResponse } from '@src/map/dto/MapDetailResponse';
+import { UserRepository } from '@src/user/user.repository';
+import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
+import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
+import { MapNotFoundException } from '@src/map/exception/MapNotFoundException';
+import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceToMapException';
+import { PlaceRepository } from '@src/place/place.repository';
+import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
+import { Map } from '@src/map/entity/map.entity';
+import { Color } from '@src/place/place.color.enum';
+import { UserRole } from '@src/user/user.role';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class MapService {
@@ -73,6 +74,7 @@ export class MapService {
     return await MapDetailResponse.from(map);
   }
 
+  @Transactional()
   async createMap(userId: number, createMapForm: CreateMapRequest) {
     const user = { id: userId } as User;
     const map = createMapForm.toEntity(user);
@@ -80,6 +82,7 @@ export class MapService {
     return { id: (await this.mapRepository.save(map)).id };
   }
 
+  @Transactional()
   async deleteMap(id: number) {
     await this.checkExists(id);
 
@@ -87,6 +90,7 @@ export class MapService {
     return { id };
   }
 
+  @Transactional()
   async updateMapInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
     await this.checkExists(id);
 
@@ -94,6 +98,7 @@ export class MapService {
     return this.mapRepository.update(id, { title, description });
   }
 
+  @Transactional()
   async updateMapVisibility(id: number, isPublic: boolean) {
     await this.checkExists(id);
 
@@ -105,6 +110,7 @@ export class MapService {
       throw new MapNotFoundException(id);
   }
 
+  @Transactional()
   async addPlace(
     id: number,
     placeId: number,
@@ -130,11 +136,12 @@ export class MapService {
       throw new InvalidPlaceToMapException(placeId);
     }
 
-    if (await map.hasPlace(placeId)) {
+    if (map.hasPlace(placeId)) {
       throw new DuplicatePlaceToMapException(placeId);
     }
   }
 
+  @Transactional()
   async deletePlace(id: number, placeId: number) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
