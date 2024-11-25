@@ -13,6 +13,7 @@ import { PlaceRepository } from '../place/place.repository';
 import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
 import { PagedCourseResponse } from './dto/PagedCourseResponse';
 import { User } from '../user/entity/user.entity';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class CourseService {
@@ -106,6 +107,7 @@ export class CourseService {
       throw new CourseNotFoundException(id);
   }
 
+  @Transactional()
   async setPlacesOfCourse(
     id: number,
     setPlacesOfCourseRequest: SetPlacesOfCourseRequest,

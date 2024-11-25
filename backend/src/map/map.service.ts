@@ -74,7 +74,6 @@ export class MapService {
     return await MapDetailResponse.from(map);
   }
 
-  @Transactional()
   async createMap(userId: number, createMapForm: CreateMapRequest) {
     const user = { id: userId } as User;
     const map = createMapForm.toEntity(user);
@@ -82,7 +81,6 @@ export class MapService {
     return { id: (await this.mapRepository.save(map)).id };
   }
 
-  @Transactional()
   async deleteMap(id: number) {
     await this.checkExists(id);
 
@@ -90,7 +88,6 @@ export class MapService {
     return { id };
   }
 
-  @Transactional()
   async updateMapInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
     await this.checkExists(id);
 
@@ -98,7 +95,6 @@ export class MapService {
     return this.mapRepository.update(id, { title, description });
   }
 
-  @Transactional()
   async updateMapVisibility(id: number, isPublic: boolean) {
     await this.checkExists(id);
 
@@ -110,7 +106,6 @@ export class MapService {
       throw new MapNotFoundException(id);
   }
 
-  @Transactional()
   async addPlace(
     id: number,
     placeId: number,
@@ -141,7 +136,6 @@ export class MapService {
     }
   }
 
-  @Transactional()
   async deletePlace(id: number, placeId: number) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
