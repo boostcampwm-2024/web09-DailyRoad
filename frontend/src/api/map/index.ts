@@ -45,13 +45,6 @@ export const getMyMapList = async () => {
   return data;
 };
 
-export const getCourseList = async () => {
-  const { data } = await axiosInstance.get<MapList>(END_POINTS.COURSES, {
-    useAuth: false,
-  });
-  return data;
-};
-
 export const editMapInfo = async ({
   title,
   description,
