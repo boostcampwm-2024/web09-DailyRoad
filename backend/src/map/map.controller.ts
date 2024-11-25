@@ -21,6 +21,7 @@ import { EmptyRequestException } from '@src/common/exception/EmptyRequestExcepti
 import { AuthUser } from '@src/auth/AuthUser.decorator';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
+import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 
 @Controller('/maps')
 export class MapController {
@@ -108,14 +109,13 @@ export class MapController {
   @Patch('/:id/visibility')
   async updateMapVisibility(
     @Param('id') id: number,
-    @Body('isPublic') isPublic: boolean,
+    @Body() updateMapVisibilityRequest: UpdateMapVisibilityRequest,
   ) {
-    if (typeof isPublic !== 'boolean') {
-      throw new BadRequestException('공개 여부는 boolean 타입이어야 합니다.');
-    }
-
-    await this.mapService.updateMapVisibility(id, isPublic);
-    return { id, isPublic };
+    await this.mapService.updateMapVisibility(
+      id,
+      updateMapVisibilityRequest.isPublic,
+    );
+    return { id, isPublic: updateMapVisibilityRequest.isPublic };
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
