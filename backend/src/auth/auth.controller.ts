@@ -1,8 +1,20 @@
 import { Request, Response } from 'express';
-import { Body, Controller, Post, Get, Param, Res, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Param,
+  Res,
+  Req,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthenticationException } from './exception/AuthenticationException';
 import { getOAuthProviderNameByValue } from './oauthProvider/OAuthProviders';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
+import { AuthUser } from '@src/auth/AuthUser.decorator';
 
 const REFRESH_TOKEN = 'refreshToken';
 
@@ -47,6 +59,18 @@ export class AuthController {
     response.json({
       accessToken: tokens.accessToken,
     });
+  }
+
+  @Delete('signOut')
+  @UseGuards(JwtAuthGuard)
+  async signOut(@Res() response: Response, @AuthUser() user: AuthUser) {
+    await this.authService.signOut(user.userId);
+    response.clearCookie(REFRESH_TOKEN, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    response.status(204).send();
   }
 
   @Post('refresh')
