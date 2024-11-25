@@ -1,4 +1,4 @@
-import { BaseMap, MapList, Course } from '@/types';
+import { BaseMap, Course, CourseList } from '@/types';
 import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
@@ -34,7 +34,7 @@ export const getCourse = async (courseId: number) => {
 };
 
 export const getCourseList = async (pageParam: number) => {
-  const { data } = await axiosInstance.get<MapList>(END_POINTS.COURSES, {
+  const { data } = await axiosInstance.get<CourseList>(END_POINTS.COURSES, {
     params: {
       page: pageParam,
     },
@@ -44,7 +44,7 @@ export const getCourseList = async (pageParam: number) => {
 };
 
 export const getMyCourseList = async () => {
-  const { data } = await axiosInstance.get<MapList>(END_POINTS.MY_COURSE);
+  const { data } = await axiosInstance.get<CourseList>(END_POINTS.MY_COURSE);
   return data;
 };
 

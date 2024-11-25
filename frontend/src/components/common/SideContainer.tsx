@@ -5,9 +5,7 @@ const SideContainer = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <div
-    className={`absolute left-0 top-0 flex h-full w-[600px] gap-0.5 ${className}`}
-  >
+  <div className={`absolute left-0 top-0 flex h-full w-[600px] ${className}`}>
     {children}
   </div>
 );
