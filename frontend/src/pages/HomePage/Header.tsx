@@ -8,7 +8,7 @@ const Header = () => {
   const user = useStore((state) => state.user);
   const isLogged = useStore((state) => state.isLogged);
   const setUser = useStore((state) => state.setUser);
-  const data = useUserInfoQuery();
+  const data = useUserInfoQuery(localStorage.getItem('ACCESS_TOKEN_KEY'));
   const handleLogin = async () => {
     const redirectUri = await getRedirectUri();
     window.location.href = redirectUri;
