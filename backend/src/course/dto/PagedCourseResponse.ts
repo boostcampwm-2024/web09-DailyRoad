@@ -1,5 +1,5 @@
 import { CourseListResponse } from './CourseListResponse';
-import { PaginationResponse } from '../../common/dto/PaginationResponse';
+import { PaginationResponse } from '@src/common/dto/PaginationResponse';
 
 export class PagedCourseResponse extends PaginationResponse {
   constructor(

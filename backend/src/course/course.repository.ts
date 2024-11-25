@@ -40,7 +40,9 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
   }
 
   countByTitleAndIsPublic(title: string) {
-    return this.count({ where: { title, isPublic: true } });
+    return this.count({
+      where: { title: ILike(`%${title}%`), isPublic: true },
+    });
   }
 
   countAllPublic() {
