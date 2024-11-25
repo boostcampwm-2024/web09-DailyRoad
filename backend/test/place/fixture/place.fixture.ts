@@ -3,7 +3,7 @@ import { PlaceFixtureType } from '@test/place/fixture/place.fixture.type';
 
 export class PlaceFixture {
   static createPlace = ({
-    googlePlaceId = 'googlePlaceId_1',
+    googlePlaceId = `googlePlaceId${Date.now()}${Math.random()}`,
     name = 'Central Park',
     imageUrl = 'https://example.com/central_park.jpg',
     rating = 4.5,

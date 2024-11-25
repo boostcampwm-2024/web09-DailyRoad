@@ -1,4 +1,4 @@
-import { UserRole } from '../../../src/user/user.role';
+import { UserRole } from '@src/user/user.role';
 
 export type UserFixtureType = {
   provider?: string;

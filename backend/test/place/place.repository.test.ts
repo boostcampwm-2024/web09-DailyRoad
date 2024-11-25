@@ -52,9 +52,9 @@ describe('PlaceRepository', () => {
 
     it('페이지 번호와 페이지 크기를 기준으로 모든 장소를 반환한다', async () => {
       const places = [
-        PlaceFixture.createPlace({ googlePlaceId: 'googlePlaceId_1' }),
-        PlaceFixture.createPlace({ googlePlaceId: 'googlePlaceId_2' }),
-        PlaceFixture.createPlace({ googlePlaceId: 'googlePlaceId_3' }),
+        PlaceFixture.createPlace({}),
+        PlaceFixture.createPlace({}),
+        PlaceFixture.createPlace({}),
       ];
 
       await placeRepository.save(places);
@@ -101,7 +101,6 @@ describe('PlaceRepository', () => {
     it('페이지 크기가 전체 개수를 초과할 경우에도 정상적으로 작동한다', async () => {
       const places = Array.from({ length: 50 }, (_, i) =>
         PlaceFixture.createPlace({
-          googlePlaceId: `googlePlaceId_${i + 1}`,
           name: `Place ${i + 1}`,
           formattedAddress: `Address ${i + 1}`,
         }),
@@ -166,26 +165,22 @@ describe('PlaceRepository', () => {
     it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다', async () => {
       const placesWithParkName = [
         {
-          googlePlaceId: 'googlePlaceId_1',
           name: 'Central Park',
           formattedAddress: 'New York, NY, USA',
         },
         {
-          googlePlaceId: 'googlePlaceId_2',
           name: 'Tower Park',
           formattedAddress: 'London, UK',
         },
       ];
       const placesWithParkAddress = [
         {
-          googlePlaceId: 'googlePlaceId_3',
           name: 'Eiffel Tower',
           formattedAddress: 'Park Avenue, New York, NY, USA',
         },
       ];
       const placesEtc = [
         {
-          googlePlaceId: 'googlePlaceId_4',
           name: 'Seoul Forest',
           formattedAddress: 'Seoul, South Korea',
         },
@@ -195,8 +190,8 @@ describe('PlaceRepository', () => {
         ...placesWithParkName,
         ...placesWithParkAddress,
         ...placesEtc,
-      ].map(({ googlePlaceId, name, formattedAddress }) =>
-        PlaceFixture.createPlace({ googlePlaceId, name, formattedAddress }),
+      ].map(({ name, formattedAddress }) =>
+        PlaceFixture.createPlace({ name, formattedAddress }),
       );
       await placeRepository.save(places);
 
@@ -228,7 +223,6 @@ describe('PlaceRepository', () => {
 
     it('검색 키워드는 대소문자를 구분하지 않는다', async () => {
       const place = PlaceFixture.createPlace({
-        googlePlaceId: 'googlePlaceId_1',
         name: 'Park View',
         formattedAddress: 'New York, NY, USA',
       });
@@ -259,7 +253,6 @@ describe('PlaceRepository', () => {
     it('결과 개수가 페이지 크기를 초과할 경우 페이지 크기만큼만 반환한다', async () => {
       const places = Array.from({ length: 20 }, (_, i) =>
         PlaceFixture.createPlace({
-          googlePlaceId: `googlePlaceId_${i + 1}`,
           name: `Place ${i + 1}`,
           formattedAddress: `Address ${i + 1}`,
         }),
