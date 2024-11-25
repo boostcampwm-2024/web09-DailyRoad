@@ -1,22 +1,36 @@
 import { User } from '@src/user/entity/user.entity';
 import { MapFixture } from '@test/map/fixture/map.fixture';
 import { PlaceFixture } from '@test/place/fixture/place.fixture';
+import { Map } from '@src/map/entity/map.entity';
 
-export function createPublicMaps(count: number, user: User) {
-  const maps = [];
-  for (let i = 1; i <= count + 1; i++) {
-    const map = MapFixture.createMap({
-      user: user,
-      title: `public test map ${i}`,
-    });
-    maps.push(map);
-  }
-  return maps;
+function createEntities<T>(
+  createFn: (index: number, ...args: any[]) => T,
+  quantity: number,
+  ...args: any[]
+): T[] {
+  return Array.from({ length: quantity }, (_, i) => createFn(i + 1, ...args));
 }
 
-export function createPrivateMaps(count: number, user: User) {
+function createMapWithOptions(
+  index: number,
+  user: User,
+  options: Partial<Map> = {},
+): Map {
+  return MapFixture.createMap({
+    user,
+    title: `test map ${index}`,
+    isPublic: true,
+    ...options,
+  });
+}
+
+export function createPublicMaps(quantity: number, user: User) {
+  return createEntities((i) => createMapWithOptions(i, user), quantity);
+}
+
+export function createPrivateMaps(quantity: number, user: User) {
   const maps = [];
-  for (let i = 1; i <= count + 1; i++) {
+  for (let i = 1; i <= quantity + 1; i++) {
     const map = MapFixture.createMap({
       user: user,
       title: `private test map ${i}`,
@@ -27,29 +41,19 @@ export function createPrivateMaps(count: number, user: User) {
   return maps;
 }
 
-export function createPublicMapsWithTitle(
-  count: number,
+export const createPlace = (quantity: number) => {
+  return createEntities(
+    (i) => PlaceFixture.createPlace({ googlePlaceId: `google_place_${i}` }),
+    quantity,
+  );
+};
+export const createPublicMapsWithTitle = (
+  quantity: number,
   user: User,
-  title: string,
-) {
-  const maps = [];
-  for (let i = 1; i <= count + 1; i++) {
-    const map = MapFixture.createMap({
-      user: user,
-      title: `${title} ${i}`,
-    });
-    maps.push(map);
-  }
-  return maps;
-}
-
-export function createPlace(count: number) {
-  const places = [];
-  for (let i = 1; i <= count + 1; i++) {
-    const place = PlaceFixture.createPlace({
-      googlePlaceId: `google_place_${i}`,
-    });
-    places.push(place);
-  }
-  return places;
-}
+  baseTitle: string,
+) => {
+  return createEntities(
+    (i) => createMapWithOptions(i, user, { title: `${baseTitle} ${i}` }),
+    quantity,
+  );
+};
