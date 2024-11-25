@@ -8,12 +8,14 @@ import {
   Param,
   Patch,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { MapService } from './map.service';
 import { CreateMapRequest } from './dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
 import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
 
 @Controller('/maps')
 export class MapController {
@@ -52,6 +54,21 @@ export class MapController {
   ) {
     const { placeId, color, comment } = addPlaceToMapRequest;
     return await this.mapService.addPlace(id, placeId, color, comment);
+  }
+
+  @Put('/:id/places/:placeId')
+  async updatePlaceInMap(
+    @Param('id') id: number,
+    @Param('placeId') placeId: number,
+    @Body() updatePlaceInMapRequest: UpdatePlaceInMapRequest,
+  ) {
+    if (updatePlaceInMapRequest.isEmpty()) {
+      throw new BadRequestException('수정할 정보가 없습니다.');
+    }
+    const { color, comment } = updatePlaceInMapRequest;
+
+    await this.mapService.updatePlace(id, placeId, color, comment);
+    return { mapId: id, placeId, color, comment };
   }
 
   @Delete('/:id/places/:placeId')

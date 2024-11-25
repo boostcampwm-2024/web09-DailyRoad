@@ -1,8 +1,9 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../common/BaseEntity';
-import { User } from '../../user/entity/user.entity';
+import { BaseEntity } from '@src/common/BaseEntity';
+import { User } from '@src/user/entity/user.entity';
 import { MapPlace } from './map-place.entity';
-import { Color } from '../../place/place.color.enum';
+import { Color } from '@src/place/place.color.enum';
+import { PlaceInMapNotFoundException } from '@src/map/exception/PlaceInMapNotFoundException';
 
 @Entity()
 export class Map extends BaseEntity {
@@ -54,12 +55,11 @@ export class Map extends BaseEntity {
     this.mapPlaces.push(MapPlace.of(placeId, this, color, description));
   }
 
-  deletePlace(placeId: number) {
-    this.mapPlaces = this.mapPlaces.filter((p) => p.placeId !== placeId);
-  }
+  getPlace(placeId: number) {
+    const mapPlace = this.mapPlaces.find((p) => p.placeId === placeId);
+    if (!mapPlace) throw new PlaceInMapNotFoundException(this.id, placeId);
 
-  hasPlace(placeId: number) {
-    return this.mapPlaces.some((p) => p.placeId === placeId);
+    return mapPlace;
   }
 
   async getPlacesWithComment() {
@@ -70,5 +70,21 @@ export class Map extends BaseEntity {
         color: mapPlace.color,
       })),
     );
+  }
+
+  hasPlace(placeId: number) {
+    return this.mapPlaces.some((p) => p.placeId === placeId);
+  }
+
+  updatePlace(placeId: number, color?: Color, comment?: string) {
+    const updated = this.getPlace(placeId).update(color, comment);
+
+    this.mapPlaces = this.mapPlaces.map((mapPlace) =>
+      mapPlace.placeId === placeId ? updated : mapPlace,
+    );
+  }
+
+  deletePlace(placeId: number) {
+    this.mapPlaces = this.mapPlaces.filter((p) => p.placeId !== placeId);
   }
 }

@@ -100,11 +100,6 @@ export class MapService {
     return this.mapRepository.update(id, { isPublic });
   }
 
-  private async checkExists(id: number) {
-    if (!(await this.mapRepository.existById(id)))
-      throw new MapNotFoundException(id);
-  }
-
   async addPlace(
     id: number,
     placeId: number,
@@ -125,6 +120,41 @@ export class MapService {
     };
   }
 
+  async updatePlace(
+    id: number,
+    placeId: number,
+    color?: Color,
+    comment?: string,
+  ) {
+    const map = await this.getMapOrElseThrowNotFound(id);
+    map.updatePlace(placeId, color, comment);
+
+    return this.mapRepository.save(map);
+  }
+
+  async deletePlace(id: number, placeId: number) {
+    const map = await this.getMapOrElseThrowNotFound(id);
+
+    map.deletePlace(placeId);
+    await this.mapRepository.save(map);
+
+    return { deletedId: placeId };
+  }
+
+  private async getMapOrElseThrowNotFound(id: number) {
+    const map = await this.mapRepository.findById(id);
+    if (!map) {
+      throw new MapNotFoundException(id);
+    }
+    return map;
+  }
+
+  private async checkExists(id: number) {
+    if (!(await this.mapRepository.existById(id))) {
+      throw new MapNotFoundException(id);
+    }
+  }
+
   private async validatePlacesForMap(placeId: number, map: Map) {
     if (!(await this.placeRepository.existById(placeId))) {
       throw new InvalidPlaceToMapException(placeId);
@@ -133,15 +163,5 @@ export class MapService {
     if (map.hasPlace(placeId)) {
       throw new DuplicatePlaceToMapException(placeId);
     }
-  }
-
-  async deletePlace(id: number, placeId: number) {
-    const map = await this.mapRepository.findById(id);
-    if (!map) throw new MapNotFoundException(id);
-
-    map.deletePlace(placeId);
-    await this.mapRepository.save(map);
-
-    return { deletedId: placeId };
   }
 }
