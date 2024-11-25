@@ -14,6 +14,7 @@ import Modal from '@/components/common/Modal/Modal';
 import type { Course, CoursePlace, CreateMapType, Map } from '@/types';
 import PlaceListPanel from './PlaceListPanel';
 import { useLocation } from 'react-router-dom';
+import SearchGoogleResults from './SearchGoogleResults';
 
 type SearchPanelProps = {
   mapData: Map | Course;
@@ -21,7 +22,7 @@ type SearchPanelProps = {
 
 const SearchPanel = ({ mapData }: SearchPanelProps) => {
   const [query, setQuery] = useState('');
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+  const [googleSearchMode, setGoogleSearchMode] = useState(false);
   const location = useLocation();
   const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
 
@@ -37,19 +38,48 @@ const SearchPanel = ({ mapData }: SearchPanelProps) => {
         <BaseWrapper position="" top="" left="" className="w-1/2">
           <Box>
             <DashBoardHeader title="장소 검색" />
+            <div>
+              <button
+                onClick={() => {
+                  setGoogleSearchMode(false);
+                }}
+              >
+                장소 검색
+              </button>
+              <button
+                onClick={() => {
+                  setGoogleSearchMode(true);
+                }}
+              >
+                신규 장소 등록
+              </button>
+            </div>
             <SearchBar onSearch={(newQuery) => setQuery(newQuery)} />
           </Box>
           <Box>
-            <SearchResults query={query} />
+            {googleSearchMode ? (
+              <SearchGoogleResults query={query} />
+            ) : (
+              <SearchResults places={mapData.places} query={query} />
+            )}
           </Box>
           <AddPlaceButton onClick={openFormModal} />
         </BaseWrapper>
-        {isSidePanelOpen && mapData.places.length && (
+        {mapData.places.length ? (
           <PlaceListPanel
             places={mapData.places}
             isDeleteMode={true}
             isDraggable={mode === 'MAP' ? false : true}
           />
+        ) : (
+          <BaseWrapper
+            position=""
+            top=""
+            left=""
+            className="pointer-events-none w-1/2 bg-transparent bg-none"
+          >
+            {''}
+          </BaseWrapper>
         )}
       </SideContainer>
       <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
