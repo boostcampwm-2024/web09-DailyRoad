@@ -64,3 +64,7 @@ export const markerBorderColor: { [K in MarkerColor]: string } = {
   BLUE: 'border-c_marker_BLUE',
   PURPLE: 'border-c_marker_PURPLE',
 };
+
+export const markerIcon = {
+  MAP: () => {},
+};

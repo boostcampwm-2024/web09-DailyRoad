@@ -12,6 +12,8 @@ import ToastContainer from './components/common/Toast/ToastContainer';
 import ErrorBoundary from './components/Error/ErrorBoundary';
 import ErrorFallback from './components/Error/ErrorFallback';
 import RedirectPage from './pages/RedirectPage';
+import CourseDetailPage from './pages/MapDetail/CourseDetailPage';
+import CourseEditPage from './pages/CourseEditPage';
 
 function App() {
   return (
@@ -31,6 +33,16 @@ function App() {
           >
             <Route path=":id" element={<MapDetailPage />} />
           </Route>
+          <Route
+            path="/course"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <LayoutCreate />
+              </Suspense>
+            }
+          >
+            <Route path=":id" element={<CourseDetailPage />} />
+          </Route>
 
           <Route path="/create" element={<LayoutCreate />}>
             <Route index element={<MapPage />} />
@@ -41,7 +53,7 @@ function App() {
 
           <Route path="/edit" element={<LayoutCreate />}>
             <Route path="map/:id" element={<MapEditPage />} />
-            <Route path="course/:id" element={<MapCreateCoursePage />} />
+            <Route path="course/:id" element={<CourseEditPage />} />
           </Route>
 
           <Route path="/auth/callback" element={<RedirectPage />} />
