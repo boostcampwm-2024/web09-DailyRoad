@@ -1,4 +1,6 @@
 import { IsString, IsUrl, IsOptional } from 'class-validator';
+import { ReplaceEmptyWith } from '@src/common/decorator/ReplaceEmptyWith';
+import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 
 export class UpdateCourseInfoRequest {
   @IsOptional()
@@ -9,6 +11,7 @@ export class UpdateCourseInfoRequest {
   @IsString()
   description?: string;
 
+  @ReplaceEmptyWith(DEFAULT_THUMBNAIL_URL)
   @IsOptional()
   @IsUrl()
   thumbnailUrl?: string;

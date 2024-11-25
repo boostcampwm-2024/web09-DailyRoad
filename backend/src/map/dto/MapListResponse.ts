@@ -1,9 +1,6 @@
 import { Map } from '../entity/map.entity';
-import { UserIconResponse } from '../../user/dto/UserIconResponse';
-
-// Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
-export const DEFAULT_THUMBNAIL_URL =
-  'https://avatars.githubusercontent.com/u/87180146?v=4';
+import { UserIconResponse } from '@src/user/dto/UserIconResponse';
+import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 
 export class MapListResponse {
   constructor(

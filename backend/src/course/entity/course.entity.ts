@@ -60,7 +60,9 @@ export class Course extends BaseEntity {
   }
 
   getPlace(placeId: number) {
-    const coursePlace = this.coursePlaces.find((cp) => cp.placeId === placeId);
+    const coursePlace = this.coursePlaces.find(
+      (coursePlace) => coursePlace.placeId === placeId,
+    );
     if (!coursePlace) {
       throw new PlaceInCourseNotFoundException(this.id, placeId);
     }

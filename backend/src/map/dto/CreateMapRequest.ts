@@ -5,8 +5,10 @@ import {
   IsNotEmpty,
   IsUrl,
   IsBoolean,
-  ValidateIf,
+  IsOptional,
 } from 'class-validator';
+import { ReplaceEmptyWith } from '@src/common/decorator/ReplaceEmptyWith';
+import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 
 export class CreateMapRequest {
   @IsString()
@@ -20,7 +22,8 @@ export class CreateMapRequest {
   @IsString()
   description?: string;
 
-  @ValidateIf((object, value) => value !== '')
+  @ReplaceEmptyWith(DEFAULT_THUMBNAIL_URL)
+  @IsOptional()
   @IsUrl()
   thumbnailUrl?: string;
 
