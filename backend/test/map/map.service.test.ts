@@ -4,116 +4,166 @@ import { PlaceRepository } from '@src/place/place.repository';
 import { User } from '@src/user/entity/user.entity';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import {
+  createPlace,
+  createPrivateMaps,
   createPublicMaps,
   createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
 import { Map } from '@src/map/entity/map.entity';
 import { MapListResponse } from '@src/map/dto/MapListResponse';
+import { UserRepository } from '@src/user/user.repository';
+import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
+import { initDataSource } from '@test/config/datasource.config';
+import { initializeTransactionalContext } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MapController } from '@src/map/map.controller';
+import { INestApplication } from '@nestjs/common';
 import { MapNotFoundException } from '@src/map/exception/MapNotFoundException';
 import { MapDetailResponse } from '@src/map/dto/MapDetailResponse';
 import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
 import { Color } from '@src/place/place.color.enum';
 import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
 import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceToMapException';
-import { UserRepository } from '@src/user/user.repository';
-import { createMock } from '@golevelup/ts-jest';
-import { MapPlace } from '@src/map/entity/map-place.entity';
+import { Place } from '@src/place/entity/place.entity';
+import { ConfigModule } from '@nestjs/config';
+import { JWTHelper } from '@src/auth/JWTHelper';
 
 describe('MapService 테스트', () => {
+  let app: INestApplication;
+  let container: StartedMySqlContainer;
+  let dataSource: DataSource;
+
   let mapService: MapService;
-  let mapRepository: jest.Mocked<MapRepository>;
-  let userRepository: jest.Mocked<UserRepository>;
-  let placeRepository: jest.Mocked<PlaceRepository>;
+
+  let mapRepository: MapRepository;
+  let userRepository: UserRepository;
+  let placeRepository: PlaceRepository;
+
   let fakeUser1: User;
   let page: number;
   let pageSize: number;
-  beforeAll(() => {
-    fakeUser1 = {
-      id: 1,
-      ...UserFixture.createUser({ oauthId: 'abc' }),
-    };
+  beforeAll(async () => {
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+
+    container = await new MySqlContainer().withReuse().start();
+    dataSource = await initDataSource(container);
+    initializeTransactionalContext();
+
+    mapRepository = new MapRepository(dataSource);
+    placeRepository = new PlaceRepository(dataSource);
+    userRepository = new UserRepository(dataSource);
+    mapService = new MapService(mapRepository, userRepository, placeRepository);
+
+    await userRepository.delete({});
+    await mapRepository.delete({});
+    await placeRepository.delete({});
+    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
+    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+
+    const fakeUser1Entity = await userRepository.save(fakeUser1);
+
+    const places = createPlace(10);
+    await placeRepository.save(places);
     [page, pageSize] = [1, 10];
   });
   beforeEach(async () => {
-    mapRepository = createMock<MapRepository>({
-      searchByTitleQuery: jest.fn(),
-      findAll: jest.fn(),
-      count: jest.fn(),
-      findById: jest.fn(),
-      findByUserId: jest.fn(),
-      save: jest.fn(),
-      softDelete: jest.fn(),
-      update: jest.fn(),
-      existById: jest.fn(),
-    });
-    userRepository = createMock<UserRepository>({
-      findByProviderAndOauthId: jest.fn(),
-      createUser: jest.fn(),
-      findById: jest.fn(),
-      existById: jest.fn(),
-    });
-    placeRepository = createMock<PlaceRepository>({
-      findByGooglePlaceId: jest.fn(),
-      findAll: jest.fn(),
-      searchByNameOrAddressQuery: jest.fn(),
-      existById: jest.fn(),
-    });
-    mapService = new MapService(mapRepository, userRepository, placeRepository);
-    userRepository.existById.mockResolvedValue(true);
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot()],
+      controllers: [MapController],
+      providers: [
+        {
+          provide: DataSource,
+          useValue: dataSource,
+        },
+        {
+          provide: PlaceRepository,
+          useFactory: (dataSource: DataSource) =>
+            new PlaceRepository(dataSource),
+          inject: [DataSource],
+        },
+        {
+          provide: UserRepository,
+          useFactory: (dataSource: DataSource) =>
+            new UserRepository(dataSource),
+          inject: [DataSource],
+        },
+        {
+          provide: MapRepository,
+          useFactory: (dataSource: DataSource) => new MapRepository(dataSource),
+          inject: [DataSource],
+        },
+        {
+          provide: MapService,
+          useFactory: (
+            mapRepository: MapRepository,
+            userRepository: UserRepository,
+            placeRepository: PlaceRepository,
+          ) => new MapService(mapRepository, userRepository, placeRepository),
+          inject: [MapRepository, UserRepository, PlaceRepository],
+        },
+        JWTHelper,
+      ],
+    }).compile();
+    app = module.createNestApplication();
+    mapService = app.get<MapService>(MapService);
+    await mapRepository.delete({});
+    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+    await app.init();
+  });
+  afterAll(async () => {
+    await placeRepository.delete({});
+    await mapRepository.delete({});
+    await userRepository.delete({});
+    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
+    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+    await dataSource.destroy();
+    await app.close();
   });
   describe('searchMap 메소드 테스트', () => {
     it('파라미터 중 query 가 없을 경우 공개된 모든 지도를 반환한다.', async () => {
-      const mockMaps: Map[] = createPublicMaps(5, fakeUser1);
-      mockMaps.forEach((map) => {
-        map.mapPlaces = [];
+      const publicMaps: Map[] = createPublicMaps(5, fakeUser1);
+      const privateMaps = createPrivateMaps(5, fakeUser1);
+      const publicMapEntities = await mapRepository.save([...publicMaps]);
+      await mapRepository.save([...privateMaps]);
+      publicMapEntities.forEach((publicMapEntity) => {
+        publicMapEntity.mapPlaces = [];
       });
-      const spyFindAll = mapRepository.findAll.mockResolvedValue(mockMaps);
-      const spyCount = mapRepository.count.mockResolvedValue(mockMaps.length);
+      const expected = await Promise.all(
+        publicMapEntities.map(MapListResponse.from),
+      );
 
       const result = await mapService.searchMap(undefined, 1, 10);
-      const expectedMaps = await Promise.all(
-        mockMaps.map(async (mockMap) => await MapListResponse.from(mockMap)),
-      );
-      expect(spyFindAll).toHaveBeenCalledWith(page, pageSize);
+
       expect(result.maps).toEqual(
         expect.arrayContaining(
-          expectedMaps.map((map) => expect.objectContaining(map)),
+          expected.map((response) => expect.objectContaining(response)),
         ),
       );
-      expect(spyCount).toHaveBeenCalledWith({
-        where: { title: undefined, isPublic: true },
-      });
       expect(result.currentPage).toEqual(page);
-      expect(result.totalPages).toEqual(Math.ceil(mockMaps.length / pageSize));
+      expect(result.totalPages).toEqual(
+        Math.ceil(publicMapEntities.length / pageSize),
+      );
     });
     it('파라미터 중 쿼리가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
       const searchTitle = 'cool';
-      const mockCoolMaps: Map[] = createPublicMapsWithTitle(
+      const coolMaps: Map[] = createPublicMapsWithTitle(
         5,
         fakeUser1,
         'cool map',
       );
-      mockCoolMaps.forEach((map) => {
-        map.mapPlaces = [];
+      const savedMaps = await mapRepository.save([...coolMaps]);
+      savedMaps.forEach((mapEntity) => {
+        mapEntity.mapPlaces = [];
       });
-      const spySearchByTitleQuery = jest
-        .spyOn(mapRepository, 'searchByTitleQuery')
-        .mockResolvedValue(mockCoolMaps);
-      const spyCount = jest
-        .spyOn(mapRepository, 'count')
-        .mockResolvedValue(mockCoolMaps.length);
       const expectedMaps = await Promise.all(
-        mockCoolMaps.map((map) => MapListResponse.from(map)),
+        savedMaps.map((savedMap) => MapListResponse.from(savedMap)),
       );
+
       const result = await mapService.searchMap(searchTitle, 1, 10);
-      expect(spySearchByTitleQuery).toHaveBeenCalledWith(
-        searchTitle,
-        page,
-        pageSize,
-      );
-      expect(spyCount).toHaveBeenCalledWith({
-        where: { title: searchTitle, isPublic: true },
-      });
+
       expect(result.maps).toEqual(
         expect.arrayContaining(
           expectedMaps.map((map) => expect.objectContaining(map)),
@@ -124,28 +174,14 @@ describe('MapService 테스트', () => {
   describe('getOwnMaps 메소드 테스트', () => {
     it('유저 아이디를 파라미터로 받아서 해당 유저의 지도를 반환한다.', async () => {
       const fakeUserMaps = createPublicMaps(5, fakeUser1);
-
-      fakeUserMaps.forEach((map) => {
-        map.mapPlaces = [];
-      });
-      const spyFindUserById =
-        mapRepository.findByUserId.mockResolvedValue(fakeUserMaps);
-      const spyCount = mapRepository.count.mockResolvedValue(
-        fakeUserMaps.length,
-      );
-      userRepository.findById.mockResolvedValue(fakeUser1);
+      const savedMaps = await mapRepository.save([...fakeUserMaps]);
+      savedMaps.forEach((savedMap) => (savedMap.mapPlaces = []));
       const expectedMaps = await Promise.all(
         fakeUserMaps.map((fakeUserMap) => MapListResponse.from(fakeUserMap)),
       );
+
       const result = await mapService.getOwnMaps(fakeUser1.id);
-      expect(spyFindUserById).toHaveBeenCalledWith(
-        fakeUser1.id,
-        page,
-        pageSize,
-      );
-      expect(spyCount).toHaveBeenCalledWith({
-        where: { user: { id: fakeUser1.id } },
-      });
+
       expect(result.maps).toEqual(
         expect.arrayContaining(
           expectedMaps.map((map) => expect.objectContaining(map)),
@@ -155,188 +191,157 @@ describe('MapService 테스트', () => {
   });
   describe('getMapById 메소드 테스트', () => {
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 없을 때 MapNotFoundException 예외를 발생시킨다.', async () => {
-      const spyFindById = mapRepository.findById.mockResolvedValue(undefined);
       await expect(mapService.getMapById(1)).rejects.toThrow(
         MapNotFoundException,
       );
-      expect(spyFindById).toHaveBeenCalledWith(1);
     });
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 있으면 결과를 반환한다.', async () => {
-      const publicMaps = createPublicMaps(1, fakeUser1)[0];
-      publicMaps.mapPlaces = [];
-      const spyFindById = mapRepository.findById.mockResolvedValue(publicMaps);
-      const result = await mapService.getMapById(1);
-      const expectedMap = await MapDetailResponse.from(publicMaps);
-      expect(spyFindById).toHaveBeenCalledWith(1);
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      const publicMapEntity = await mapRepository.save(publicMap);
+      publicMapEntity.mapPlaces = [];
+      const expectedMap = await MapDetailResponse.from(publicMapEntity);
+
+      const result = await mapService.getMapById(publicMapEntity.id);
+
       expect(result).toEqual(expectedMap);
     });
   });
   describe('createMap 메소드 테스트', () => {
     it('파라미터로 받은 유저 아이디로 지도를 생성하고, 지도 id 를 반환한다.', async () => {
-      const spyOnFindById =
-        userRepository.findById.mockResolvedValue(fakeUser1);
       const publicMap = CreateMapRequest.from({
         title: 'test map',
         description: 'This map is test map',
         isPublic: true,
         thumbnailUrl: 'basic_thumbnail.jpg',
       });
-      const resolvedMap = publicMap.toEntity(fakeUser1);
-      resolvedMap.mapPlaces = [];
-      const spyOnSave = mapRepository.save.mockResolvedValue(resolvedMap);
+
       const result = await mapService.createMap(1, publicMap);
-      const saveCalledWith = { ...publicMap, user: { id: 1 } };
-      expect(spyOnFindById).toHaveBeenCalledWith(1);
-      expect(spyOnSave).toHaveBeenCalledWith(saveCalledWith);
-      expect(result).toEqual(expect.objectContaining({ id: undefined }));
+
+      const publicMapEntity = await mapRepository.findById(1);
+      expect(result).toEqual(
+        expect.objectContaining({ id: publicMapEntity.id }),
+      );
     });
   });
   describe('deleteMap 메소드 테스트', () => {
     it('파라미터로 mapId를 가진 지도가 없다면 MapNotFoundException 에러를 발생시킨다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(false);
-      const spyOnSoftDelete = mapRepository.softDelete;
       await expect(mapService.deleteMap(1)).rejects.toThrow(
         MapNotFoundException,
       );
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnSoftDelete).not.toHaveBeenCalled();
     });
-
     it('파라미터로 mapId를 가진 지도가 있다면 삭제 후 삭제된 지도의 id 를 반환한다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(true);
-      const spyOnSoftDelete = mapRepository.softDelete;
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      const publicMapEntity = await mapRepository.save(publicMap);
+
       const result = await mapService.deleteMap(1);
-      expect(result).toEqual({ id: 1 });
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnSoftDelete).toHaveBeenCalledWith(1);
+
+      expect(result.id).toEqual(publicMapEntity.id);
     });
   });
   describe('updateMapInfo 메소드 테스트', () => {
     it('업데이트 하려는 지도가 없을경우 MapNotFoundException 에러를 발생시킨다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(false);
-      const spyOnUpdate = mapRepository.update;
       const updateInfo = {
         title: 'update test title',
         description: 'update test description',
       };
+
       await expect(mapService.updateMapInfo(1, updateInfo)).rejects.toThrow(
         MapNotFoundException,
       );
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnUpdate).not.toHaveBeenCalled();
     });
     it('업데이트 하려는 지도가 있을 경우 지도를 파라미터의 정보로 업데이트 한다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(true);
-      const spyOnUpdate = mapRepository.update;
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      await mapRepository.save(publicMap);
       const updateInfo = {
         title: 'update test title',
         description: 'update test description',
       };
+
       await mapService.updateMapInfo(1, updateInfo);
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnUpdate).toBeCalledWith(1, updateInfo);
+
+      const publicMapEntity = await mapRepository.findById(1);
+      expect(publicMapEntity.title).toEqual(updateInfo.title);
+      expect(publicMapEntity.description).toEqual(updateInfo.description);
     });
   });
   describe('updateMapVisibility 메소드 테스트', () => {
     it('visibility 를 업데이트 하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(false);
-      const spyOnUpdate = mapRepository.update;
       await expect(mapService.updateMapVisibility(1, true)).rejects.toThrow(
         MapNotFoundException,
       );
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnUpdate).not.toHaveBeenCalled();
     });
     it('visibility를 업데이트 하려는 지도가 있을 경우 업데이트를 진행한다.', async () => {
-      const spyOnExistById = mapRepository.existById.mockResolvedValue(true);
-      const spyOnUpdate = mapRepository.update;
+      const privateMap = createPrivateMaps(1, fakeUser1)[0];
+      await mapRepository.save(privateMap);
+
       await mapService.updateMapVisibility(1, true);
-      expect(spyOnExistById).toHaveBeenCalledWith(1);
-      expect(spyOnUpdate).toBeCalledWith(1, { isPublic: true });
+
+      const privateMapEntity = await mapRepository.findById(1);
+      expect(privateMapEntity.isPublic).toEqual(true);
     });
   });
   describe('addPlace 메소드 테스트', () => {
     it('장소를 추가하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
-      const spyOnFindById = mapRepository.findById.mockResolvedValue(null);
-      const spyOnSave = mapRepository.save;
       await expect(
         mapService.addPlace(1, 2, 'BLUE' as Color, 'test'),
       ).rejects.toThrow(MapNotFoundException);
-      expect(spyOnFindById).toHaveBeenCalledWith(1);
-      expect(spyOnSave).not.toHaveBeenCalled();
     });
     it('추가하려는 장소가 없을 경우 InvalidPlaceToMapException 를 발생시킨다.', async () => {
-      const map = createPublicMaps(1, fakeUser1)[0];
-      const spyOnFindById = mapRepository.findById.mockResolvedValue(map);
-      const spyOnPlaceExistById =
-        placeRepository.existById.mockResolvedValue(false);
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      await mapRepository.save(publicMap);
+
       await expect(
-        mapService.addPlace(1, 1, 'RED' as Color, 'test'),
+        mapService.addPlace(1, 777777, 'RED' as Color, 'test'),
       ).rejects.toThrow(InvalidPlaceToMapException);
-      expect(spyOnFindById).toHaveBeenCalledWith(1);
-      expect(spyOnPlaceExistById).toHaveBeenCalled();
     });
     it('추가하려는 장소가 이미 해당 지도에 있을경우 DuplicatePlaceToMapException 에러를 발생시킨다', async () => {
-      const map = createPublicMaps(1, fakeUser1)[0];
-      map.mapPlaces = [];
-      const place = new MapPlace();
-      place.placeId = 1;
-      place.color = 'RED' as Color;
-      place.description = 'test';
-      map.mapPlaces.push(place);
-      const spyOnFindById = mapRepository.findById.mockResolvedValue(map);
-      const spyOnPlaceExistById =
-        placeRepository.existById.mockResolvedValue(true);
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      const publicMapEntity = await mapRepository.save(publicMap);
+      const alreadyAddPlace: Place = await placeRepository.findById(
+        publicMapEntity.id,
+      );
+      publicMapEntity.mapPlaces = [];
+      publicMapEntity.addPlace(alreadyAddPlace.id, 'RED' as Color, 'test');
+      await mapRepository.save(publicMapEntity);
+
       await expect(
         mapService.addPlace(1, 1, 'RED' as Color, 'test'),
       ).rejects.toThrow(DuplicatePlaceToMapException);
-      expect(spyOnPlaceExistById).toHaveBeenCalledWith(1);
-      expect(spyOnFindById).toHaveBeenCalled();
     });
     it('장소를 추가하려는 지도가 있을 경우 장소를 추가하고 장소 정보를 다시 반환한다.', async () => {
-      const map = createPublicMaps(1, fakeUser1)[0];
-      map.mapPlaces = [];
-      const addPlace = { color: 'RED', comment: 'test', placeId: 2 };
-      const place = new MapPlace();
-      place.placeId = 1;
-      map.mapPlaces.push(place);
-      const spyOnFindById = mapRepository.findById.mockResolvedValue(map);
-      const spyOnPlaceExistById =
-        placeRepository.existById.mockResolvedValue(true);
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      const savedMap = await mapRepository.save(publicMap);
+      const addPlace = await placeRepository.findById(savedMap.id);
+      const expectedResult = {
+        placeId: addPlace.id,
+        comment: 'test',
+        color: 'RED' as Color,
+      };
+
       const result = await mapService.addPlace(
         1,
-        addPlace.placeId,
-        addPlace.color as Color,
-        addPlace.comment,
+        expectedResult.placeId,
+        expectedResult.color,
+        expectedResult.comment,
       );
-      expect(result).toEqual(addPlace);
-      expect(spyOnFindById).toHaveBeenCalledWith(1);
-      expect(spyOnPlaceExistById).toHaveBeenCalledWith(addPlace.placeId);
+
+      expect(result).toEqual(expect.objectContaining(expectedResult));
     });
   });
   describe('deletePlace 메소드 테스트', () => {
     it('장소를 제거하려는 지도가 없을 경우 MapNotFoundException 에러를 발생시킨다.', async () => {
-      const spyFindById = mapRepository.findById.mockResolvedValue(null);
-      const spyMapSave = mapRepository.save;
       await expect(mapService.deletePlace(1, 1)).rejects.toThrow(
         MapNotFoundException,
       );
-      expect(spyFindById).toHaveBeenCalledWith(1);
-      expect(spyMapSave).not.toHaveBeenCalled();
     });
     it('mapId로 받은 지도에서 placeId 를 제거하고 해당 placeId 를 반환한다.', async () => {
-      const map = createPublicMaps(1, fakeUser1)[0];
-      map.mapPlaces = [];
-      const newPlace = new MapPlace();
-      newPlace.placeId = 1;
-      map.mapPlaces.push(newPlace);
+      const publicMap = createPublicMaps(1, fakeUser1)[0];
+      await mapRepository.save(publicMap);
       const expectResult = { deletedId: 1 };
-      const spyFindById = mapRepository.findById.mockResolvedValue(map);
-      const spyMapSave = mapRepository.save;
+
       const result = await mapService.deletePlace(1, 1);
+
       expect(result).toEqual(expectResult);
-      expect(spyFindById).toHaveBeenCalledWith(1);
-      expect(spyMapSave).toHaveBeenCalled();
     });
   });
 });
