@@ -28,6 +28,7 @@ export const END_POINTS = {
     `/courses/${courseId}/places/${placeId}`,
 
   GOOGLE_LOGIN: '/oauth/google/signIn',
+  LOGOUT: 'oauth/signOut',
   MY_MAP: '/maps/my',
   MY_COURSE: '/courses/my',
   PLACE: '/places',
