@@ -26,7 +26,6 @@ export class PlaceService {
     this.GOOGLE_API_KEY = this.configService.get(<string>'GOOGLE_MAPS_API_KEY');
   }
 
-  @Transactional()
   async addPlace(createPlaceRequest: CreatePlaceRequest) {
     const { googlePlaceId } = createPlaceRequest;
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {

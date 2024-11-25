@@ -3,13 +3,11 @@ import { UserRepository } from './user.repository';
 import { CreateUserRequest } from './dto/CreateUserRequest';
 import { UserIconResponse } from '@src/user/dto/UserIconResponse';
 import { UserNotFoundException } from '@src/user/exception/UserNotFoundException';
-import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  @Transactional()
   async addUser(userInfo: CreateUserRequest) {
     const { provider, oauthId } = userInfo;
     const existingUser = await this.userRepository.findByProviderAndOauthId(
