@@ -26,8 +26,8 @@ describe('CourseRepository', () => {
     coursePlaceRepository = datasource.getRepository(CoursePlace);
     courseRepository = new CourseRepository(datasource, coursePlaceRepository);
 
-    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
-    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
+    fakeUser1 = UserFixture.createUser({});
+    fakeUser2 = UserFixture.createUser({});
     await datasource.getRepository(User).save([fakeUser1, fakeUser2]);
   });
 

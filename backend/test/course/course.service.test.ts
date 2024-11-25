@@ -52,7 +52,7 @@ describe('CourseService', () => {
     placeRepository = new PlaceRepository(datasource);
     courseRepository = new CourseRepository(datasource, coursePlaceRepository);
     courseService = new CourseService(courseRepository, placeRepository);
-    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    fakeUser1 = UserFixture.createUser({});
     await datasource.getRepository(User).save(fakeUser1);
     currentPage = 1;
     pageSize = 10;

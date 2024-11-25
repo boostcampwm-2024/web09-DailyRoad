@@ -6,7 +6,7 @@ export class UserFixture {
   static createUser({
     provider = 'google',
     nickname = 'test',
-    oauthId = 'abcd1234',
+    oauthId = `${Date.now()}${Math.random()}`,
     role = UserRole.MEMBER,
     profileImageUrl = 'https://test.com/test.jpg',
   }: UserFixtureType) {
