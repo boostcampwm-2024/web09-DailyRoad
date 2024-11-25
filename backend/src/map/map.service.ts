@@ -13,6 +13,7 @@ import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMap
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
 import { UserRole } from '@src/user/user.role';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class MapService {
@@ -120,6 +121,7 @@ export class MapService {
     };
   }
 
+  @Transactional()
   async updatePlace(
     id: number,
     placeId: number,
