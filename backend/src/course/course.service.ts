@@ -121,6 +121,7 @@ export class CourseService {
     };
   }
 
+  @Transactional()
   async updatePlace(id: number, placeId: number, comment?: string) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
