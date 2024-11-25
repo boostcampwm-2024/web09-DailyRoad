@@ -1,4 +1,4 @@
-import { BaseException } from '../../common/exception/BaseException';
+import { BaseException } from '@src/common/exception/BaseException';
 import { HttpStatus } from '@nestjs/common';
 
 export class PlaceNotFoundException extends BaseException {
@@ -7,7 +7,7 @@ export class PlaceNotFoundException extends BaseException {
       ? `id:${id} 장소가 존재하지 않습니다.`
       : '장소가 존재하지 않습니다.';
     super({
-      code: 1002,
+      code: 201,
       message,
       status: HttpStatus.NOT_FOUND,
     });
