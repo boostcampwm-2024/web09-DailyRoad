@@ -79,16 +79,10 @@ export async function initializeTestModule(dataSource: DataSource) {
   return { app, jwtHelper, mapService, userRepository, mapRepository };
 }
 
-export async function createPayload(userRepository: UserRepository) {
-  const fakeUser = await userRepository.findById(1);
-  return {
-    userId: fakeUser.id,
-    role: fakeUser.role,
-  };
-}
-
 export function createInvalidToken(validToken: string): string {
-  const parts = validToken.split('.');
-  parts[1] = Buffer.from('{"userId":1,"role":"admin"}').toString('base64'); // 조작된 페이로드
-  return parts.join('.');
+  const [header, , signature] = validToken.split('.');
+  const manipulatedPayload = Buffer.from(
+    '{"userId":1,"role":"admin"}',
+  ).toString('base64');
+  return [header, manipulatedPayload, signature].join('.');
 }
