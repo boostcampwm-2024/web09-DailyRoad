@@ -58,6 +58,12 @@ export type MapList = {
   currentPage: number;
 };
 
+export type CourseList = {
+  courses: MapItemType[];
+  totalPages: number;
+  currentPage: number;
+};
+
 export type CreateMapType = 'MAP' | 'COURSE';
 
 export type BaseMap = {
@@ -92,12 +98,7 @@ export type MarkerColor =
   | 'GREEN'
   | 'BLUE'
   | 'PURPLE';
-export type MarkerCategory =
-  | 'restaurant'
-  | 'cafe'
-  | 'attraction'
-  | string
-  | undefined;
+export type MarkerCategory = 'restaurant' | 'cafe' | 'attraction' | string;
 
 export type PlaceMarker = {
   placeId: number;
