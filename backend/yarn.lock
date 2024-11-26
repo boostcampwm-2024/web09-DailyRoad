@@ -424,11 +424,6 @@
   resolved "https://registry.npmjs.org/@fastify/busboy/-/busboy-2.1.1.tgz"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@golevelup/ts-jest@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@golevelup/ts-jest/-/ts-jest-0.6.1.tgz#d3aa4aa337d84477b06b0d25a81254da73cccbe9"
-  integrity sha512-ubs2xao8q2BsFWD6g2GnkWLLIeVHsPQKYMihzk3v0ptegKJhlNRZvk8wodDx2U2MI7cyKh43mueafZ9xpYdwHQ==
-
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.13.0.tgz"
