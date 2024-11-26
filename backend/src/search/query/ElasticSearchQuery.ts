@@ -87,6 +87,28 @@ export class ElasticSearchQuery {
     });
   }
 
+  async suggestPlaceQueryWithPrefix(query: string) {
+    return await this.esService.search({
+      index: ElasticSearchConfig.PLACE_INDEX,
+      suggest: {
+        place_suggest: {
+          prefix: query,
+          completion: {
+            field: 'name.suggest', // 장소 이름 자동완성
+            size: 5,
+          },
+        },
+        address_suggest: {
+          prefix: query,
+          completion: {
+            field: 'formattedAddress.suggest', // 장소 주소 자동완성
+            size: 5,
+          },
+        },
+      },
+    });
+  }
+
   private async tokenizeQuery(query: string): Promise<string[]> {
     const analysis = await this.esService.indices.analyze({
       index: ElasticSearchConfig.PLACE_INDEX,
