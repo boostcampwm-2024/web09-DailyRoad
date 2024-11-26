@@ -3,21 +3,32 @@
     "number_of_shards": 1,
     "number_of_replicas": 0,
     "analysis": {
-      "analyzer": {
-        "nori_with_synonym": {
-          "type": "custom",
-          "tokenizer": "nori_tokenizer",
-          "filter": [
-            "lowercase",
-            "nori_readingform",
-            "synonym_filter"
-          ]
-        }
-      },
       "filter": {
         "synonym_filter": {
           "type": "synonym",
           "synonyms_path": "synonyms.txt"
+        },
+        "suggest_filter": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 50
+        }
+      },
+      "analyzer": {
+        "nori_with_synonym": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["lowercase", "nori_readingform", "synonym_filter"]
+        },
+        "suggest_index_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "suggest_filter"]
+        },
+        "suggest_search_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
         }
       }
     }
@@ -35,6 +46,11 @@
         "fields": {
           "keyword": {
             "type": "keyword"
+          },
+          "suggest": {
+            "type": "completion",
+            "analyzer": "suggest_index_analyzer",
+            "search_analyzer": "suggest_search_analyzer"
           }
         },
         "analyzer": "nori_with_synonym"
@@ -52,6 +68,13 @@
       },
       "formattedAddress": {
         "type": "text",
+        "fields": {
+          "suggest": {
+            "type": "completion",
+            "analyzer": "suggest_index_analyzer",
+            "search_analyzer": "suggest_search_analyzer"
+          }
+        },
         "analyzer": "nori_with_synonym"
       },
       "category": {
