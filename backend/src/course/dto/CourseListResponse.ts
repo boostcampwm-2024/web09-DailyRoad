@@ -1,4 +1,4 @@
-import { UserIconResponse } from '../../user/dto/UserIconResponse';
+import { UserIconResponse } from '@src/user/dto/UserIconResponse';
 import { Course } from '../entity/course.entity';
 
 export class CourseListResponse {

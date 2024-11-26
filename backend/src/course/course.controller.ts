@@ -11,13 +11,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateCourseRequest } from './dto/CreateCourseRequest';
-import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
-import { CourseService } from './course.service';
-import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
-import { JwtAuthGuard } from '../auth/JwtAuthGuard';
-import { AuthUser } from '../auth/AuthUser.decorator';
-import { CoursePermissionGuard } from './guards/CoursePermissionGuard';
+import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
+import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
+import { CourseService } from '@src/course/course.service';
+import { SetPlacesOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
+import { AuthUser } from '@src/auth/AuthUser.decorator';
+import { CoursePermissionGuard } from '@src/course/guards/CoursePermissionGuard';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UpdatePlaceInCourseRequest } from '@src/course/dto/UpdatePlaceInCourseRequest';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';

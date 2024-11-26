@@ -1,83 +1,81 @@
-import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { DataSource, Repository } from 'typeorm';
-import { initializeTransactionalContext } from 'typeorm-transactional';
-import { initDataSource } from '@test/config/datasource.config';
-import { CourseService } from '@src/course/course.service';
 import { CourseRepository } from '@src/course/course.repository';
-import { CoursePlace } from '@src/course/entity/course-place.entity';
-import { PlaceRepository } from '@src/place/place.repository';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { JWTHelper } from '@src/auth/JWTHelper';
-import * as jwt from 'jsonwebtoken';
 import { UserRepository } from '@src/user/user.repository';
+import * as request from 'supertest';
+import { CourseFixture } from '@test/course/fixture/course.fixture';
+import { User } from '@src/user/entity/user.entity';
+import { UserFixture } from '@test/user/fixture/user.fixture';
+import {
+  convertDateToSeoulTime,
+  initializeIntegrationTestEnvironment,
+} from '@test/config/utils';
+import { INestApplication } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 describe('CourseE2E', () => {
   let app: INestApplication;
-  let container: StartedMySqlContainer;
   let dataSource: DataSource;
-
   let userRepository: UserRepository;
   let courseRepository: CourseRepository;
-  let coursePlaceRepository: Repository<CoursePlace>;
-  let placeRepository: PlaceRepository;
-  let courseService: CourseService;
 
-  let jwtHelper: JWTHelper;
-  let token: string;
+  let fakeUser1: User;
+  let fakeUser1Id: number;
 
   beforeAll(async () => {
-    initializeTransactionalContext();
-    container = await new MySqlContainer().withReuse().start();
-    dataSource = await initDataSource(container);
-    coursePlaceRepository = dataSource.getRepository(CoursePlace);
+    ({ app, dataSource } = await initializeIntegrationTestEnvironment());
+    userRepository = app.get<UserRepository>(UserRepository);
+    courseRepository = app.get<CourseRepository>(CourseRepository);
 
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    })
-      .overrideProvider(DataSource)
-      .useValue(dataSource)
-      .overrideProvider(UserRepository)
-      .useValue(new UserRepository(dataSource))
-      .overrideProvider(PlaceRepository)
-      .useValue(new PlaceRepository(dataSource))
-      .overrideProvider(CourseRepository)
-      .useValue(new CourseRepository(dataSource, coursePlaceRepository))
-      .overrideProvider(CoursePlace)
-      .useValue(coursePlaceRepository)
-      .overrideProvider(CourseService)
-      .useValue(new CourseService(courseRepository, placeRepository))
-      .overrideProvider(JWTHelper)
-      .useValue({
-        jwtSecretKey: 'test-key',
-        generateToken: (expiresIn: string | number, payload: any = {}) => {
-          return jwt.sign(payload, 'test-key', { expiresIn });
-        },
-        verifyToken: (refreshToken: string) => {
-          return jwt.verify(refreshToken, 'test-key');
-        },
-      })
-      .compile();
-
-    app = module.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ transform: true }));
-    await app.init();
-
-    jwtHelper = app.get<JWTHelper>(JWTHelper);
-
-    userRepository = module.get<UserRepository>(UserRepository);
-    placeRepository = module.get<PlaceRepository>(PlaceRepository);
-    courseRepository = module.get<CourseRepository>(CourseRepository);
-    courseService = module.get<CourseService>(CourseService);
+    fakeUser1 = UserFixture.createUser({});
+    const savedFakeUser1 = await userRepository.save(fakeUser1);
+    fakeUser1Id = savedFakeUser1.id;
   });
 
   afterAll(async () => {
     await dataSource.destroy();
+    await app.close();
   });
 
   beforeEach(async () => {
     await courseRepository.delete({});
-    token = null;
+  });
+
+  describe(`GET /courses : 성공`, () => {
+    it(`공개된 모든 코스를 조회한다.`, async () => {
+      const publicCourses = [
+        { title: 'Public Course 1', isPublic: true },
+        { title: 'Public Course 2', isPublic: true },
+      ].map(({ title, isPublic }) =>
+        CourseFixture.createCourse({
+          user: fakeUser1,
+          title,
+          isPublic,
+        }),
+      );
+      await courseRepository.save(publicCourses);
+
+      return request(app.getHttpServer())
+        .get('/courses')
+        .expect(200)
+        .then((response) => {
+          const courses = response.body.courses;
+          expect(courses).toEqual(
+            publicCourses.map((publicCourse, index) => ({
+              id: index + 1,
+              title: publicCourse.title,
+              isPublic: publicCourse.isPublic,
+              user: {
+                id: fakeUser1Id,
+                nickname: fakeUser1.nickname,
+                profileImageUrl: fakeUser1.profileImageUrl,
+              },
+              thumbnailUrl: publicCourse.thumbnailUrl,
+              description: publicCourse.description,
+              pinCount: publicCourse.pinCount,
+              createdAt: convertDateToSeoulTime(publicCourse.createdAt),
+              updatedAt: convertDateToSeoulTime(publicCourse.updatedAt),
+            })),
+          );
+        });
+    });
   });
 });
