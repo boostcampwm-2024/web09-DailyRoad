@@ -18,6 +18,7 @@ import {
   createPlace,
   createPrivateMaps,
   createPublicMaps,
+  createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
@@ -33,6 +34,7 @@ import {
   initMapUserPlaceTable,
 } from '@test/map/integration-test/map.integration.util';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
@@ -232,18 +234,74 @@ describe('MapController 통합 테스트', () => {
   });
 
   describe('getMapList 메소드 테스트', () => {
-    it('GET maps/ 에 대한 요청으로 공개 되어있는 지도 모두 반환한다.', async () => {
-      const publicMaps = createPublicMaps(5, fakeUser1);
+    it('GET maps/ 에 대한 요청으로 공개 되어있고, 장소를 가지고 있는 지도 모두 반환한다.', async () => {
+      const publicMaps = createPublicMaps(2, fakeUser1);
+      const publicMapsWithPlace = createPublicMaps(3, fakeUser1);
       const privateMaps = createPrivateMaps(5, fakeUser1);
-      await mapRepository.save([...publicMaps, ...privateMaps]);
+      publicMapsWithPlace.forEach((publicMapWithPlace) => {
+        publicMapWithPlace.mapPlaces = [];
+        publicMapWithPlace.mapPlaces.push(
+          MapPlace.of(1, publicMapWithPlace, 'RED' as Color, 'test'),
+        );
+      });
+      await mapRepository.save([
+        ...publicMaps,
+        ...publicMapsWithPlace,
+        ...privateMaps,
+      ]);
 
       return request(app.getHttpServer())
         .get('/maps')
 
         .expect((response) => {
           const gotMaps = response.body.maps;
+          expect(gotMaps.length).toEqual(publicMapsWithPlace.length);
+          gotMaps.forEach((gotMap: Map, index: number) => {
+            expect(gotMap.title).toEqual(publicMapsWithPlace[index].title);
+            expect(gotMap.description).toEqual(
+              publicMapsWithPlace[index].description,
+            );
+            expect(gotMap.isPublic).toEqual(
+              publicMapsWithPlace[index].isPublic,
+            );
+            expect(gotMap.thumbnailUrl).toEqual(
+              publicMapsWithPlace[index].thumbnailUrl,
+            );
+          });
+        });
+    });
+
+    it('GET /maps?query 에 대한 요청으로 공개 되어있고 query 와 유사한 title을 가지는 지도들을 반환한다.', async () => {
+      const coolMaps = createPublicMapsWithTitle(
+        2,
+        fakeUser1,
+        'cool test title',
+      );
+      const coolMapsWithPlace = createPublicMapsWithTitle(
+        3,
+        fakeUser1,
+        'cool title',
+      );
+      const privateMaps = createPrivateMaps(5, fakeUser1);
+      coolMapsWithPlace.forEach((publicMapWithPlace) => {
+        publicMapWithPlace.mapPlaces = [];
+        publicMapWithPlace.mapPlaces.push(
+          MapPlace.of(1, publicMapWithPlace, 'RED' as Color, 'test'),
+        );
+      });
+      coolMaps.forEach((publicMap) => {
+        publicMap.mapPlaces = [];
+      });
+      const publicMaps = [...coolMaps, ...coolMapsWithPlace];
+      await mapRepository.save([...publicMaps, ...privateMaps]);
+
+      return request(app.getHttpServer())
+        .get('/maps?query=cool')
+
+        .expect((response) => {
+          const gotMaps = response.body.maps;
           expect(gotMaps.length).toEqual(publicMaps.length);
-          gotMaps.forEach((gotMap: Map, index) => {
+          gotMaps.forEach((gotMap: Map, index: number) => {
             expect(gotMap.title).toEqual(publicMaps[index].title);
             expect(gotMap.description).toEqual(publicMaps[index].description);
             expect(gotMap.isPublic).toEqual(publicMaps[index].isPublic);
