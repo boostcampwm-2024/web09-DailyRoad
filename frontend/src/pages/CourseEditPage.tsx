@@ -1,3 +1,4 @@
+import Authorize from '@/components/Authorize';
 import SideContainer from '@/components/common/SideContainer';
 import EditCourseForm from '@/components/Form/EditCourseForm';
 
@@ -9,9 +10,11 @@ const CourseEditPage = () => {
   const { id } = useParams();
   const courseData = useCourseQuery(Number(id));
   return (
-    <SideContainer>
-      <EditCourseForm courseData={courseData} />
-    </SideContainer>
+    <Authorize id={courseData.user.id}>
+      <SideContainer>
+        <EditCourseForm courseData={courseData} />
+      </SideContainer>
+    </Authorize>
   );
 };
 

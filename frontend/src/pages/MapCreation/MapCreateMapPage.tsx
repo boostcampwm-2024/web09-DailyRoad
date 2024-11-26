@@ -1,3 +1,4 @@
+import Authorize from '@/components/Authorize';
 import SearchPanel from '@/components/Place/SearchPanel';
 import { useMapQuery } from '@/hooks/api/useMapQuery';
 import { useStore } from '@/store/useStore';
@@ -14,7 +15,11 @@ const MapCreateMapPage = () => {
     setPlace({} as Place);
   }, []);
 
-  return <SearchPanel mapData={mapData} />;
+  return (
+    <Authorize id={mapData.user.id}>
+      <SearchPanel mapData={mapData} />;
+    </Authorize>
+  );
 };
 
 export default MapCreateMapPage;

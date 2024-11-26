@@ -10,6 +10,7 @@ import SideContainer from '@/components/common/SideContainer';
 import Marker from '@/components/Marker/Marker';
 import DeleteMapButton from './DeleteMapButton';
 import EditMapButton from './EditMapButton';
+import MapThumbnail from './MapThumbnail';
 
 type MapDetailBoardProps = {
   mapData: Map;
@@ -18,28 +19,36 @@ type MapDetailBoardProps = {
 const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
   const { title, description, isPublic, thumbnailUrl, pinCount, places } =
     mapData;
+
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+
+  const user = useStore((state) => state.user);
   const activePlace = useStore((state) => state.place);
+
   const customPlace = useMemo(
     () => places.find((place) => place.id === activePlace.id),
     [places, activePlace.id],
   );
+
+  const isOwner = user?.id === mapData.user.id;
 
   return (
     <SideContainer>
       <BaseWrapper position="" top="" left="" className="w-1/2">
         <Box>
           <DashBoardHeader title={title} />
-          <div className="flex items-center justify-end gap-1 text-center">
-            <EditMapButton text="수정" to={`/edit/map/${mapData.id}`} />
-            <p className="text-xs text-c_placeholder_gray">|</p>
-            <DeleteMapButton mapId={mapData.id} text="삭제" />
-          </div>
+          {isOwner && (
+            <div className="flex items-center justify-end gap-1 text-center">
+              <EditMapButton text="수정" to={`/edit/map/${mapData.id}`} />
+              <p className="text-xs text-c_placeholder_gray">|</p>
+              <DeleteMapButton mapId={mapData.id} text="삭제" />
+            </div>
+          )}
 
-          {thumbnailUrl ? (
-            <img src={thumbnailUrl} alt="thumbnail" className="h-40 w-full" />
+          {mapData.thumbnailUrl.startsWith('https://example') ? (
+            <MapThumbnail className="h-full w-full" />
           ) : (
-            <img src="/src/assets/Map.jpg" alt="map" className="h-40 w-full" />
+            <img src={mapData.thumbnailUrl} className="object-cover"></img>
           )}
           <p className="text-lg font-semibold">지도 소개</p>
           <div className="rounded-md border-[1px] border-gray-100 p-1">
@@ -47,11 +56,13 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
           </div>
         </Box>
         <Box className="scrollbar-thumb-rounded-lg min-h-80 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
-          <EditMapButton
-            text="수정"
-            to={`/create/map/${mapData.id}`}
-            className="flex justify-end px-2"
-          />
+          {isOwner && (
+            <EditMapButton
+              text="수정"
+              to={`/create/map/${mapData.id}`}
+              className="flex justify-end px-2"
+            />
+          )}
           {places && places.length > 0 ? (
             <>
               {places.map((place) => (
@@ -63,6 +74,10 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
                       lat: place.location.latitude,
                       lng: place.location.longitude,
                     }}
+                    category={place.category}
+                    title={place.name}
+                    color={place.color}
+                    description={place.comment}
                   />
                 </div>
               ))}
