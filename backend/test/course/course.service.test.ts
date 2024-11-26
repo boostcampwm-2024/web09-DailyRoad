@@ -33,10 +33,10 @@ async function createPagedResponse(
 }
 
 describe('CourseService', () => {
-  let courseService: CourseService;
-  let placeRepository: PlaceRepository;
   let container: StartedMySqlContainer;
   let datasource: DataSource;
+  let courseService: CourseService;
+  let placeRepository: PlaceRepository;
   let courseRepository: CourseRepository;
   let coursePlaceRepository: Repository<CoursePlace>;
   let fakeUser1: User;
