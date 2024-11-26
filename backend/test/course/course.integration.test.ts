@@ -6,46 +6,78 @@ import { CourseService } from '@src/course/course.service';
 import { CourseRepository } from '@src/course/course.repository';
 import { CoursePlace } from '@src/course/entity/course-place.entity';
 import { PlaceRepository } from '@src/place/place.repository';
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { CourseController } from '@src/course/course.controller';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { JWTHelper } from '@src/auth/JWTHelper';
+import * as jwt from 'jsonwebtoken';
+import { UserRepository } from '@src/user/user.repository';
 
 describe('CourseE2E', () => {
+  let app: INestApplication;
   let container: StartedMySqlContainer;
-  let datasource: DataSource;
-  let courseController: CourseController;
-  let courseService: CourseService;
+  let dataSource: DataSource;
+
+  let userRepository: UserRepository;
   let courseRepository: CourseRepository;
   let coursePlaceRepository: Repository<CoursePlace>;
   let placeRepository: PlaceRepository;
+  let courseService: CourseService;
+
+  let jwtHelper: JWTHelper;
+  let token: string;
 
   beforeAll(async () => {
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
-    datasource = await initDataSource(container);
-    coursePlaceRepository = datasource.getRepository(CoursePlace);
-    placeRepository = new PlaceRepository(datasource);
-    courseRepository = new CourseRepository(datasource, coursePlaceRepository);
+    dataSource = await initDataSource(container);
+    coursePlaceRepository = dataSource.getRepository(CoursePlace);
 
-    const module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideProvider(CourseService)
-      .useValue(courseService)
-      .overrideProvider(CourseRepository)
-      .useValue(courseRepository)
+      .overrideProvider(DataSource)
+      .useValue(dataSource)
+      .overrideProvider(UserRepository)
+      .useValue(new UserRepository(dataSource))
       .overrideProvider(PlaceRepository)
-      .useValue(placeRepository)
+      .useValue(new PlaceRepository(dataSource))
+      .overrideProvider(CourseRepository)
+      .useValue(new CourseRepository(dataSource, coursePlaceRepository))
+      .overrideProvider(CoursePlace)
+      .useValue(coursePlaceRepository)
+      .overrideProvider(CourseService)
+      .useValue(new CourseService(courseRepository, placeRepository))
+      .overrideProvider(JWTHelper)
+      .useValue({
+        jwtSecretKey: 'test-key',
+        generateToken: (expiresIn: string | number, payload: any = {}) => {
+          return jwt.sign(payload, 'test-key', { expiresIn });
+        },
+        verifyToken: (refreshToken: string) => {
+          return jwt.verify(refreshToken, 'test-key');
+        },
+      })
       .compile();
+
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
+    await app.init();
+
+    jwtHelper = app.get<JWTHelper>(JWTHelper);
+
+    userRepository = module.get<UserRepository>(UserRepository);
+    placeRepository = module.get<PlaceRepository>(PlaceRepository);
+    courseRepository = module.get<CourseRepository>(CourseRepository);
     courseService = module.get<CourseService>(CourseService);
-    courseController = module.get<CourseController>(CourseController);
   });
 
   afterAll(async () => {
-    await datasource.destroy();
+    await dataSource.destroy();
   });
 
   beforeEach(async () => {
     await courseRepository.delete({});
+    token = null;
   });
 });
