@@ -52,29 +52,29 @@ describe('CourseE2E', () => {
         }),
       );
       await courseRepository.save(publicCourses);
+      const savedCourses = await courseRepository.find();
 
       return request(app.getHttpServer())
         .get('/courses')
         .expect(200)
-        .then((response) => {
-          const courses = response.body.courses;
-          expect(courses).toEqual(
-            publicCourses.map((publicCourse, index) => ({
-              id: index + 1,
-              title: publicCourse.title,
-              isPublic: publicCourse.isPublic,
-              user: {
-                id: fakeUser1Id,
-                nickname: fakeUser1.nickname,
-                profileImageUrl: fakeUser1.profileImageUrl,
-              },
-              thumbnailUrl: publicCourse.thumbnailUrl,
-              description: publicCourse.description,
-              pinCount: publicCourse.pinCount,
-              createdAt: convertDateToSeoulTime(publicCourse.createdAt),
-              updatedAt: convertDateToSeoulTime(publicCourse.updatedAt),
-            })),
-          );
+        .then(async (response) => {
+          const expectedCourses = savedCourses.map((course) => ({
+            id: course.id,
+            title: course.title,
+            isPublic: course.isPublic,
+            user: {
+              id: fakeUser1Id,
+              nickname: fakeUser1.nickname,
+              profileImageUrl: fakeUser1.profileImageUrl,
+            },
+            thumbnailUrl: course.thumbnailUrl,
+            description: course.description,
+            pinCount: course.pinCount,
+            createdAt: convertDateToSeoulTime(course.createdAt),
+            updatedAt: convertDateToSeoulTime(course.updatedAt),
+          }));
+
+          expect(response.body.courses).toEqual(expectedCourses);
         });
     });
   });
