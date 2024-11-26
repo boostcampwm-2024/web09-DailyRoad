@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, ILike } from 'typeorm';
 import { Map } from './entity/map.entity';
 import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
-import { sortOrder } from '@src/map/map.type';
 
 @Injectable()
 export class MapRepository extends SoftDeleteRepository<Map, number> {
@@ -10,40 +9,35 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
     super(Map, dataSource.createEntityManager());
   }
 
-  findAll(page: number, pageSize: number, orderBy: sortOrder) {
+  findAll(page: number, pageSize: number) {
     return this.find({
       where: { isPublic: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
       order: {
-        createdAt: orderBy,
+        createdAt: 'DESC',
       },
     });
   }
 
-  searchByTitleQuery(
-    title: string,
-    page: number,
-    pageSize: number,
-    orderBy: sortOrder,
-  ) {
+  searchByTitleQuery(title: string, page: number, pageSize: number) {
     return this.find({
       where: { title: ILike(`%${title}%`), isPublic: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
       order: {
-        createdAt: orderBy,
+        createdAt: 'DESC',
       },
     });
   }
 
-  async findMapWithPlace(page: number, pageSize: number, orderBy: sortOrder) {
+  async findMapsWithPlace(page: number, pageSize: number) {
     return await this.createQueryBuilder('map')
       .leftJoinAndSelect('map.mapPlaces', 'mapPlace')
       .leftJoinAndSelect('map.user', 'user')
       .where('map.isPublic = :isPublic', { isPublic: true })
       .andWhere('mapPlace.id IS NOT NULL')
-      .orderBy('map.createdAt', orderBy)
+      .orderBy('map.createdAt', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getMany();

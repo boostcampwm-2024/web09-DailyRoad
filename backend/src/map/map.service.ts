@@ -13,7 +13,6 @@ import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMap
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
 import { Transactional } from 'typeorm-transactional';
-import { sortOrder } from '@src/map/map.type';
 
 @Injectable()
 export class MapService {
@@ -25,17 +24,11 @@ export class MapService {
 
   // Todo. 작성자명 등 ... 검색 조건 추가
   // Todo. fix : public 으로 조회해서 페이지마다 수 일정하게. (현재는 한 페이지에 10개 미만인 경우 존재)
-  async searchMap(
-    query?: string,
-    page: number = 1,
-    pageSize: number = 15,
-    orderBy: sortOrder = 'DESC',
-  ) {
+  async searchMap(query?: string, page: number = 1, pageSize: number = 15) {
     const maps = await this.mapRepository.searchByTitleQuery(
       query,
       page,
       pageSize,
-      orderBy,
     );
     const totalCount = await this.mapRepository.count({
       where: { title: query, isPublic: true },
@@ -49,17 +42,9 @@ export class MapService {
     };
   }
 
-  async getAllMaps(
-    page: number = 1,
-    pageSize: number = 15,
-    orderBy: sortOrder = 'DESC',
-  ) {
+  async getAllMaps(page: number = 1, pageSize: number = 15) {
     const totalCount = await this.mapRepository.countMapsWithPlace();
-    const maps = await this.mapRepository.findMapWithPlace(
-      page,
-      pageSize,
-      orderBy,
-    );
+    const maps = await this.mapRepository.findMapsWithPlace(page, pageSize);
 
     return {
       maps: await Promise.all(maps.map(MapListResponse.from)),
@@ -72,6 +57,7 @@ export class MapService {
     // Todo. 그룹 기능 추가
     const totalCount = await this.mapRepository.count({
       where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
     });
 
     const ownMaps = await this.mapRepository.findByUserId(
