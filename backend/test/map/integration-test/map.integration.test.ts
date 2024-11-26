@@ -57,9 +57,6 @@ describe('MapController 통합 테스트', () => {
   let token: string;
 
   beforeAll(async () => {
-    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
-    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
-
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
@@ -88,6 +85,22 @@ describe('MapController 통합 테스트', () => {
     placeRepository = app.get<PlaceRepository>(PlaceRepository);
     jwtHelper = app.get<JWTHelper>(JWTHelper);
     mapService = app.get<MapService>(MapService);
+
+    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
+    await userRepository.delete({});
+
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
+
+    const [fakeUser1Entity, fakeUser2Entity] = await userRepository.save([
+      fakeUser1,
+      fakeUser2,
+    ]);
+    fakeUser1Id = fakeUser1Entity.id;
+    fakeUser2Id = fakeUser2Entity.id;
+
+    const places = createPlace(10);
+    await placeRepository.save(places);
   });
 
   beforeEach(async () => {
