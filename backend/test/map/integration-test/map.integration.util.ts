@@ -86,3 +86,17 @@ export function createInvalidToken(validToken: string): string {
   ).toString('base64');
   return [header, manipulatedPayload, signature].join('.');
 }
+
+export async function initMapUserPlaceTable(
+  mapRepository: MapRepository,
+  userRepository: UserRepository,
+  placeRepository: PlaceRepository,
+) {
+  await mapRepository.delete({});
+  await userRepository.delete({});
+  await placeRepository.delete({});
+
+  await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+  await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
+  await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+}

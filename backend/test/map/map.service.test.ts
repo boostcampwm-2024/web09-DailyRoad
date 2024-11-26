@@ -29,6 +29,7 @@ import { Place } from '@src/place/entity/place.entity';
 import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
+import { initMapUserPlaceTable } from '@test/map/integration-test/map.integration.util';
 
 describe('MapService 테스트', () => {
   let app: INestApplication;
@@ -44,6 +45,7 @@ describe('MapService 테스트', () => {
   let fakeUser1: User;
   let page: number;
   let pageSize: number;
+
   beforeAll(async () => {
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
 
@@ -56,12 +58,7 @@ describe('MapService 테스트', () => {
     userRepository = new UserRepository(dataSource);
     mapService = new MapService(mapRepository, userRepository, placeRepository);
 
-    await userRepository.delete({});
-    await mapRepository.delete({});
-    await placeRepository.delete({});
-    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
-    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
-    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
 
     await userRepository.save(fakeUser1);
 
@@ -69,6 +66,7 @@ describe('MapService 테스트', () => {
     await placeRepository.save(places);
     [page, pageSize] = [1, 10];
   });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
@@ -80,20 +78,15 @@ describe('MapService 테스트', () => {
         },
         {
           provide: PlaceRepository,
-          useFactory: (dataSource: DataSource) =>
-            new PlaceRepository(dataSource),
-          inject: [DataSource],
+          useValue: placeRepository,
         },
         {
           provide: UserRepository,
-          useFactory: (dataSource: DataSource) =>
-            new UserRepository(dataSource),
-          inject: [DataSource],
+          useValue: userRepository,
         },
         {
           provide: MapRepository,
-          useFactory: (dataSource: DataSource) => new MapRepository(dataSource),
-          inject: [DataSource],
+          useValue: mapRepository,
         },
         {
           provide: MapService,
@@ -107,22 +100,21 @@ describe('MapService 테스트', () => {
         JWTHelper,
       ],
     }).compile();
+
     app = module.createNestApplication();
     mapService = app.get<MapService>(MapService);
     await mapRepository.delete({});
     await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
     await app.init();
   });
+
   afterAll(async () => {
-    await placeRepository.delete({});
-    await mapRepository.delete({});
-    await userRepository.delete({});
-    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
-    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
-    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
+
     await dataSource.destroy();
     await app.close();
   });
+
   describe('searchMap 메소드 테스트', () => {
     it('파라미터 중 query 가 없을 경우 공개된 모든 지도를 반환한다.', async () => {
       const publicMaps: Map[] = createPublicMaps(5, fakeUser1);
@@ -148,6 +140,7 @@ describe('MapService 테스트', () => {
         Math.ceil(publicMapEntities.length / pageSize),
       );
     });
+
     it('파라미터 중 쿼리가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
       const searchTitle = 'cool';
       const coolMaps: Map[] = createPublicMapsWithTitle(
@@ -172,6 +165,7 @@ describe('MapService 테스트', () => {
       );
     });
   });
+
   describe('getOwnMaps 메소드 테스트', () => {
     it('유저 아이디를 파라미터로 받아서 해당 유저의 지도를 반환한다.', async () => {
       const fakeUserMaps = createPublicMaps(5, fakeUser1);
@@ -190,12 +184,14 @@ describe('MapService 테스트', () => {
       );
     });
   });
+
   describe('getMapById 메소드 테스트', () => {
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 없을 때 MapNotFoundException 예외를 발생시킨다.', async () => {
       await expect(mapService.getMapById(1)).rejects.toThrow(
         MapNotFoundException,
       );
     });
+
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 있으면 결과를 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const publicMapEntity = await mapRepository.save(publicMap);
@@ -207,6 +203,7 @@ describe('MapService 테스트', () => {
       expect(result).toEqual(expectedMap);
     });
   });
+
   describe('createMap 메소드 테스트', () => {
     it('파라미터로 받은 유저 아이디로 지도를 생성하고, 지도 id 를 반환한다.', async () => {
       const publicMap = CreateMapRequest.from({
@@ -224,12 +221,14 @@ describe('MapService 테스트', () => {
       );
     });
   });
+
   describe('deleteMap 메소드 테스트', () => {
     it('파라미터로 mapId를 가진 지도가 없다면 MapNotFoundException 에러를 발생시킨다.', async () => {
       await expect(mapService.deleteMap(1)).rejects.toThrow(
         MapNotFoundException,
       );
     });
+
     it('파라미터로 mapId를 가진 지도가 있다면 삭제 후 삭제된 지도의 id 를 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const publicMapEntity = await mapRepository.save(publicMap);
@@ -239,6 +238,7 @@ describe('MapService 테스트', () => {
       expect(result.id).toEqual(publicMapEntity.id);
     });
   });
+
   describe('updateMapInfo 메소드 테스트', () => {
     it('업데이트 하려는 지도가 없을경우 MapNotFoundException 에러를 발생시킨다.', async () => {
       const updateInfo = new UpdateMapInfoRequest();
@@ -249,6 +249,7 @@ describe('MapService 테스트', () => {
         MapNotFoundException,
       );
     });
+
     it('업데이트 하려는 지도가 있을 경우 지도를 파라미터의 정보로 업데이트 한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
@@ -263,12 +264,14 @@ describe('MapService 테스트', () => {
       expect(publicMapEntity.description).toEqual(updateInfo.description);
     });
   });
+
   describe('updateMapVisibility 메소드 테스트', () => {
     it('visibility 를 업데이트 하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
       await expect(mapService.updateMapVisibility(1, true)).rejects.toThrow(
         MapNotFoundException,
       );
     });
+
     it('visibility를 업데이트 하려는 지도가 있을 경우 업데이트를 진행한다.', async () => {
       const privateMap = createPrivateMaps(1, fakeUser1)[0];
       await mapRepository.save(privateMap);
@@ -279,12 +282,14 @@ describe('MapService 테스트', () => {
       expect(privateMapEntity.isPublic).toEqual(true);
     });
   });
+
   describe('addPlace 메소드 테스트', () => {
     it('장소를 추가하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
       await expect(
         mapService.addPlace(1, 2, 'BLUE' as Color, 'test'),
       ).rejects.toThrow(MapNotFoundException);
     });
+
     it('추가하려는 장소가 없을 경우 InvalidPlaceToMapException 를 발생시킨다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
@@ -293,6 +298,7 @@ describe('MapService 테스트', () => {
         mapService.addPlace(1, 777777, 'RED' as Color, 'test'),
       ).rejects.toThrow(InvalidPlaceToMapException);
     });
+
     it('추가하려는 장소가 이미 해당 지도에 있을경우 DuplicatePlaceToMapException 에러를 발생시킨다', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const publicMapEntity = await mapRepository.save(publicMap);
@@ -307,6 +313,7 @@ describe('MapService 테스트', () => {
         mapService.addPlace(1, 1, 'RED' as Color, 'test'),
       ).rejects.toThrow(DuplicatePlaceToMapException);
     });
+
     it('장소를 추가하려는 지도가 있을 경우 장소를 추가하고 장소 정보를 다시 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const savedMap = await mapRepository.save(publicMap);
@@ -327,12 +334,14 @@ describe('MapService 테스트', () => {
       expect(result).toEqual(expect.objectContaining(expectedResult));
     });
   });
+
   describe('deletePlace 메소드 테스트', () => {
     it('장소를 제거하려는 지도가 없을 경우 MapNotFoundException 에러를 발생시킨다.', async () => {
       await expect(mapService.deletePlace(1, 1)).rejects.toThrow(
         MapNotFoundException,
       );
     });
+
     it('mapId로 받은 지도에서 placeId 를 제거하고 해당 placeId 를 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
