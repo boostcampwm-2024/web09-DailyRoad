@@ -1,3 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gm-style-iw {
+  padding: 0 !important;
+  font-family: Pretandard;
+  position: relative;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  animation: expand 0.5s ease-in-out !important;
+}
+
+.gm-style-iw-ch {
+  margin: 0;
+  height: 0px;
+}
+.gm-ui-hover-effect {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+.gm-style-iw-chr {
+  height: 0px;
+}
+
+@keyframes expand {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.pin {
+  background-color: #7b9acc;
+  color: #fcf6f5;
+}
+.camera {
+  background-color: #2bae66;
+  color: #fcf6f5;
+}
+.cafe {
+  background-color: #f9ebde;
+  color: #815854;
+}
+.restaurant {
+  background-color: #ffb8b1;
+  color: #993441;
+}
