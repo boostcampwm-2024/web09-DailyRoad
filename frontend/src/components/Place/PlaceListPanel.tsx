@@ -118,10 +118,11 @@ const PlaceListPanel = ({
           }}
           category={place.category}
           color={place.color}
+          title={place.name}
           order={isDraggable ? index + 1 : undefined}
         />
       ))}
-      {isDraggable && <Polyline points={points} color="red" />}
+      {isDraggable && <Polyline points={points} />}
     </DragDropContext>
   );
 };

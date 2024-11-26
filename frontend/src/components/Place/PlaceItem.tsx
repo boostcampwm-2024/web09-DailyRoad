@@ -31,7 +31,7 @@ const PlaceItem = ({
       className={`relative flex items-center rounded-md border-[1px] ${place.id === activePlace.id && !isDetailPage ? 'border-1 border-c_bg_blue' : 'border-c_border_gray'} p-4`}
     >
       <img
-        src="/src/assets/Map.jpg"
+        src={place.thumbnail_url}
         alt={place.name}
         className="h-16 w-16 rounded-md"
       />
