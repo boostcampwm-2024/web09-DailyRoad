@@ -20,7 +20,9 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
   const { title, description, isPublic, thumbnailUrl, pinCount, places } =
     courseData;
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+
   const activePlace = useStore((state) => state.place);
+  const user = useStore((state) => state.user);
 
   const customPlace = useMemo(
     () => places.find((place) => place.id === activePlace.id),
@@ -33,6 +35,9 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
       lng: place.location.longitude,
     }));
   }, [places]);
+
+  const isOwner = user?.id === courseData.user.id;
+
   console.log(points, 'points');
   return (
     <SideContainer>
@@ -40,11 +45,16 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
         <Box>
           <div className="flex justify-between">
             <DashBoardHeader title={title} />
-            <div className="flex items-center gap-1 text-center">
-              <EditMapButton text="수정" to={`/edit/course/${courseData.id}`} />
-              <p className="text-xs text-c_placeholder_gray">|</p>
-              <DeleteMapButton mapId={courseData.id} text="삭제" />
-            </div>
+            {isOwner && (
+              <div className="flex items-center gap-1 text-center">
+                <EditMapButton
+                  text="수정"
+                  to={`/edit/course/${courseData.id}`}
+                />
+                <p className="text-xs text-c_placeholder_gray">|</p>
+                <DeleteMapButton mapId={courseData.id} text="삭제" />
+              </div>
+            )}
           </div>
           {thumbnailUrl ? (
             <img src={thumbnailUrl} alt="thumbnail" className="h-40 w-full" />
@@ -57,11 +67,13 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
           </div>
         </Box>
         <Box className="scrollbar-thumb-rounded-lg min-h-80 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
-          <EditMapButton
-            text="수정"
-            to={`/create/course/${courseData.id}`}
-            className="flex justify-end px-2"
-          />
+          {isOwner && (
+            <EditMapButton
+              text="수정"
+              to={`/create/course/${courseData.id}`}
+              className="flex justify-end px-2"
+            />
+          )}
           {places && places.length > 0 ? (
             <>
               {places.map((place) => (
@@ -74,6 +86,8 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
                       lng: place.location.longitude,
                     }}
                     order={place.order}
+                    title={place.name}
+                    description={place.comment}
                   />
                 </div>
               ))}
@@ -91,7 +105,7 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
           onClosed={() => setIsSidePanelOpen(false)}
         />
       )}
-      <Polyline points={points} color="red" />
+      <Polyline points={points} />
     </SideContainer>
   );
 };

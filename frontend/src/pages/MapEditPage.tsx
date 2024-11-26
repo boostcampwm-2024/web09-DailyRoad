@@ -1,3 +1,4 @@
+import Authorize from '@/components/Authorize';
 import SideContainer from '@/components/common/SideContainer';
 import EditMapForm from '@/components/Form/EditMapForm';
 
@@ -9,9 +10,11 @@ const MapEditPage = () => {
   const { id } = useParams();
   const mapData = useMapQuery(Number(id));
   return (
-    <SideContainer>
-      <EditMapForm mapData={mapData} />
-    </SideContainer>
+    <Authorize id={mapData.user.id}>
+      <SideContainer>
+        <EditMapForm mapData={mapData} />
+      </SideContainer>
+    </Authorize>
   );
 };
 
