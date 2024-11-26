@@ -28,7 +28,10 @@ import {
   MAP_NOT_FOUND_EXCEPTION,
   MAP_PERMISSION_EXCEPTION,
 } from '@test/map/integration-test/map.integration.expectExcptions';
-import { createInvalidToken } from '@test/map/integration-test/map.integration.util';
+import {
+  createInvalidToken,
+  initMapUserPlaceTable,
+} from '@test/map/integration-test/map.integration.util';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 describe('MapController 통합 테스트', () => {
@@ -71,12 +74,14 @@ describe('MapController 통합 테스트', () => {
       fakeUser1,
       fakeUser2,
     ]);
+
     fakeUser1Id = fakeUser1Entity.id;
     fakeUser2Id = fakeUser2Entity.id;
 
     const places = createPlace(10);
     await placeRepository.save(places);
   });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
@@ -88,20 +93,15 @@ describe('MapController 통합 테스트', () => {
         },
         {
           provide: PlaceRepository,
-          useFactory: (dataSource: DataSource) =>
-            new PlaceRepository(dataSource),
-          inject: [DataSource],
+          useValue: placeRepository,
         },
         {
           provide: UserRepository,
-          useFactory: (dataSource: DataSource) =>
-            new UserRepository(dataSource),
-          inject: [DataSource],
+          useValue: userRepository,
         },
         {
           provide: MapRepository,
-          useFactory: (dataSource: DataSource) => new MapRepository(dataSource),
-          inject: [DataSource],
+          useValue: mapRepository,
         },
         {
           provide: MapService,
@@ -137,20 +137,19 @@ describe('MapController 통합 테스트', () => {
     token = null;
     await app.init();
   });
+
   afterEach(async () => {
     await mapRepository.delete({});
     await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
   });
+
   afterAll(async () => {
-    await mapRepository.delete({});
-    await userRepository.delete({});
-    await placeRepository.delete({});
-    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
-    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
-    await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
+    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
+
     await dataSource.destroy();
     await app.close();
   });
+
   describe('getMyMapList 메소드 테스트', () => {
     it('GET /my 에 대한 요청에 해당 유저 ID 가 가지는 모든 지도의 정보를 반환한다.', async () => {
       const fakeUser1 = await userRepository.findById(fakeUser1Id);
@@ -189,9 +188,11 @@ describe('MapController 통합 테스트', () => {
           });
         });
     });
+
     it('GET /my 에 대한 요청에 토큰이 없을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
       return request(app.getHttpServer()).get('/maps/my').expect(401);
     });
+
     it('GET /my 에 대한 요청에 토큰이 만료됐을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -212,6 +213,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('GET /my 에 대한 요청에 토큰이 조작됐을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -228,6 +230,7 @@ describe('MapController 통합 테스트', () => {
         .expect(401);
     });
   });
+
   describe('getMapList 메소드 테스트', () => {
     it('GET maps/ 에 대한 요청으로 공개 되어있는 지도 모두 반환한다.', async () => {
       const publicMaps = createPublicMaps(5, fakeUser1);
@@ -249,6 +252,7 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('getMapDetail 메소드 테스트', () => {
     it('GET /maps/:id 에 대해서 지도의 id 와 params 의 id 가 일치하는 지도의 정보를 반환한다.', async () => {
       const maps = createPublicMaps(5, fakeUser1);
@@ -272,6 +276,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('GET /maps/:id 요청을 받았을 때 지도의 id 와 params 의 id 가 일치하는 지도가 없을 경우 MapNotFoundException 를 발생시킨다.', async () => {
       const maps = createPublicMaps(5, fakeUser1);
       await mapRepository.save([...maps]);
@@ -286,6 +291,7 @@ describe('MapController 통합 테스트', () => {
       );
     });
   });
+
   describe('createMap 메소드 테스트', () => {
     it('POST /maps/ 요청에 대해 토큰이 없을 경우 AuthenticationException 예외를 발생시킨다', async () => {
       const result = await request(app.getHttpServer())
@@ -302,6 +308,7 @@ describe('MapController 통합 테스트', () => {
         expect.objectContaining(EMPTY_TOKEN_EXCEPTION),
       );
     });
+
     it('POST /maps/ 요청에 대해서 조작된 토큰과 함께 요청이 발생할 경우 AuthenticationException 예외를 발생시킨다', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -328,6 +335,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/ 요청에 대해서 만료된 토큰과 함께 요청이 발생할 경우 AuthenticationException 예외를 발생시킨다', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -354,6 +362,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/POST /maps 요청의 Body 에 title 이 없을 경우 Bad Request 예외를 발생시킨다.', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -381,6 +390,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/POST /maps 요청의 Body 에 description 이 없을 경우 Bad Request 예외를 발생시킨다.', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -408,6 +418,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/POST /maps 에 올바른 Body 와 유효한 토큰을 설정한 요청에 대해서 적절하게 저장하고, 저장한 지도에 대한 id 를 반환한다.', async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const payload = {
@@ -439,10 +450,12 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('addPlaceToMap 메소드 테스트', () => {
     let publicMap: Map;
     let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
+
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
@@ -451,22 +464,26 @@ describe('MapController 통합 테스트', () => {
         comment: 'Beautiful park with a lake',
         color: 'BLUE',
       };
+
       await mapService.addPlace(
         1,
         1,
         testPlace.color as Color,
         testPlace.comment,
       );
+
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
       };
     });
+
     afterEach(async () => {
       await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT=1;`);
       await mapRepository.delete({});
     });
+
     it('POST /maps/:id/places 요청의 Body의 placeId의 타입이 number가 아니라면 Bad Request 에러를 발생시킨다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const InvalidTestPlace = {
@@ -492,6 +509,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/:id/places 요청의 Body의 comment의 타입이 string이 아니라면 Bad Request 에러를 발생시킨다.', async () => {
       const InvalidTestPlace = {
         placeId: 5,
@@ -515,6 +533,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/:id/places 요청의 Body의 color가  enum(Color) 아니라면 Bad Request 에러를 발생시킨다.', async () => {
       const InvalidTestPlace = {
         placeId: 5,
@@ -540,6 +559,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가지지만 해당 지도에 해당 장소가 이미 있다면 DuplicatePlaceToMapException 에러를 발생시킨다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       await mapService.addPlace(
@@ -565,6 +585,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가지지만 해당 유저의 지도가 아니라면 MapPermissionException 을 발생한다.', async () => {
       const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
@@ -585,6 +606,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가진다면 해당 지도에 해당 장소를 저장하고 저장된 지도의 정보를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
@@ -599,13 +621,16 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('deletePlaceFromMap 메소드 테스트', () => {
     let payload: { userId: number; role: string };
     let testPlace: { placeId: number; comment: string; color: string };
+
     beforeEach(async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
+
       testPlace = {
         placeId: 1,
         comment: 'Beautiful park with a lake',
@@ -617,11 +642,13 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
+
       payload = {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
     });
+
     it('DELETE /maps/:id/places/:placeId 요청의 지도의 id 를 찾지 못했을 경우 MapNotFoundException 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
@@ -636,6 +663,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('DELETE /maps/:id/places/:placeId 요청에 올바른 토큰과 지도 id 를 설정했지만, 해당 유저의 지도가 아닐경우 MapPermissionException 을 발생한다.', async () => {
       const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
@@ -655,6 +683,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('DELETE /maps/:id/places/:placeId 요청에 올바른 토큰과 지도 id 를 설정할 경우 해당 지도에서 placeId 를 삭제하고 해당 placeId 를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
@@ -674,13 +703,16 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('updateMapInfo 메소드 테스트', () => {
     let publicMap: Map;
     let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
+
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
+
       testPlace = {
         placeId: 5,
         comment: 'Beautiful park with a lake',
@@ -692,15 +724,18 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
+
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
       };
     });
+
     afterEach(async () => {
       await mapRepository.delete({});
     });
+
     it('/PATCH /:id/info 요청 Body 에 title 의 타입이 string이 아니라면 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const updateMapInfo = {
@@ -724,6 +759,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/PATCH /:id/info 요청 Body 에 description 의 타입이 string이 아니라면 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const updateMapInfo = {
@@ -747,6 +783,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/PATCH /:id/info 요청에 url params 의 지도 id 가 유효하지 않다면 MapNotFoundException 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const updateMapInfo = {
@@ -766,6 +803,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/PATCH /:id/info 요청에 올바른 토큰과 적절한 요청 body, params 를 가지지만 해당 유저의 지도가 아닐경우 MapPermissionException 을 발생한다.', async () => {
       const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
@@ -790,6 +828,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('/PATCH /:id/info 요청에 올바른 토큰과 적절한 요청 body, params 를 가진다면 해당 지도의 정보를 업데이트하고 업데이트된 지도의 id 와 정보를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const updateMapInfo = {
@@ -818,13 +857,16 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('updateMapVisibility 메소드 테스트', () => {
     let publicMap: Map;
     let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
+
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
+
       testPlace = {
         placeId: 5,
         comment: 'Beautiful park with a lake',
@@ -836,15 +878,18 @@ describe('MapController 통합 테스트', () => {
         testPlace.color as Color,
         testPlace.comment,
       );
+
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
       };
     });
+
     afterEach(async () => {
       await mapRepository.delete({});
     });
+
     it('PATCH /maps/:id/visibility 요청의 body 의 isPublic 이 boolean 이 아닐경우 예외를 발생한다.', async () => {
       const updateIsPublic = { isPublic: 'NOT BOOLEAN' };
       token = jwtHelper.generateToken('24h', payload);
@@ -864,6 +909,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body가 있을 경우 지도의 id 와 변경된 isPublic 을 반환한다.', async () => {
       const updateIsPublic = { isPublic: false };
       token = jwtHelper.generateToken('24h', payload);
@@ -883,6 +929,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body를 가지지만 해당 유저의 지도가 아닐 경우 MapPermissionException 을 발생한다.', async () => {
       const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
@@ -904,6 +951,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('PATCH /maps/:id/visibility 요청에 적절한 토큰과 body가 있지만 지도가 없을 경우 MapNotFoundException 을 발생한다.', async () => {
       const updateIsPublic = { isPublic: false };
       token = jwtHelper.generateToken('24h', payload);
@@ -921,21 +969,26 @@ describe('MapController 통합 테스트', () => {
         });
     });
   });
+
   describe('deleteMap 메소드 테스트', () => {
     let publicMap: Map;
     let payload: { userId: number; role: string };
+
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
+
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
         userId: fakeUserInfo.id,
         role: fakeUserInfo.role,
       };
     });
+
     afterEach(async () => {
       await mapRepository.delete({});
     });
+
     it('DELETE /maps/:id 요청에 적절한 토큰이 있지만 해당하는 지도가 없다면 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
@@ -950,6 +1003,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('DELETE /maps/:id 요청에 대해 적절한 토큰이 있지만, 해당 유저의 지도가 아닐 경우 MapPermissionException 을 발생한다.', async () => {
       const fakeUser2 = await userRepository.findById(fakeUser2Id);
       payload = {
@@ -969,6 +1023,7 @@ describe('MapController 통합 테스트', () => {
           );
         });
     });
+
     it('DELETE /maps/:id 요청에 대해 적절한 토큰이 있고 id 에 해당하는 지도가 있으면 삭제하고 id를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
 
