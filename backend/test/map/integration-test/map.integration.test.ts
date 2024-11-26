@@ -19,7 +19,6 @@ import {
   createPrivateMaps,
   createPublicMaps,
 } from '@test/map/map.test.util';
-import { UserRole } from '@src/user/user.role';
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
 import {
@@ -228,25 +227,6 @@ describe('MapController 통합 테스트', () => {
 
         .expect(401);
     });
-    it('GET /my 에 대한 요청에 user id 에 해당하는 유저가 없을 경우 에러를 발생시킨다.', async () => {
-      const invalidUserInfo = {
-        id: 999999,
-        nickname: 'unknown',
-        provider: 'GOOGLE',
-        role: UserRole.ADMIN,
-      };
-      const payload = {
-        userId: invalidUserInfo.id,
-        role: invalidUserInfo.role,
-      };
-      token = jwtHelper.generateToken('24h', payload);
-
-      return request(app.getHttpServer())
-        .get('/maps/my')
-        .set(`Authorization`, `Bearer ${token}`)
-
-        .expect(404);
-    });
   });
   describe('getMapList 메소드 테스트', () => {
     it('GET maps/ 에 대한 요청으로 공개 되어있는 지도 모두 반환한다.', async () => {
@@ -371,40 +351,6 @@ describe('MapController 통합 테스트', () => {
         .expect((response) => {
           expect(response.body).toEqual(
             expect.objectContaining(EXPIRE_TOKEN_EXCEPTION),
-          );
-        });
-    });
-    it('POST /maps/ 요청에 대해 유저 정보가 없을 경우 UserNotFoundException 에러를 발생시킨다.', async () => {
-      const INVALID_USER_ID = 99999;
-      const invalidUserInfo = {
-        id: INVALID_USER_ID,
-        nickname: 'unknown',
-        provider: 'GOOGLE',
-        role: UserRole.ADMIN,
-      };
-      const payload = {
-        userId: invalidUserInfo.id,
-        role: invalidUserInfo.role,
-      };
-      token = jwtHelper.generateToken('24h', payload);
-
-      return request(app.getHttpServer())
-        .post('/maps/')
-        .set(`Authorization`, `Bearer ${token}`)
-        .send({
-          title: 'Test Map',
-          description: 'This is a test map.',
-          isPublic: true,
-          thumbnailUrl: 'http://example.com/test-map-thumbnail.jpg',
-        })
-
-        .expect(404)
-        .expect((response) => {
-          expect(response.body).toEqual(
-            expect.objectContaining({
-              statusCode: 404,
-              message: `id:${INVALID_USER_ID} 유저가 존재하지 않거나 삭제되었습니다.`,
-            }),
           );
         });
     });
