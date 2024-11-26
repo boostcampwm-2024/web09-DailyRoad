@@ -30,6 +30,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 import { initMapUserPlaceTable } from '@test/map/integration-test/map.integration.util';
+import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapService 테스트', () => {
   let app: INestApplication;
@@ -116,31 +117,6 @@ describe('MapService 테스트', () => {
   });
 
   describe('searchMap 메소드 테스트', () => {
-    it('파라미터 중 query 가 없을 경우 공개된 모든 지도를 반환한다.', async () => {
-      const publicMaps: Map[] = createPublicMaps(5, fakeUser1);
-      const privateMaps = createPrivateMaps(5, fakeUser1);
-      const publicMapEntities = await mapRepository.save([...publicMaps]);
-      await mapRepository.save([...privateMaps]);
-      publicMapEntities.forEach((publicMapEntity) => {
-        publicMapEntity.mapPlaces = [];
-      });
-      const expected = await Promise.all(
-        publicMapEntities.map(MapListResponse.from),
-      );
-
-      const result = await mapService.searchMap(undefined, 1, 10);
-
-      expect(result.maps).toEqual(
-        expect.arrayContaining(
-          expected.map((response) => expect.objectContaining(response)),
-        ),
-      );
-      expect(result.currentPage).toEqual(page);
-      expect(result.totalPages).toEqual(
-        Math.ceil(publicMapEntities.length / pageSize),
-      );
-    });
-
     it('파라미터 중 쿼리가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
       const searchTitle = 'cool';
       const coolMaps: Map[] = createPublicMapsWithTitle(
@@ -165,7 +141,39 @@ describe('MapService 테스트', () => {
       );
     });
   });
+  describe('getAllMaps 메소드 테스트', () => {
+    it('장소를 가지고 있고 공개된 모든 지도를 반환한다.', async () => {
+      const publicMaps: Map[] = createPublicMaps(3, fakeUser1);
+      const publicMapsWithPlaces = createPublicMaps(2, fakeUser1);
+      const privateMaps = createPrivateMaps(5, fakeUser1);
+      publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
+        publicMapWithPlaces.mapPlaces = [
+          MapPlace.of(1, publicMapWithPlaces, 'RED' as Color, 'test'),
+        ];
+      });
+      await mapRepository.save([
+        ...publicMaps,
+        ...publicMapsWithPlaces,
+        ...privateMaps,
+      ]);
+      await mapRepository.save([...privateMaps]);
+      const expected = await Promise.all(
+        publicMapsWithPlaces.map(MapListResponse.from),
+      );
 
+      const result = await mapService.getAllMaps(1, 10);
+
+      expect(result.maps).toEqual(
+        expect.arrayContaining(
+          expected.map((response) => expect.objectContaining(response)),
+        ),
+      );
+      expect(result.currentPage).toEqual(page);
+      expect(result.totalPages).toEqual(
+        Math.ceil(publicMapsWithPlaces.length / pageSize),
+      );
+    });
+  });
   describe('getOwnMaps 메소드 테스트', () => {
     it('유저 아이디를 파라미터로 받아서 해당 유저의 지도를 반환한다.', async () => {
       const fakeUserMaps = createPublicMaps(5, fakeUser1);
