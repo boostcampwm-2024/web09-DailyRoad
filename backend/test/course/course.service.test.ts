@@ -364,7 +364,6 @@ describe('CourseService', () => {
         Array.from({ length: 3 }, (_, i) =>
           placeRepository.save(
             PlaceFixture.createPlace({
-              googlePlaceId: `googlePlaceId_${i + 1}`,
               name: `Place ${i + 1}`,
               formattedAddress: `Address ${i + 1}`,
             }),
