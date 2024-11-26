@@ -12,21 +12,7 @@ import { PlaceRepository } from '@src/place/place.repository';
 import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
-import { UserRole } from '@src/user/user.role';
 import { Transactional } from 'typeorm-transactional';
-import { MapRepository } from './map.repository';
-import { User } from '../user/entity/user.entity';
-import { MapListResponse } from './dto/MapListResponse';
-import { MapDetailResponse } from './dto/MapDetailResponse';
-import { UserRepository } from '../user/user.repository';
-import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
-import { CreateMapRequest } from './dto/CreateMapRequest';
-import { MapNotFoundException } from './exception/MapNotFoundException';
-import { DuplicatePlaceToMapException } from './exception/DuplicatePlaceToMapException';
-import { PlaceRepository } from '../place/place.repository';
-import { InvalidPlaceToMapException } from './exception/InvalidPlaceToMapException';
-import { Map } from './entity/map.entity';
-import { Color } from '../place/place.color.enum';
 import { UserNotFoundException } from '@src/map/exception/UserNotFoundException';
 
 @Injectable()
@@ -180,15 +166,5 @@ export class MapService {
     if (!(await this.userRepository.findById(userId))) {
       throw new UserNotFoundException(userId);
     }
-  }
-
-  async deletePlace(id: number, placeId: number) {
-    const map = await this.mapRepository.findById(id);
-    if (!map) throw new MapNotFoundException(id);
-
-    map.deletePlace(placeId);
-    await this.mapRepository.save(map);
-
-    return { deletedId: placeId };
   }
 }
