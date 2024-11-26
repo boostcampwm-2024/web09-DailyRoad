@@ -19,6 +19,11 @@
 >개인적인 기억과 감상을 담은 지도를 통해 새로운 발견을 하고,   
 좋아하는 사람들을 팔로우하며 일상의 영감을 얻는 소셜 지도 서비스입니다.
 
+### 시스템 아키텍처
+<img src="https://github.com/user-attachments/assets/e6bbee5f-522f-4e32-8327-ac04e903dea4" width=1000>
+
+</br>
+</br>
 
 
 |🏷️ 바로가기| [**팀 Notion**](https://elastic-bread-9ef.notion.site/12963e6f4ee98074b6f9f70cfa9ac836) | [그라운드 룰](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0) | [컨벤션](#) | [기획/디자인](#) | [문서](#) |
