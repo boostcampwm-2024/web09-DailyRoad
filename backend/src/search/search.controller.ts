@@ -6,8 +6,8 @@ import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPip
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  @Get()
-  async search(
+  @Get('/place')
+  async searchPlace(
     @Query('query') query: string,
     @Query('latitude') latitude?: number,
     @Query('longitude') longitude?: number,
@@ -21,5 +21,10 @@ export class SearchController {
       page,
       limit,
     );
+  }
+
+  @Get('/place/autocomplete')
+  async autocomplete(@Query('query') query: string) {
+    return await this.searchService.autocompletePlace(query);
   }
 }

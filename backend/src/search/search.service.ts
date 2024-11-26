@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PlaceSearchResponse } from '@src/search/dto/PlaceSearchResponse';
-import { PlaceSearchHit } from '@src/search/search.type';
+import {
+  PlaceSearchHit,
+  isCompletionSuggest,
+  PlaceAutocompleteSource,
+} from '@src/search/search.type';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ElasticSearchSaveException } from '@src/search/exception/ElasticSearchSaveException';
@@ -81,7 +85,7 @@ export class SearchService {
   async syncPlaceToElasticSearch(places: Place[]) {
     const bulkOperations = [];
 
-    places.forEach((place) => {
+    places.forEach((place: Place) => {
       bulkOperations.push(
         { update: { _index: ElasticSearchConfig.PLACE_INDEX, _id: place.id } },
         { doc: place, doc_as_upsert: true },
@@ -99,5 +103,43 @@ export class SearchService {
     this.logger.debug(
       `Elasticsearch에 동기화된 장소의 갯수: ${response.items.length}`,
     );
+  }
+
+  async autocompletePlace(query: string) {
+    try {
+      const response =
+        await this.elasticSearchQuery.suggestPlaceQueryWithPrefix(query);
+
+      const { names, addresses } = {
+        names: this.extractSuggestions(response.suggest?.place_suggest),
+        addresses: this.extractSuggestions(response.suggest?.address_suggest),
+      };
+
+      return this.removeDuplicates([...names, ...addresses]);
+    } catch (error) {
+      this.logger.error(`Elasticsearch 자동완성 요청 중 에러: ${error}`);
+      return [];
+    }
+  }
+
+  private extractSuggestions(suggestions: any): string[] {
+    if (!Array.isArray(suggestions?.[0]?.options)) {
+      return [];
+    }
+
+    const options = suggestions[0].options;
+
+    return isCompletionSuggest<PlaceAutocompleteSource>(options)
+      ? options
+          .map(
+            (option) =>
+              option._source?.name || option._source?.formattedAddress,
+          )
+          .filter(Boolean)
+      : [];
+  }
+
+  private removeDuplicates(items: string[]): string[] {
+    return Array.from(new Set(items));
   }
 }
