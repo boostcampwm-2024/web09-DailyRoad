@@ -18,7 +18,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     const status = exception.getStatus();
-    logException(this.logger, exception.getMessage(), status);
+    logException(this.logger, exception.getMessage(), status, exception.error);
 
     return response.status(status).json({
       code: exception.getCode(),
@@ -59,14 +59,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 }
 
-function logException(logger: PinoLogger, message: string, status: number) {
+function logException(
+  logger: PinoLogger,
+  message: string,
+  status: number,
+  error?: Error,
+) {
   const WARN = 400;
   const ERROR = 500;
 
   if (status < WARN) return;
   void (status < ERROR
-    ? logger.warn(`${message}`)
-    : logger.error(`${message}`));
+    ? logger.warn(message)
+    : logger.error({
+        message,
+        stack: error?.stack,
+        name: error?.name,
+      }));
 }
 
 @Catch()
@@ -89,8 +98,6 @@ export class UnknownExceptionFilter implements ExceptionFilter {
         exception,
       });
     }
-
-    console.error(exception);
 
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       code: -1,
