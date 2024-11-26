@@ -18,7 +18,6 @@ import {
   createPlace,
   createPrivateMaps,
   createPublicMaps,
-  createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
@@ -34,6 +33,7 @@ import {
   initMapUserPlaceTable,
 } from '@test/map/integration-test/map.integration.util';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { AppModule } from '@src/app.module';
 import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapController 통합 테스트', () => {
@@ -57,64 +57,15 @@ describe('MapController 통합 테스트', () => {
   let token: string;
 
   beforeAll(async () => {
-    token = null;
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
 
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
-    initializeTransactionalContext();
 
-    mapRepository = new MapRepository(dataSource);
-    placeRepository = new PlaceRepository(dataSource);
-    userRepository = new UserRepository(dataSource);
-
-    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
-
-    const [fakeUser1Entity, fakeUser2Entity] = await userRepository.save([
-      fakeUser1,
-      fakeUser2,
-    ]);
-
-    fakeUser1Id = fakeUser1Entity.id;
-    fakeUser2Id = fakeUser2Entity.id;
-
-    const places = createPlace(10);
-    await placeRepository.save(places);
-  });
-
-  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
-      controllers: [MapController],
-      providers: [
-        {
-          provide: DataSource,
-          useValue: dataSource,
-        },
-        {
-          provide: PlaceRepository,
-          useValue: placeRepository,
-        },
-        {
-          provide: UserRepository,
-          useValue: userRepository,
-        },
-        {
-          provide: MapRepository,
-          useValue: mapRepository,
-        },
-        {
-          provide: MapService,
-          useFactory: (
-            mapRepository: MapRepository,
-            userRepository: UserRepository,
-            placeRepository: PlaceRepository,
-          ) => new MapService(mapRepository, userRepository, placeRepository),
-          inject: [MapRepository, UserRepository, PlaceRepository],
-        },
-        JWTHelper,
-      ],
+      imports: [AppModule],
     })
       .overrideProvider(JWTHelper)
       .useValue({
@@ -130,18 +81,19 @@ describe('MapController 통합 테스트', () => {
 
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
+    await app.init();
 
+    userRepository = app.get<UserRepository>(UserRepository);
+    mapRepository = app.get<MapRepository>(MapRepository);
+    placeRepository = app.get<PlaceRepository>(PlaceRepository);
     jwtHelper = app.get<JWTHelper>(JWTHelper);
     mapService = app.get<MapService>(MapService);
-
-    await mapRepository.delete({});
-    token = null;
-    await app.init();
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await mapRepository.delete({});
     await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
+    token = null;
   });
 
   afterAll(async () => {
@@ -172,19 +124,24 @@ describe('MapController 통합 테스트', () => {
         .then((response) => {
           const gotMaps = response.body.maps;
           expect(gotMaps.length).toEqual(fakeUserOneMaps.length);
-          gotMaps.forEach((gotMaps, index) => {
+          gotMaps.forEach((map: Map, index: number) => {
             const expectedMap = fakeUserOneMaps[index];
-            expect(gotMaps.id).toEqual(expectedMap.id);
-            expect(gotMaps.title).toEqual(expectedMap.title);
-            expect(gotMaps.isPublic).toEqual(expectedMap.isPublic);
-            expect(gotMaps.thumbnailUrl).toEqual(expectedMap.thumbnailUrl);
-            expect(gotMaps.description).toEqual(expectedMap.description);
-            expect(gotMaps.pinCount).toEqual(0);
-            expect(new Date(gotMaps.createdAt).toISOString()).toEqual(
-              new Date(expectedMap.createdAt).toISOString(),
+
+            expect(map.id).toEqual(expectedMap.id);
+            expect(map.title).toEqual(expectedMap.title);
+            expect(map.isPublic).toEqual(expectedMap.isPublic);
+            expect(map.thumbnailUrl).toEqual(expectedMap.thumbnailUrl);
+            expect(map.description).toEqual(expectedMap.description);
+            expect(map.pinCount).toEqual(0);
+            expect(map.createdAt).toEqual(
+              new Date(expectedMap.createdAt).toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul',
+              }),
             );
-            expect(new Date(gotMaps.updatedAt).toISOString()).toEqual(
-              new Date(expectedMap.updatedAt).toISOString(),
+            expect(map.updatedAt).toEqual(
+              new Date(expectedMap.updatedAt).toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul',
+              }),
             );
           });
         });
