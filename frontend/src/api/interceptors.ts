@@ -1,5 +1,7 @@
 import { ROUTES } from '@/constants/routes';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { postTokenRefresh } from './auth';
+import { axiosInstance } from './axiosInstance';
 
 interface ErrorResponseData {
   message: string;
@@ -32,4 +34,19 @@ export const handleAPIError = (error: AxiosError<ErrorResponseData>) => {
   }
 
   throw new Error('알 수 없는 오류가 발생했습니다');
+};
+
+export const handleTokenError = async (
+  error: AxiosError<ErrorResponseData>,
+) => {
+  const originRequest = error.config;
+  if (!originRequest) throw error;
+  const { data, status } = error.response!;
+
+  if (status === 401 && data.message === '토큰이 만료되었습니다') {
+    const { token: accessToken } = await postTokenRefresh();
+    originRequest.headers.Authorization = `Bearer ${accessToken}`;
+    localStorage.setItem('ACCESS_TOKEN_KEY', accessToken);
+    return axiosInstance(originRequest);
+  }
 };
