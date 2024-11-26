@@ -16,13 +16,13 @@ export const EMPTY_TOKEN_EXCEPTION = {
 export const MAP_NOT_FOUND_EXCEPTION = (id: number) => {
   return {
     statusCode: 404,
-    message: `id:${id} 지도가 존재하지 않거나 삭제되었습니다.`,
+    message: `[${id}] 지도가 존재하지 않거나 삭제되었습니다.`,
   };
 };
 
 export const MAP_PERMISSION_EXCEPTION = (id: number) => {
   return {
     statusCode: 403,
-    message: `지도 ${id} 에 대한 권한이 없습니다.`,
+    message: `[${id}] 지도에 대한 권한이 없습니다.`,
   };
 };
