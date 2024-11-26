@@ -18,11 +18,6 @@ const generatePreSignedPost = async (dirName: string, extension: string) => {
   return data;
 };
 
-const getExtensionByFile = (file: File) => {
-  const extension = file.name.split('.').pop();
-  return extension ? extension.toLowerCase() : null;
-};
-
 const validateFile = (file: File, extension: string | null) => {
   return !(
     !extension ||
