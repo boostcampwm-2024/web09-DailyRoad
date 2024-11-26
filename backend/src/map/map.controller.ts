@@ -21,7 +21,6 @@ import { AuthUser } from '@src/auth/AuthUser.decorator';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
 import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
-import { sortOrder } from '@src/map/map.type';
 
 @Controller('/maps')
 export class MapController {
@@ -32,26 +31,16 @@ export class MapController {
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
-    @Query('order') order?: string,
   ) {
-    if (!order) order = 'DESC';
     if (query) {
-      return await this.mapService.searchMap(
-        query,
-        page,
-        limit,
-        order as sortOrder,
-      );
+      return await this.mapService.searchMap(query, page, limit);
     }
-    return await this.mapService.getAllMaps(page, limit, order as sortOrder);
+    return await this.mapService.getAllMaps(page, limit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/my')
-  async getMyMapList(
-    @AuthUser() user: AuthUser,
-    @Query('order') order?: string,
-  ) {
+  async getMyMapList(@AuthUser() user: AuthUser) {
     return await this.mapService.getOwnMaps(user.userId);
   }
 
