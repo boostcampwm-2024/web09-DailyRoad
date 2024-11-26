@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,7 +10,6 @@ import {
   Put,
   Query,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { CreateCourseRequest } from './dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
@@ -30,7 +30,7 @@ export class CourseController {
   async getCourseList(
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
-    @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
+    @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
   ) {
     return await this.courseService.searchPublicCourses(query, page, limit);
   }
