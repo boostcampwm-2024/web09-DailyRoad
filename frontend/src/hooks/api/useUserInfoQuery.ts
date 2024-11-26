@@ -1,6 +1,6 @@
 import { getUserInfo } from '@/api/auth';
 import { User } from '@/types';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const useUserInfoQuery = (accessToken: string | null) => {
   if (!accessToken) return null;
