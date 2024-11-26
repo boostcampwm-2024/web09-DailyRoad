@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AdminBannerRepository } from './banner.repository';
 import { CreateBannerRequest } from '@src/admin/banner/dto/CreateBannerRequest';
 import { UpdateBannerPeriodRequest } from '@src/admin/banner/dto/UpdateBannerPeriodRequest';
 import { UpdateBannerDetailsRequest } from '@src/admin/banner/dto/UpdateBannerDetailsRequest';
+import { BannerNotFoundException } from '@src/banner/exception/BannerNotFoundException';
 
 @Injectable()
 export class AdminBannerService {
@@ -26,7 +27,7 @@ export class AdminBannerService {
     });
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Banner with id ${id} not found`);
+      throw new BannerNotFoundException(id);
     }
 
     return this.bannerRepository.findOne({ where: { id } });
@@ -42,7 +43,7 @@ export class AdminBannerService {
     });
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Banner with id ${id} not found`);
+      throw new BannerNotFoundException(id);
     }
 
     return this.bannerRepository.findOne({ where: { id } });
@@ -52,9 +53,9 @@ export class AdminBannerService {
     const result = await this.bannerRepository.softDelete(id);
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Banner with id ${id} not found`);
+      throw new BannerNotFoundException(id);
     }
 
-    return { message: `Banner with id ${id} successfully deleted` };
+    return { deleted: id };
   }
 }
