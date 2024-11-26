@@ -1,14 +1,13 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Query,
+  Controller,
   Delete,
+  Get,
   Param,
   Patch,
-  BadRequestException,
+  Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { MapService } from './map.service';
@@ -82,7 +81,7 @@ export class MapController {
     return { mapId: id, placeId, color, comment };
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Delete('/:id/places/:placeId')
   async deletePlaceFromMap(
     @Param('id') id: number,

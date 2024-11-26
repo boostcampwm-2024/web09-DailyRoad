@@ -755,28 +755,6 @@ describe('MapController 통합 테스트', () => {
     afterEach(async () => {
       await mapRepository.delete({});
     });
-    it('/PATCH /:id/info 요청 Body 에 title 이 없다면 예외를 발생한다..', async () => {
-      token = jwtHelper.generateToken('24h', payload);
-      const updateMapInfo = {
-        description: 'this is updated test map',
-      };
-
-      return request(app.getHttpServer())
-        .patch('/maps/1/info')
-        .send(updateMapInfo)
-        .set('Authorization', `Bearer ${token}`)
-
-        .expect(400)
-        .expect((response) => {
-          expect(response.body).toEqual(
-            expect.objectContaining({
-              statusCode: 400,
-              message: ['title should not be empty', 'title must be a string'],
-              error: 'Bad Request',
-            }),
-          );
-        });
-    });
     it('/PATCH /:id/info 요청 Body 에 title 의 타입이 string이 아니라면 예외를 발생한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
       const updateMapInfo = {

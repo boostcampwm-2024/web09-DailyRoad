@@ -28,6 +28,7 @@ import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceT
 import { Place } from '@src/place/entity/place.entity';
 import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
+import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 
 describe('MapService 테스트', () => {
   let app: INestApplication;
@@ -62,7 +63,7 @@ describe('MapService 테스트', () => {
     await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
     await placeRepository.query(`ALTER TABLE PLACE AUTO_INCREMENT = 1`);
 
-    const fakeUser1Entity = await userRepository.save(fakeUser1);
+    await userRepository.save(fakeUser1);
 
     const places = createPlace(10);
     await placeRepository.save(places);
@@ -240,10 +241,9 @@ describe('MapService 테스트', () => {
   });
   describe('updateMapInfo 메소드 테스트', () => {
     it('업데이트 하려는 지도가 없을경우 MapNotFoundException 에러를 발생시킨다.', async () => {
-      const updateInfo = {
-        title: 'update test title',
-        description: 'update test description',
-      };
+      const updateInfo = new UpdateMapInfoRequest();
+      updateInfo.title = 'update test title';
+      updateInfo.description = 'update test description';
 
       await expect(mapService.updateMapInfo(1, updateInfo)).rejects.toThrow(
         MapNotFoundException,
@@ -252,10 +252,9 @@ describe('MapService 테스트', () => {
     it('업데이트 하려는 지도가 있을 경우 지도를 파라미터의 정보로 업데이트 한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
-      const updateInfo = {
-        title: 'update test title',
-        description: 'update test description',
-      };
+      const updateInfo = new UpdateMapInfoRequest();
+      updateInfo.title = 'update test title';
+      updateInfo.description = 'update test description';
 
       await mapService.updateMapInfo(1, updateInfo);
 
