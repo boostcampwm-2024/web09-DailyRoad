@@ -32,13 +32,18 @@ import {
   createInvalidToken,
   initMapUserPlaceTable,
 } from '@test/map/integration-test/map.integration.util';
+import {
+  convertDateToSeoulTime,
+  initializeIntegrationTestEnvironment,
+} from '@test/config/utils';
+import { INestApplication } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from '@src/app.module';
 import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
-  let container: StartedMySqlContainer;
   let dataSource: DataSource;
 
   let userRepository: UserRepository;
@@ -57,29 +62,7 @@ describe('MapController 통합 테스트', () => {
   let token: string;
 
   beforeAll(async () => {
-    initializeTransactionalContext();
-    container = await new MySqlContainer().withReuse().start();
-    dataSource = await initDataSource(container);
-
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    })
-      .overrideProvider(JWTHelper)
-      .useValue({
-        jwtSecretKey: 'test-key',
-        generateToken: (expiresIn: string | number, payload: any = {}) => {
-          return jwt.sign(payload, 'test-key', { expiresIn });
-        },
-        verifyToken: (refreshToken: string) => {
-          return jwt.verify(refreshToken, 'test-key');
-        },
-      })
-      .compile();
-
-    app = module.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ transform: true }));
-    await app.init();
-
+    ({ app, dataSource } = await initializeIntegrationTestEnvironment());
     userRepository = app.get<UserRepository>(UserRepository);
     mapRepository = app.get<MapRepository>(MapRepository);
     placeRepository = app.get<PlaceRepository>(PlaceRepository);
@@ -147,14 +130,10 @@ describe('MapController 통합 테스트', () => {
             expect(map.description).toEqual(expectedMap.description);
             expect(map.pinCount).toEqual(0);
             expect(map.createdAt).toEqual(
-              new Date(expectedMap.createdAt).toLocaleString('ko-KR', {
-                timeZone: 'Asia/Seoul',
-              }),
+              convertDateToSeoulTime(expectedMap.createdAt),
             );
             expect(map.updatedAt).toEqual(
-              new Date(expectedMap.updatedAt).toLocaleString('ko-KR', {
-                timeZone: 'Asia/Seoul',
-              }),
+              convertDateToSeoulTime(expectedMap.updatedAt),
             );
           });
         });
