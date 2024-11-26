@@ -4,7 +4,10 @@ import { ExceptionType } from './ExceptionType';
 export class BaseException extends HttpException {
   readonly code: number;
 
-  constructor(exceptionType: ExceptionType) {
+  constructor(
+    readonly exceptionType: ExceptionType,
+    readonly error?: Error,
+  ) {
     super(exceptionType.message, exceptionType.status);
     this.code = exceptionType.code;
   }
