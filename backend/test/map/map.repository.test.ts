@@ -157,12 +157,12 @@ describe('MapRepository', () => {
 
       publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
         publicMapWithPlaces.mapPlaces = [
-          MapPlace.of(1, publicMapWithPlaces, 'RED' as Color, 'test'),
+          MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
         ];
       });
       privateMapsWithPlaces.forEach((privateMapsWithPlaces) => {
         privateMapsWithPlaces.mapPlaces = [
-          MapPlace.of(1, privateMapsWithPlaces, 'RED' as Color, 'test'),
+          MapPlace.of(1, privateMapsWithPlaces, Color.RED, 'test'),
         ];
       });
 
@@ -204,12 +204,12 @@ describe('MapRepository', () => {
 
         publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
           publicMapWithPlaces.mapPlaces = [
-            MapPlace.of(1, publicMapWithPlaces, 'RED' as Color, 'test'),
+            MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
           ];
         });
         privateMapsWithPlaces.forEach((privateMapsWithPlaces) => {
           privateMapsWithPlaces.mapPlaces = [
-            MapPlace.of(1, privateMapsWithPlaces, 'RED' as Color, 'test'),
+            MapPlace.of(1, privateMapsWithPlaces, Color.RED, 'test'),
           ];
         });
         await mapRepository.save([
