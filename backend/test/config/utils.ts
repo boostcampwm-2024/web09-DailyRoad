@@ -1,6 +1,7 @@
+import { DataSource } from 'typeorm';
+
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { MySqlContainer } from '@testcontainers/mysql';
-import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { initDataSource } from '@test/config/datasource.config';
@@ -31,4 +32,45 @@ export async function initializeIntegrationTestEnvironment(): Promise<TestSetup>
 
 export function convertDateToSeoulTime(dateTime: Date): string {
   return dateTime.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+}
+
+const ALL_TABLE_NAMES = [
+  'USER',
+  'PLACE',
+  'MAP',
+  'COURSE',
+  'MAP_PLACE',
+  'COURSE_PLACE',
+  'REFRESH_TOKEN',
+  'BANNER',
+];
+
+export async function truncateTables(
+  dataSource: DataSource,
+  tableNames: string[] = ALL_TABLE_NAMES,
+) {
+  const queryRunner = dataSource.createQueryRunner();
+  await queryRunner.connect();
+
+  try {
+    await queryRunner.startTransaction();
+
+    // 외래 키 제약 조건 해제
+    await queryRunner.query('SET FOREIGN_KEY_CHECKS = 0;');
+
+    // 각 테이블에 대해 TRUNCATE 실행
+    for (const tableName of tableNames) {
+      await queryRunner.query(`TRUNCATE TABLE \`${tableName.toUpperCase()}\`;`);
+    }
+
+    // 외래 키 제약 조건 복원
+    await queryRunner.query('SET FOREIGN_KEY_CHECKS = 1;');
+
+    await queryRunner.commitTransaction();
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    throw error;
+  } finally {
+    await queryRunner.release();
+  }
 }
