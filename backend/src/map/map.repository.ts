@@ -31,6 +31,18 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
     });
   }
 
+  countByTitle(title: string) {
+    return this.count({
+      where: { title: ILike(`%${title}%`), isPublic: true },
+    });
+  }
+
+  countByUserId(userId: number) {
+    return this.count({
+      where: { id: userId },
+    });
+  }
+
   async findMapsWithPlace(page: number, pageSize: number) {
     return await this.createQueryBuilder('map')
       .leftJoinAndSelect('map.mapPlaces', 'mapPlace')
