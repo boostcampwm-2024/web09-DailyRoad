@@ -13,6 +13,7 @@ import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMap
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
 import { Transactional } from 'typeorm-transactional';
+import { PagedMapResponse } from '@src/map/dto/PagedMapResponse';
 
 @Injectable()
 export class MapService {
@@ -22,43 +23,37 @@ export class MapService {
     private readonly placeRepository: PlaceRepository,
   ) {}
 
-  // Todo. 작성자명 등 ... 검색 조건 추가
-  // Todo. fix : public 으로 조회해서 페이지마다 수 일정하게. (현재는 한 페이지에 10개 미만인 경우 존재)
   async searchMap(query?: string, page: number = 1, pageSize: number = 15) {
     const maps = await this.mapRepository.searchByTitleQuery(
       query,
       page,
       pageSize,
     );
-    const totalCount = await this.mapRepository.count({
-      where: { title: query, isPublic: true },
-    });
 
-    const publicMaps = maps.filter((map) => map.isPublic);
-    return {
-      maps: await Promise.all(publicMaps.map(MapListResponse.from)),
-      totalPages: Math.ceil(totalCount / pageSize),
-      currentPage: page,
-    };
+    const totalCount = await this.mapRepository.countByTitle(query);
+
+    return new PagedMapResponse(
+      await Promise.all(maps.map(MapListResponse.from)),
+      totalCount,
+      page,
+      pageSize,
+    );
   }
 
   async getAllMaps(page: number = 1, pageSize: number = 15) {
     const totalCount = await this.mapRepository.countMapsWithPlace();
     const maps = await this.mapRepository.findMapsWithPlace(page, pageSize);
 
-    return {
-      maps: await Promise.all(maps.map(MapListResponse.from)),
-      totalPages: Math.ceil(totalCount / pageSize),
-      currentPage: page,
-    };
+    return new PagedMapResponse(
+      await Promise.all(maps.map(MapListResponse.from)),
+      totalCount,
+      page,
+      pageSize,
+    );
   }
 
   async getOwnMaps(userId: number, page: number = 1, pageSize: number = 10) {
-    // Todo. 그룹 기능 추가
-    const totalCount = await this.mapRepository.count({
-      where: { user: { id: userId } },
-      order: { createdAt: 'DESC' },
-    });
+    const totalCount = await this.mapRepository.countByUserId(userId);
 
     const ownMaps = await this.mapRepository.findByUserId(
       userId,
@@ -66,11 +61,12 @@ export class MapService {
       pageSize,
     );
 
-    return {
-      maps: await Promise.all(ownMaps.map(MapListResponse.from)),
-      totalPages: Math.ceil(totalCount / pageSize),
-      currentPage: page,
-    };
+    return new PagedMapResponse(
+      await Promise.all(ownMaps.map(MapListResponse.from)),
+      totalCount,
+      page,
+      pageSize,
+    );
   }
 
   async getMapById(id: number) {
