@@ -59,5 +59,7 @@ jobs:
 
       - name: Test ${{ matrix.project }}
         if: env.changed == 'true'
-        run: yarn test
+        run: |
+          echo "${{ secrets.DOT_ENV_PROD }}" > ${{ github.workspace }}/backend/.env
+          yarn test
         working-directory: ${{ matrix.project }}
