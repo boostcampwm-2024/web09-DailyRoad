@@ -6,11 +6,13 @@ import { UserService } from '@src/user/user.service';
 import { RefreshTokenRepository } from '@src/auth/refresh-token.repository';
 import { OAuthProvider } from '@src/auth/oauthProvider/OAuthProvider';
 import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
+import { InvalidTokenException } from '@src/auth/exception/InvalidTokenException';
 import { UserRole } from '@src/user/user.role';
 import {
   getOAuthProviders,
   OAuthProviderName,
 } from '@src/auth/oauthProvider/OAuthProviders';
+import { ExpiredTokenException } from '@src/auth/exception/ExpiredTokenException';
 
 @Injectable()
 export class AuthService {
@@ -65,12 +67,12 @@ export class AuthService {
     });
 
     if (!tokenEntity) {
-      throw new AuthenticationException('유효하지 않은 리프레시 토큰입니다.');
+      throw new InvalidTokenException('유효하지 않은 리프레시 토큰입니다.');
     }
 
     const isTokenValid = this.jwtHelper.verifyToken(refreshToken);
     if (!isTokenValid) {
-      throw new AuthenticationException('리프레시 토큰이 만료되었습니다.');
+      throw new ExpiredTokenException('리프레시 토큰이 만료되었습니다.');
     }
 
     return this.jwtHelper.generateToken(this.accessTokenExpiration, {
