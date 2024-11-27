@@ -7,10 +7,11 @@ import { initDataSource } from '@test/config/datasource.config';
 import { CourseFixture } from '@test/course/fixture/course.fixture';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { truncateTables } from '@test/config/utils';
 
 describe('CourseRepository', () => {
   let container: StartedMySqlContainer;
-  let datasource: DataSource;
+  let dataSource: DataSource;
 
   let courseRepository: CourseRepository;
   let coursePlaceRepository: Repository<CoursePlace>;
@@ -21,22 +22,21 @@ describe('CourseRepository', () => {
   beforeAll(async () => {
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
-    datasource = await initDataSource(container);
+    dataSource = await initDataSource(container);
 
-    coursePlaceRepository = datasource.getRepository(CoursePlace);
-    courseRepository = new CourseRepository(datasource, coursePlaceRepository);
-
-    fakeUser1 = UserFixture.createUser({});
-    fakeUser2 = UserFixture.createUser({});
-    await datasource.getRepository(User).save([fakeUser1, fakeUser2]);
+    coursePlaceRepository = dataSource.getRepository(CoursePlace);
+    courseRepository = new CourseRepository(dataSource, coursePlaceRepository);
   });
 
   afterAll(async () => {
-    await datasource.destroy();
+    await dataSource.destroy();
   });
 
   beforeEach(async () => {
-    await courseRepository.delete({});
+    await truncateTables(dataSource);
+    fakeUser1 = UserFixture.createUser({});
+    fakeUser2 = UserFixture.createUser({});
+    await dataSource.getRepository(User).save([fakeUser1, fakeUser2]);
   });
 
   it('공개되어 있는 코스를 반환한다', async () => {
@@ -223,7 +223,7 @@ describe('CourseRepository', () => {
     await courseRepository.updateIsPublicById(course.id, isPublic);
 
     const result = (
-      await datasource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
+      await dataSource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
     )[0];
 
     expect(Boolean(result.is_public)).toEqual(isPublic);
@@ -249,7 +249,7 @@ describe('CourseRepository', () => {
     );
 
     const result = (
-      await datasource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
+      await dataSource.query('SELECT * FROM COURSE WHERE id = ?', [course.id])
     )[0];
 
     expect(result.title).toEqual(title);

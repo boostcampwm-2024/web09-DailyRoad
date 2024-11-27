@@ -29,6 +29,7 @@ import { Place } from '@src/place/entity/place.entity';
 import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
+import { truncateTables } from '@test/config/utils';
 import { initMapUserPlaceTable } from '@test/map/integration-test/map.integration.util';
 import { MapPlace } from '@src/map/entity/map-place.entity';
 
@@ -48,8 +49,6 @@ describe('MapService 테스트', () => {
   let pageSize: number;
 
   beforeAll(async () => {
-    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
-
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
     initializeTransactionalContext();
@@ -59,18 +58,8 @@ describe('MapService 테스트', () => {
     userRepository = new UserRepository(dataSource);
     mapService = new MapService(mapRepository, userRepository, placeRepository);
 
-    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
-
-    await userRepository.save(fakeUser1);
-
-    const places = createPlace(10);
-    await placeRepository.save(places);
-    [page, pageSize] = [1, 10];
-  });
-
-  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
+      imports: [await ConfigModule.forRoot()],
       controllers: [MapController],
       providers: [
         {
@@ -104,14 +93,20 @@ describe('MapService 테스트', () => {
 
     app = module.createNestApplication();
     mapService = app.get<MapService>(MapService);
-    await mapRepository.delete({});
-    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
     await app.init();
+    [page, pageSize] = [1, 10];
+  });
+
+  beforeEach(async () => {
+    await truncateTables(dataSource);
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    await userRepository.save(fakeUser1);
+
+    const places = createPlace(10);
+    await placeRepository.save(places);
   });
 
   afterAll(async () => {
-    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
-
     await dataSource.destroy();
     await app.close();
   });
@@ -141,6 +136,7 @@ describe('MapService 테스트', () => {
       );
     });
   });
+
   describe('getAllMaps 메소드 테스트', () => {
     it('장소를 가지고 있고 공개된 모든 지도를 반환한다.', async () => {
       const publicMaps: Map[] = createPublicMaps(3, fakeUser1);

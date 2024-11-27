@@ -7,6 +7,7 @@ import { UserFixture } from '@test/user/fixture/user.fixture';
 import {
   convertDateToSeoulTime,
   initializeIntegrationTestEnvironment,
+  truncateTables,
 } from '@test/config/utils';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
@@ -24,10 +25,6 @@ describe('CourseE2E', () => {
     ({ app, dataSource } = await initializeIntegrationTestEnvironment());
     userRepository = app.get<UserRepository>(UserRepository);
     courseRepository = app.get<CourseRepository>(CourseRepository);
-
-    fakeUser1 = UserFixture.createUser({});
-    const savedFakeUser1 = await userRepository.save(fakeUser1);
-    fakeUser1Id = savedFakeUser1.id;
   });
 
   afterAll(async () => {
@@ -36,7 +33,10 @@ describe('CourseE2E', () => {
   });
 
   beforeEach(async () => {
-    await courseRepository.delete({});
+    await truncateTables(dataSource);
+    fakeUser1 = UserFixture.createUser({});
+    const savedFakeUser1 = await userRepository.save(fakeUser1);
+    fakeUser1Id = savedFakeUser1.id;
   });
 
   describe(`GET /courses : 성공`, () => {
