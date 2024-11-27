@@ -1,4 +1,5 @@
-import PrevNavButton from './PrevNavButton';
+import { ROUTES } from '@/constants/routes';
+import PrevNavButton from './NavButton';
 
 type DashBoardHeaderProps = {
   title: string;
@@ -11,7 +12,7 @@ const DashBoardHeader = ({
 }: DashBoardHeaderProps) => {
   return (
     <header className="flex gap-2">
-      {hasNavButton && <PrevNavButton />}
+      {hasNavButton && <PrevNavButton to={ROUTES.ROOT} />}
       <h2 className="p-4 text-xl font-semibold" id="review-heading">
         {title}
       </h2>

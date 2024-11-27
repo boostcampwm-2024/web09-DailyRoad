@@ -42,8 +42,8 @@ export const handleTokenError = async (
   const originRequest = error.config;
   if (!originRequest) throw error;
   const { data, status } = error.response!;
-
-  if (status === 401 && data.message === '토큰이 만료되었습니다') {
+  console.log(data, status);
+  if (status === 401 && data.message === '만료된 토큰입니다.') {
     const { token: accessToken } = await postTokenRefresh();
     originRequest.headers.Authorization = `Bearer ${accessToken}`;
     localStorage.setItem('ACCESS_TOKEN_KEY', accessToken);
