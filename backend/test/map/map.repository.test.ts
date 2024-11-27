@@ -13,7 +13,7 @@ import {
 } from '@test/map/map.test.util';
 import { PlaceRepository } from '@src/place/place.repository';
 import { MapPlace } from '@src/map/entity/map-place.entity';
-import { Color } from '@src/place/color.enum';
+import { Color } from '@src/place/place.color.enum';
 
 describe('MapRepository', () => {
   let container: StartedMySqlContainer;
