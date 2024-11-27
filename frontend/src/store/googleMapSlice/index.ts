@@ -9,10 +9,14 @@ import {
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
+  markers: Map<number, google.maps.marker.AdvancedMarkerElement>;
+  markerId: number;
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
   moveTo: (lat: number, lng: number) => void;
   findPlaces: (query: string) => void;
+  addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => void;
+  deleteMarker: (markerId: number) => void;
 };
 
 export const createGoogleMapSlice: StateCreator<
@@ -22,8 +26,8 @@ export const createGoogleMapSlice: StateCreator<
   GoogleMapState
 > = (set, get) => ({
   googleMap: null,
-  markerLibrary: null,
-  googleMapLibary: null,
+  markers: new Map(),
+  markerId: 1,
 
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
@@ -56,5 +60,17 @@ export const createGoogleMapSlice: StateCreator<
     };
     const { places } = await Place.searchByText(request);
     return places;
+  },
+
+  addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => {
+    const { markers, markerId } = get();
+    markers.set(markerId, marker);
+    set({ markers, markerId: markerId + 1 });
+  },
+
+  deleteMarker: (markerId: number) => {
+    const { markers } = get();
+    markers.delete(markerId);
+    set({ markers });
   },
 });

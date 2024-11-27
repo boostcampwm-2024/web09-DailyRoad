@@ -20,6 +20,9 @@ export const useMarker = (props: MarkerProps) => {
   const [marker, setMarker] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
   const map = useStore((state) => state.googleMap);
+  const addMarker = useStore((state) => state.addMarker);
+  const deleteMarker = useStore((state) => state.deleteMarker);
+  const markerId = useStore.getState().markerId;
 
   const {
     onClick,
@@ -42,7 +45,6 @@ export const useMarker = (props: MarkerProps) => {
     }
 
     console.log(color?.toLocaleLowerCase(), category);
-    console.log(categoryCode ?? 'pin', color?.toLocaleLowerCase() ?? 'defualt');
     contentDiv.innerHTML = order
       ? `
     <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black;">${order}</div>
@@ -56,10 +58,12 @@ export const useMarker = (props: MarkerProps) => {
 
     newMarker.map = map;
     setMarker(newMarker);
+    addMarker(newMarker);
 
     return () => {
       newMarker.map = null;
       setMarker(null);
+      deleteMarker(markerId);
     };
   }, [map]);
 
