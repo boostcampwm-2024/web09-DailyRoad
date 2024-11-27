@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
-import { BaseEntity } from '../../common/BaseEntity';
+import { BaseEntity } from '@src/common/BaseEntity';
 import decimalNumericTransformer from '@src/config/DecimalTransformer';
+import { Category } from '@src/place/place.category.enum';
 
 @Entity()
 export class Place extends BaseEntity {
@@ -38,7 +39,7 @@ export class Place extends BaseEntity {
   formattedAddress?: string;
 
   @Column({ nullable: true })
-  category?: string;
+  category?: Category;
 
   @Column('text', { nullable: true })
   description?: string;
