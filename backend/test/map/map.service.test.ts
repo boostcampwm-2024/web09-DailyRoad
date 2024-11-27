@@ -119,12 +119,12 @@ describe('MapService 테스트', () => {
   describe('searchMap 메소드 테스트', () => {
     it('파라미터 중 쿼리가 있을 경우 해당 제목을 가진 지도들을 반환한다', async () => {
       const searchTitle = 'cool';
-      const coolMaps: Map[] = createPublicMapsWithTitle(
+      const publicMapsWithTitle: Map[] = createPublicMapsWithTitle(
         5,
         fakeUser1,
         'cool map',
       );
-      const savedMaps = await mapRepository.save([...coolMaps]);
+      const savedMaps = await mapRepository.save([...publicMapsWithTitle]);
       savedMaps.forEach((mapEntity) => {
         mapEntity.mapPlaces = [];
       });
@@ -148,7 +148,7 @@ describe('MapService 테스트', () => {
       const privateMaps = createPrivateMaps(5, fakeUser1);
       publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
         publicMapWithPlaces.mapPlaces = [
-          MapPlace.of(1, publicMapWithPlaces, 'RED' as Color, 'test'),
+          MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
         ];
       });
       await mapRepository.save([
@@ -303,7 +303,7 @@ describe('MapService 테스트', () => {
       await mapRepository.save(publicMap);
 
       await expect(
-        mapService.addPlace(1, 777777, 'RED' as Color, 'test'),
+        mapService.addPlace(1, 777777, Color.RED, 'test'),
       ).rejects.toThrow(InvalidPlaceToMapException);
     });
 
@@ -314,11 +314,11 @@ describe('MapService 테스트', () => {
         publicMapEntity.id,
       );
       publicMapEntity.mapPlaces = [];
-      publicMapEntity.addPlace(alreadyAddPlace.id, 'RED' as Color, 'test');
+      publicMapEntity.addPlace(alreadyAddPlace.id, Color.RED, 'test');
       await mapRepository.save(publicMapEntity);
 
       await expect(
-        mapService.addPlace(1, 1, 'RED' as Color, 'test'),
+        mapService.addPlace(1, 1, Color.RED, 'test'),
       ).rejects.toThrow(DuplicatePlaceToMapException);
     });
 
@@ -329,7 +329,7 @@ describe('MapService 테스트', () => {
       const expectedResult = {
         placeId: addPlace.id,
         comment: 'test',
-        color: 'RED' as Color,
+        color: Color.RED,
       };
 
       const result = await mapService.addPlace(
