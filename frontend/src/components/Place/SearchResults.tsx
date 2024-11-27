@@ -43,6 +43,7 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
                   <PlaceItem key={place.id} place={place} />
                   {!placesSet.has(place.id) && (
                     <Marker
+                      title={place.name}
                       key={place.google_place_id}
                       position={{
                         lat: place.location.latitude,
