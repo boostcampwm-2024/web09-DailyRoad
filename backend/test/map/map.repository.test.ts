@@ -12,14 +12,13 @@ import {
   createPrivateMaps,
   createPublicMaps,
 } from '@test/map/map.test.util';
-import { PlaceRepository } from '@src/place/place.repository';
 import { MapPlace } from '@src/map/entity/map-place.entity';
 import { Color } from '@src/place/place.color.enum';
+import { Place } from '@src/place/entity/place.entity';
 
 describe('MapRepository', () => {
   let container: StartedMySqlContainer;
   let mapRepository: MapRepository;
-  let placeRepository: PlaceRepository;
   let dataSource: DataSource;
   let fakeUser1: User;
   let fakeUser2: User;
@@ -36,6 +35,8 @@ describe('MapRepository', () => {
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
     await dataSource.getRepository(User).save([fakeUser1, fakeUser2]);
+    const places = createPlace(5);
+    await dataSource.getRepository(Place).save(places);
   });
 
   afterAll(async () => {
@@ -63,14 +64,17 @@ describe('MapRepository', () => {
     const fiftyPublicMaps = createPublicMaps(50, fakeUser1);
     await mapRepository.save(fiftyPublicMaps);
     const [page, pageSize] = [5, 5];
-    const fifthPageMaps = await mapRepository.findAll(page, pageSize);
     const expectedMaps = fiftyPublicMaps.slice(20, 25);
+
+    const fifthPageMaps = await mapRepository.findAll(page, pageSize);
+
     expect(fifthPageMaps).toEqual(
       expect.arrayContaining(
         expectedMaps.map((expectedMap) => expect.objectContaining(expectedMap)),
       ),
     );
   });
+
   describe('searchByTitleQuery 메소드 테스트', () => {
     it('대소문자 구분없이 제목으로 지도를 검색할 수 있다', async () => {
       const searchedMaps = [

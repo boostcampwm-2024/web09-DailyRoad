@@ -30,7 +30,6 @@ import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 import { truncateTables } from '@test/config/utils';
-import { initMapUserPlaceTable } from '@test/map/integration-test/map.integration.util';
 import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapService 테스트', () => {
