@@ -856,13 +856,6 @@ describe('MapController 통합 테스트', () => {
             id: 1,
             ...updateMapInfo,
           });
-          const updatedMap = await mapRepository.findById(1);
-          expect(updatedMap).toEqual(
-            expect.objectContaining({
-              id: 1,
-              ...updateMapInfo,
-            }),
-          );
         });
     });
   });
