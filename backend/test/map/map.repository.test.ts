@@ -6,6 +6,7 @@ import { initDataSource } from '@test/config/datasource.config';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { MapFixture } from '@test/map/fixture/map.fixture';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { truncateTables } from '@test/config/utils';
 import {
   createPlace,
   createPrivateMaps,
@@ -22,31 +23,25 @@ describe('MapRepository', () => {
   let dataSource: DataSource;
   let fakeUser1: User;
   let fakeUser2: User;
+
   beforeAll(async () => {
+    initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
     dataSource = await initDataSource(container);
-    initializeTransactionalContext();
+    mapRepository = new MapRepository(dataSource);
+  });
 
+  beforeEach(async () => {
+    await truncateTables(dataSource);
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
-
-    mapRepository = new MapRepository(dataSource);
-    placeRepository = new PlaceRepository(dataSource);
-
-    await dataSource.getRepository(User).delete({});
     await dataSource.getRepository(User).save([fakeUser1, fakeUser2]);
-    const places = createPlace(5);
-    await placeRepository.save(places);
   });
-  beforeEach(async () => {
-    await mapRepository.delete({});
-  });
+
   afterAll(async () => {
-    await mapRepository.delete({});
-    await placeRepository.delete({});
-    await dataSource.getRepository(User).delete({});
     await dataSource.destroy();
   });
+
   it('공개되어 있는 지도 모두 반환한다.', async () => {
     const { publicMaps, privateMaps } = createPublicPrivateMaps();
     const maps = [...publicMaps, ...privateMaps].map(({ title, isPublic }) =>
@@ -63,14 +58,13 @@ describe('MapRepository', () => {
       ),
     );
   });
+
   it('공개되어 있는 지도를 검색했을 때 정확한 페이지와 페이지의 지도를 전달한다', async () => {
     const fiftyPublicMaps = createPublicMaps(50, fakeUser1);
     await mapRepository.save(fiftyPublicMaps);
     const [page, pageSize] = [5, 5];
-    const expectedMaps = fiftyPublicMaps.slice(20, 25);
-
     const fifthPageMaps = await mapRepository.findAll(page, pageSize);
-
+    const expectedMaps = fiftyPublicMaps.slice(20, 25);
     expect(fifthPageMaps).toEqual(
       expect.arrayContaining(
         expectedMaps.map((expectedMap) => expect.objectContaining(expectedMap)),
@@ -95,7 +89,6 @@ describe('MapRepository', () => {
       );
       await mapRepository.save(maps);
       const [title, page, pageSize] = ['test', 1, 10];
-
       const MapsWithTestTitle = await mapRepository.searchByTitleQuery(
         title,
         page,
