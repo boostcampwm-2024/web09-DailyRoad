@@ -12,7 +12,7 @@ export const INITIAL_MAP_CONFIG = {
   disableDefaultUI: true,
   mapId: import.meta.env.VITE_GOOGLE_MAPS_ID,
   clickableIcons: false,
-  minZoom: 10,
+  minZoom: 8,
   maxZoom: 18,
   gestureHandling: 'greedy',
   restriction: {
