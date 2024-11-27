@@ -7,8 +7,10 @@ import {
   Max,
   IsUrl,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
 import { Place } from '@src/place/entity/place.entity';
+import { Category } from '@src/place/place.category.enum';
 
 export class CreatePlaceRequest {
   @IsString()
@@ -37,8 +39,8 @@ export class CreatePlaceRequest {
   formattedAddress?: string;
 
   @IsOptional()
-  @IsString()
-  category?: string;
+  @IsEnum(Category)
+  category?: Category;
 
   @IsOptional()
   @IsString()
