@@ -7,6 +7,7 @@ import { PlaceSearchResponse } from '@src/place/dto/PlaceSearchResponse';
 import { ConfigService } from '@nestjs/config';
 import { SearchService } from '@src/search/search.service';
 import { PinoLogger } from 'nestjs-pino';
+import { mapCategory } from '@src/place/place.category.enum';
 
 @Injectable()
 export class PlaceService {
@@ -98,7 +99,7 @@ export class PlaceService {
         latitude: geometry.location.latitude,
       },
       formattedAddress: formatted_address || null,
-      category: types?.[0] || null,
+      category: mapCategory(types),
       description: null,
       detailPageUrl: `${this.GOOGLE_PLACE_DETAIL_BASE_URL}?q=place_id:${place_id}`,
       photoReference: photos?.[0]?.photo_reference || null,
