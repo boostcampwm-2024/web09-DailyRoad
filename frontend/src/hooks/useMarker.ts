@@ -21,8 +21,8 @@ export const useMarker = (props: MarkerProps) => {
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
   const map = useStore((state) => state.googleMap);
   const addMarker = useStore((state) => state.addMarker);
-  const deleteMarker = useStore((state) => state.deleteMarker);
-  const markerId = useStore.getState().markerId;
+  const removeMarker = useStore((state) => state.removeMarker);
+  const moveTo = useStore((state) => state.moveTo);
 
   const {
     onClick,
@@ -33,6 +33,7 @@ export const useMarker = (props: MarkerProps) => {
     description,
     ...markerOptions
   } = props;
+  const { position } = markerOptions;
 
   const categoryCode =
     categoryObj[(category as keyof typeof categoryObj) ?? '기본'];
@@ -49,7 +50,7 @@ export const useMarker = (props: MarkerProps) => {
       ? `
     <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black;">${order}</div>
     `
-      : `<img width='36' height='36' src=https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png />`;
+      : `<img width='36' height='36' src="https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png" style="filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));"/>`;
 
     const newMarker = new google.maps.marker.AdvancedMarkerElement({
       ...markerOptions,
@@ -63,7 +64,7 @@ export const useMarker = (props: MarkerProps) => {
     return () => {
       newMarker.map = null;
       setMarker(null);
-      deleteMarker(markerId);
+      removeMarker(newMarker);
     };
   }, [map]);
 
@@ -84,6 +85,7 @@ export const useMarker = (props: MarkerProps) => {
 
     google.maps.event.addListener(marker, 'click', () => {
       infoWindow.open({ anchor: marker, map });
+      moveTo(position?.lat as number, position?.lng as number);
     });
     google.maps.event.addListener(map, 'click', () => {
       infoWindow.close();
