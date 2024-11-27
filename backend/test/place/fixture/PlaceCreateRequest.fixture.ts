@@ -1,4 +1,5 @@
 import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { Category } from '@src/place/place.category.enum';
 
 export class PlaceCreateRequestFixture {
   static default = {
@@ -10,7 +11,7 @@ export class PlaceCreateRequestFixture {
       latitude: 40.782865,
     },
     formattedAddress: 'New York, NY, USA',
-    category: 'Park',
+    category: Category.명소,
     description: 'A large public park in New York City.',
     detailPageUrl: 'https://example.com/central_park',
     thumbnailUrl: 'https://example.com/central_park.jpg',
