@@ -69,8 +69,7 @@ describe('MapController 통합 테스트', () => {
     placeRepository = new PlaceRepository(dataSource);
     userRepository = new UserRepository(dataSource);
 
-    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
-    await userRepository.delete({});
+    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
 
     const [fakeUser1Entity, fakeUser2Entity] = await userRepository.save([
       fakeUser1,
@@ -241,7 +240,7 @@ describe('MapController 통합 테스트', () => {
       publicMapsWithPlace.forEach((publicMapWithPlace) => {
         publicMapWithPlace.mapPlaces = [];
         publicMapWithPlace.mapPlaces.push(
-          MapPlace.of(1, publicMapWithPlace, 'RED' as Color, 'test'),
+          MapPlace.of(1, publicMapWithPlace, Color.RED, 'test'),
         );
       });
       await mapRepository.save([
@@ -272,27 +271,30 @@ describe('MapController 통합 테스트', () => {
     });
 
     it('GET /maps?query 에 대한 요청으로 공개 되어있고 query 와 유사한 title을 가지는 지도들을 반환한다.', async () => {
-      const coolMaps = createPublicMapsWithTitle(
+      const publicMapsWithCoolTitle = createPublicMapsWithTitle(
         2,
         fakeUser1,
         'cool test title',
       );
-      const coolMapsWithPlace = createPublicMapsWithTitle(
+      const publicMapsWithCoolTitleAndPlace = createPublicMapsWithTitle(
         3,
         fakeUser1,
         'cool title',
       );
       const privateMaps = createPrivateMaps(5, fakeUser1);
-      coolMapsWithPlace.forEach((publicMapWithPlace) => {
+      publicMapsWithCoolTitleAndPlace.forEach((publicMapWithPlace) => {
         publicMapWithPlace.mapPlaces = [];
         publicMapWithPlace.mapPlaces.push(
-          MapPlace.of(1, publicMapWithPlace, 'RED' as Color, 'test'),
+          MapPlace.of(1, publicMapWithPlace, Color.RED, 'test'),
         );
       });
-      coolMaps.forEach((publicMap) => {
+      publicMapsWithCoolTitle.forEach((publicMap) => {
         publicMap.mapPlaces = [];
       });
-      const publicMaps = [...coolMaps, ...coolMapsWithPlace];
+      const publicMaps = [
+        ...publicMapsWithCoolTitle,
+        ...publicMapsWithCoolTitleAndPlace,
+      ];
       await mapRepository.save([...publicMaps, ...privateMaps]);
 
       return request(app.getHttpServer())
