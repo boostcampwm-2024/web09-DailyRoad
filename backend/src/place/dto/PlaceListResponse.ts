@@ -1,4 +1,5 @@
 import { Place } from '../entity/place.entity';
+import { Category } from '@src/place/place.category.enum';
 
 export class PlaceListResponse {
   constructor(
@@ -9,7 +10,7 @@ export class PlaceListResponse {
       readonly longitude: number;
     },
     readonly google_place_id: string,
-    readonly category?: string,
+    readonly category?: Category,
     readonly description?: string,
     readonly detail_page_url?: string,
     readonly thumbnail_url?: string,
