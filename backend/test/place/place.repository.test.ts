@@ -3,24 +3,28 @@ import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { PlaceRepository } from '@src/place/place.repository';
 import { initDataSource } from '@test/config/datasource.config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { truncateTables } from '@test/config/utils';
+import { DataSource } from 'typeorm';
 
 describe('PlaceRepository', () => {
   let container: StartedMySqlContainer;
   let placeRepository: PlaceRepository;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
-    placeRepository = new PlaceRepository(await initDataSource(container));
+    dataSource = await initDataSource(container);
+    placeRepository = new PlaceRepository(dataSource);
   });
 
   beforeEach(async () => {
-    await placeRepository.delete({});
+    await truncateTables(dataSource);
   });
 
   describe('데이터 저장 및 무결성', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource);
     });
 
     it('중복된 googlePlaceId를 저장할 수 없다', async () => {
@@ -47,7 +51,7 @@ describe('PlaceRepository', () => {
 
   describe('findAll 메서드', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource);
     });
 
     it('페이지 번호와 페이지 크기를 기준으로 모든 장소를 반환한다', async () => {
@@ -132,7 +136,7 @@ describe('PlaceRepository', () => {
 
   describe('findByGooglePlaceId 메서드', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource);
     });
 
     it('주어진 googlePlaceId에 해당하는 장소를 반환한다', async () => {
@@ -159,7 +163,7 @@ describe('PlaceRepository', () => {
 
   describe('searchByNameOrAddressQuery 메서드', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource);
     });
 
     it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다', async () => {
@@ -272,7 +276,7 @@ describe('PlaceRepository', () => {
 
   describe('SoftDelete 연동', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource);
     });
 
     it('소프트 삭제된 장소는 검색 결과에 포함되지 않는다', async () => {

@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { SearchService } from '@src/search/search.service';
 import { LoggerModule, PinoLogger } from 'nestjs-pino';
+import { truncateTables } from '@test/config/utils';
 
 describe('PlaceService', () => {
   let container: StartedMySqlContainer;
@@ -76,12 +77,12 @@ describe('PlaceService', () => {
   });
 
   beforeEach(async () => {
-    await placeRepository.delete({});
+    await truncateTables(dataSource, ['place']);
   });
 
   describe('장소 등록', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource, ['place']);
     });
 
     it('이미 존재하는 googlePlaceId로 장소를 등록하려고 하면 예외를 던진다', async () => {
@@ -117,7 +118,7 @@ describe('PlaceService', () => {
 
   describe('장소 검색', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource, ['place']);
     });
 
     it('쿼리가 없는 경우 전체 장소를 페이지네이션하여 반환한다', async () => {
@@ -192,7 +193,7 @@ describe('PlaceService', () => {
 
   describe('장소 조회', () => {
     beforeEach(async () => {
-      await placeRepository.delete({});
+      await truncateTables(dataSource, ['place']);
     });
 
     it('존재하지 않는 id로 장소를 조회하려고 하면 예외를 던진다', async () => {
