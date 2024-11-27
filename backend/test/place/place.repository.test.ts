@@ -1,4 +1,4 @@
-import { PlaceFixture } from './fixture/place.fixture';
+import { PlaceFixture } from '@test/place/fixture/place.fixture';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
 import { PlaceRepository } from '@src/place/place.repository';
 import { initDataSource } from '@test/config/datasource.config';
@@ -23,10 +23,6 @@ describe('PlaceRepository', () => {
   });
 
   describe('데이터 저장 및 무결성', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('중복된 googlePlaceId를 저장할 수 없다', async () => {
       const place = PlaceFixture.createPlace({ googlePlaceId: 'duplicate_id' });
       await placeRepository.save([place]);
@@ -50,10 +46,6 @@ describe('PlaceRepository', () => {
   });
 
   describe('findAll 메서드', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('페이지 번호와 페이지 크기를 기준으로 모든 장소를 반환한다', async () => {
       const places = [
         PlaceFixture.createPlace({}),
@@ -135,10 +127,6 @@ describe('PlaceRepository', () => {
   });
 
   describe('findByGooglePlaceId 메서드', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('주어진 googlePlaceId에 해당하는 장소를 반환한다', async () => {
       const place = PlaceFixture.createPlace({
         googlePlaceId: 'unique_google_place_id',
@@ -162,10 +150,6 @@ describe('PlaceRepository', () => {
   });
 
   describe('searchByNameOrAddressQuery 메서드', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('장소 이름이나 주소에 포함된 키워드를 찾아 해당하는 장소를 반환한다', async () => {
       const placesWithParkName = [
         {
@@ -275,10 +259,6 @@ describe('PlaceRepository', () => {
   });
 
   describe('SoftDelete 연동', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('소프트 삭제된 장소는 검색 결과에 포함되지 않는다', async () => {
       const place = PlaceFixture.createPlace({
         googlePlaceId: 'soft_deleted_id',

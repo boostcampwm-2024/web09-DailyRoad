@@ -1,19 +1,12 @@
-import { MapController } from '@src/map/map.controller';
 import { MapService } from '@src/map/map.service';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { User } from '@src/user/entity/user.entity';
 import { UserRepository } from '@src/user/user.repository';
 import { PlaceRepository } from '@src/place/place.repository';
 import { MapRepository } from '@src/map/map.repository';
-import { DataSource } from 'typeorm';
-import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { initDataSource } from '@test/config/datasource.config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { JWTHelper } from '@src/auth/JWTHelper';
-import { ConfigModule } from '@nestjs/config';
-import * as request from 'supertest';
 import * as jwt from 'jsonwebtoken';
+import * as request from 'supertest';
 import {
   createPlace,
   createPrivateMaps,
@@ -29,18 +22,12 @@ import {
   MAP_PERMISSION_EXCEPTION,
 } from '@test/map/integration-test/map.integration.expectExcptions';
 import {
-  createInvalidToken,
-  initMapUserPlaceTable,
-} from '@test/map/integration-test/map.integration.util';
-import {
   convertDateToSeoulTime,
   initializeIntegrationTestEnvironment,
+  truncateTables,
 } from '@test/config/utils';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { initializeTransactionalContext } from 'typeorm-transactional';
-import { AppModule } from '@src/app.module';
-import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
@@ -49,7 +36,6 @@ describe('MapController 통합 테스트', () => {
   let userRepository: UserRepository;
   let mapRepository: MapRepository;
   let placeRepository: PlaceRepository;
-
   let mapService: MapService;
 
   let fakeUser1: User;
@@ -66,12 +52,12 @@ describe('MapController 통합 테스트', () => {
     userRepository = app.get<UserRepository>(UserRepository);
     mapRepository = app.get<MapRepository>(MapRepository);
     placeRepository = app.get<PlaceRepository>(PlaceRepository);
-    jwtHelper = app.get<JWTHelper>(JWTHelper);
     mapService = app.get<MapService>(MapService);
+    jwtHelper = app.get<JWTHelper>(JWTHelper);
+  });
 
-    await userRepository.query(`ALTER TABLE USER AUTO_INCREMENT = 1`);
-    await userRepository.delete({});
-
+  beforeEach(async () => {
+    await truncateTables(dataSource);
     fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
     fakeUser2 = UserFixture.createUser({ oauthId: 'def' });
 
@@ -84,17 +70,10 @@ describe('MapController 통합 테스트', () => {
 
     const places = createPlace(10);
     await placeRepository.save(places);
-  });
-
-  beforeEach(async () => {
-    await mapRepository.delete({});
-    await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT = 1`);
     token = null;
   });
 
   afterAll(async () => {
-    await initMapUserPlaceTable(mapRepository, userRepository, placeRepository);
-
     await dataSource.destroy();
     await app.close();
   });
@@ -165,13 +144,14 @@ describe('MapController 통합 테스트', () => {
     });
 
     it('GET /my 에 대한 요청에 토큰이 조작됐을 경우 AuthenticationException 에러를 발생시킨다.', async () => {
-      const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
+      const fakeUser1Info = await userRepository.findById(fakeUser1Id);
       const payload = {
-        userId: fakeUserOneInfo.id,
-        role: fakeUserOneInfo.role,
+        userId: fakeUser1Info.id,
+        role: fakeUser1Info.role,
       };
-      token = jwtHelper.generateToken('24h', payload);
-      const invalidToken = createInvalidToken(token);
+      const invalidToken = jwt.sign(payload, 'wrongSecretKey', {
+        expiresIn: '24h',
+      });
 
       return request(app.getHttpServer())
         .get('/maps/my')
@@ -324,8 +304,9 @@ describe('MapController 통합 테스트', () => {
         userId: fakeUserOneInfo.id,
         role: fakeUserOneInfo.role,
       };
-      token = jwtHelper.generateToken('24h', payload);
-      const invalidToken = createInvalidToken(token);
+      const invalidToken = jwt.sign(payload, 'wrongSecretKey', {
+        expiresIn: '24h',
+      });
 
       return request(app.getHttpServer())
         .post('/maps/')

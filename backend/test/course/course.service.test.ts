@@ -21,6 +21,7 @@ import { CoursePlace } from '@src/course/entity/course-place.entity';
 import { DataSource, Repository } from 'typeorm';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { PlaceFixture } from '@test/place/fixture/place.fixture';
+import { truncateTables } from '@test/config/utils';
 
 async function createPagedResponse(
   courses: Course[],
@@ -34,7 +35,7 @@ async function createPagedResponse(
 
 describe('CourseService', () => {
   let container: StartedMySqlContainer;
-  let datasource: DataSource;
+  let dataSource: DataSource;
   let courseService: CourseService;
   let placeRepository: PlaceRepository;
   let courseRepository: CourseRepository;
@@ -47,24 +48,24 @@ describe('CourseService', () => {
   beforeAll(async () => {
     initializeTransactionalContext();
     container = await new MySqlContainer().withReuse().start();
-    datasource = await initDataSource(container);
-    coursePlaceRepository = datasource.getRepository(CoursePlace);
-    placeRepository = new PlaceRepository(datasource);
-    courseRepository = new CourseRepository(datasource, coursePlaceRepository);
+    dataSource = await initDataSource(container);
+    coursePlaceRepository = dataSource.getRepository(CoursePlace);
+    placeRepository = new PlaceRepository(dataSource);
+    courseRepository = new CourseRepository(dataSource, coursePlaceRepository);
     courseService = new CourseService(courseRepository, placeRepository);
-    fakeUser1 = UserFixture.createUser({});
-    await datasource.getRepository(User).save(fakeUser1);
     currentPage = 1;
     pageSize = 10;
     foodQuery = 'Food';
   });
 
   afterAll(async () => {
-    await datasource.destroy();
+    await dataSource.destroy();
   });
 
   beforeEach(async () => {
-    await courseRepository.delete({});
+    await truncateTables(dataSource);
+    fakeUser1 = UserFixture.createUser({});
+    await dataSource.getRepository(User).save(fakeUser1);
   });
 
   describe('코스 목록을 조회할 때', () => {

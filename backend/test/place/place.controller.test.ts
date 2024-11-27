@@ -88,10 +88,6 @@ describe('PlaceController', () => {
   });
 
   describe('장소 검색', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('페이지, 사이즈를 설정하지 않았을 경우 기본값을 사용하여 장소를 반환한다', async () => {
       const serviceResult = await placeService.getPlaces(undefined, 1, 5);
 
@@ -130,10 +126,6 @@ describe('PlaceController', () => {
   });
 
   describe('장소 등록', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('유효한 장소 생성 폼으로 장소 등록에 성공한다', async () => {
       const createPlaceDto = PlaceCreateRequestFixture.create({
         googlePlaceId: 'googlePlaceId_3',
@@ -163,10 +155,6 @@ describe('PlaceController', () => {
   });
 
   describe('장소 조회', () => {
-    beforeEach(async () => {
-      await truncateTables(dataSource);
-    });
-
     it('존재하는 장소 ID로 장소 조회에 성공한다', async () => {
       const defaultPlace = PlaceCreateRequestFixture.create();
       await placeService.addPlace(defaultPlace);
