@@ -11,6 +11,7 @@ import {
   createPlace,
   createPrivateMaps,
   createPublicMaps,
+  createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
 import { Map } from '@src/map/entity/map.entity';
 import { Color } from '@src/place/place.color.enum';
@@ -28,6 +29,7 @@ import {
 } from '@test/config/utils';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { MapPlace } from '@src/map/entity/map-place.entity';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
