@@ -1,4 +1,5 @@
 import { useStore } from '@/store/useStore';
+import { add } from 'lodash';
 import { useEffect, useState } from 'react';
 
 type MarkerCustomProps = {
@@ -8,6 +9,7 @@ type MarkerCustomProps = {
   order?: number;
   title: string;
   description?: string;
+  address?: string;
 };
 
 export type MarkerProps = Omit<
@@ -31,6 +33,7 @@ export const useMarker = (props: MarkerProps) => {
     order,
     title,
     description,
+    address,
     ...markerOptions
   } = props;
   const { position } = markerOptions;
@@ -73,9 +76,10 @@ export const useMarker = (props: MarkerProps) => {
     const infoContent = `<div style="font-family: Pretendard, ui-sans-serif, system-ui;">
     <div style="display:flex; justify-content:space-between; gap:0.25rem; align-items: center;">
         <p>${title}</p>
+        </div>
         <p class="${categoryCode} badge">${category ?? '장소'}</p>  
+        <p>${address}</p>
         <p>${description}</p>
-  </div>
   </div>`;
 
     const infoWindow = new google.maps.InfoWindow({

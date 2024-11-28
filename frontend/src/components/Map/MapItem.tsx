@@ -22,9 +22,7 @@ const MapItem = ({ mapItem }: MapItemProps) => {
         <div className="flex items-center gap-1">
           <img
             className="h-6 w-6 rounded-full"
-            src={
-              'https://kr.object.ncloudstorage.com/ogil-public/uploads/profile/book.png'
-            }
+            src={mapItem.user.profileImageUrl}
           ></img>
           <p className="text-xs">{mapItem.user.nickname}</p>
           <PinIcon className="h-4 w-4" fill="#DC1414" />
