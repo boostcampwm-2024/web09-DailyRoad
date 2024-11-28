@@ -22,9 +22,7 @@ const CourseItem = ({ courseItem }: CourseItemProps) => {
         <div className="flex items-center gap-1">
           <img
             className="h-6 w-6 rounded-full"
-            src={
-              'https://kr.object.ncloudstorage.com/ogil-public/uploads/profile/book.png'
-            }
+            src={courseItem.user.profileImageUrl}
           ></img>
           <p className="text-xs">{courseItem.user.nickname}</p>
           <PinIcon className="h-4 w-4" fill="#DC1414" />

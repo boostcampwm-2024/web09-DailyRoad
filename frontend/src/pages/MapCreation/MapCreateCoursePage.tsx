@@ -9,7 +9,7 @@ const MapCreateCoursePage = () => {
 
   return (
     <Authorize id={mapData.user.id}>
-      <SearchPanel mapData={mapData} />;
+      <SearchPanel mapData={mapData} />
     </Authorize>
   );
 };
