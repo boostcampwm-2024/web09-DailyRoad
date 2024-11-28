@@ -3,7 +3,7 @@ import Box from '@/components/common/Box';
 import DashBoardHeader from '@/components/common/DashBoardHeader';
 import { Map } from '@/types';
 import PlaceItem from '@/components/Place/PlaceItem';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PlaceDetailPanel from '@/components/Place/PlaceDetailPanel';
 import { useStore } from '@/store/useStore';
 import SideContainer from '@/components/common/SideContainer';
@@ -17,13 +17,15 @@ type MapDetailBoardProps = {
 };
 
 const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
+  const user = useStore((state) => state.user);
+  const activePlace = useStore((state) => state.place);
+  const moveTo = useStore((state) => state.moveTo);
+  const googleMap = useStore((state) => state.googleMap);
+
   const { title, description, isPublic, thumbnailUrl, pinCount, places } =
     mapData;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-
-  const user = useStore((state) => state.user);
-  const activePlace = useStore((state) => state.place);
 
   const customPlace = useMemo(
     () => places.find((place) => place.id === activePlace.id),
@@ -31,6 +33,12 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
   );
 
   const isOwner = user?.id === mapData.user.id;
+
+  useEffect(() => {
+    if (places.length > 0 && googleMap) {
+      moveTo(places[0].location.latitude, places[0].location.longitude);
+    }
+  }, [places, googleMap]);
 
   return (
     <SideContainer>

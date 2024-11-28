@@ -68,7 +68,7 @@ export const useMarker = (props: MarkerProps) => {
       setMarker(null);
       removeMarker(newMarker);
     };
-  }, [map]);
+  }, [map, order]);
 
   useEffect(() => {
     if (!marker || !map) return;

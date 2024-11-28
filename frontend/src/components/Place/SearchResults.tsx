@@ -1,9 +1,10 @@
 import { getPlace } from '@/api/place';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { CustomPlace, Place } from '@/types';
 import PlaceItem from './PlaceItem';
 import Marker from '@/components/Marker/Marker';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useStore } from '@/store/useStore';
 
 type SearchResultsProps = {
   query: string;
@@ -17,10 +18,14 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
     queryKey: ['places', 'search'],
     query: query,
     queryFn: ({ pageParam }) => getPlace(query, pageParam),
-    getNextPageParam: (lastPage) => {
-      return lastPage.length > 4 ? lastPage.length : undefined;
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage.length === 5) {
+        return pages.length + 1;
+      }
+      return undefined;
     },
   });
+
   const isEmptyResults = (data?: { pages: Place[][] }) =>
     !data?.pages || data.pages.every((page) => page.length === 0);
 
@@ -31,11 +36,27 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
     [places],
   );
 
+  console.log(
+    places.map((place) => place.id),
+    'SearchResults',
+  );
+
+  useEffect(() => {
+    if (!isEmpty && data) {
+      moveTo(
+        data.pages[0][0].location.latitude,
+        data.pages[0][0].location.longitude,
+      );
+    }
+  }, [data, isEmpty]);
+
+  const moveTo = useStore((state) => state.moveTo);
+
   return (
-    <div className="max-h-[600px] flex-grow">
+    <div className="max-h-[600px]">
       {query && <p className="p-1 text-base">"{query}"에 대한 검색결과</p>}
       {!isEmpty ? (
-        <div className="scrollbar-thumb-rounded-lg flex max-h-[600px] flex-col overflow-y-auto p-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
+        <div className="scrollbar-thumb-rounded-lg flex h-[550px] flex-col overflow-y-auto p-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
           {data?.pages.map((page, index) => (
             <React.Fragment key={index}>
               {page.map((place: Place) => (
