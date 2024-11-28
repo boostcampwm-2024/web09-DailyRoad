@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PlaceSearchResponse } from '@src/search/dto/PlaceSearchResponse';
 import {
-  PlaceSearchHit,
   isCompletionSuggest,
   PlaceAutocompleteSource,
+  PlaceSearchHit,
 } from '@src/search/search.type';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
@@ -12,6 +12,7 @@ import { Place } from '@src/place/entity/place.entity';
 import { ESPlaceSaveDTO } from '@src/search/dto/ESPlaceSaveDTO';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
 import { PinoLogger } from 'nestjs-pino';
+import { Category } from '@src/place/place.category.enum';
 
 @Injectable()
 export class SearchService {
@@ -57,29 +58,22 @@ export class SearchService {
         await this.elasticSearchQuery.searchPlaceWithPrefix(query);
       result = prefixSearched.hits?.hits || [];
     }
-    return {
-      places: result.map((hit: PlaceSearchHit) => {
-        const { _source } = hit;
-        return new PlaceSearchResponse(
-          _source.id,
-          _source.name,
-          _source.location
-            ? {
-                latitude: _source.location.latitude,
-                longitude: _source.location.longitude,
-              }
-            : null,
-          _source.googlePlaceId,
-          _source.category,
-          _source.description,
-          _source.detailPageUrl,
-          _source.thumbnailUrl,
-          _source.rating,
-          _source.formattedAddress,
-        );
-      }),
-      total_count: result.length,
-    };
+    return result.map((hit: PlaceSearchHit) => {
+      const { _source } = hit;
+      return new PlaceSearchResponse(
+        _source.id,
+        _source.name,
+        _source.location.latitude,
+        _source.location.longitude,
+        _source.googlePlaceId,
+        _source.category as Category,
+        _source.description,
+        _source.detailPageUrl,
+        _source.thumbnailUrl,
+        _source.rating,
+        _source.formattedAddress,
+      );
+    });
   }
 
   async syncPlaceToElasticSearch(places: Place[]) {
