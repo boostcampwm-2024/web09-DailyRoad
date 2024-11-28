@@ -63,8 +63,10 @@ export class SearchService {
       return new PlaceSearchResponse(
         _source.id,
         _source.name,
-        _source.location.lat,
-        _source.location.lon,
+        {
+          latitude: _source.location.lat,
+          longitude: _source.location.lon,
+        },
         _source.googlePlaceId,
         _source.category as Category,
         _source.description,

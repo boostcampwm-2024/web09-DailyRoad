@@ -2,8 +2,7 @@ export class PlaceSearchResponse {
   constructor(
     readonly id: string,
     readonly name: string,
-    readonly latitude: number,
-    readonly longitude: number,
+    readonly location: { latitude: number; longitude: number },
     readonly google_place_id: string,
     readonly category?: string,
     readonly description?: string,
