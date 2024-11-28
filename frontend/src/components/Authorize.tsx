@@ -20,6 +20,7 @@ const Authorize = ({ children, id }: AuthorizeProps) => {
       navigate(ROUTES.ROOT);
     } else if (user?.id !== id) {
       addToast('올바르지 않은 접근입니다.', '', 'error');
+      console.log(user?.id, id);
       navigate(ROUTES.ROOT);
     }
   }, []);

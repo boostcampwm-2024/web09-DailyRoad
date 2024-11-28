@@ -8,18 +8,20 @@ type LoginProps = {
 
 const Login = ({ children }: LoginProps) => {
   const login = useStore((state) => state.logIn);
-  const { data } = useUserInfoQuery();
+  const { data, refetch } = useUserInfoQuery();
   const setUser = useStore((state) => state.setUser);
 
   useLayoutEffect(() => {
     if (localStorage.getItem('ACCESS_TOKEN_KEY')) {
       login();
-      if (data) {
-        setUser(data);
-      }
+      refetch();
     }
   }, []);
-
+  useLayoutEffect(() => {
+    if (data) {
+      setUser(data);
+    }
+  }, [data]);
   return <>{children}</>;
 };
 

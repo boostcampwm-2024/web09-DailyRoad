@@ -32,7 +32,7 @@ export const END_POINTS = {
   LOGOUT: 'oauth/signOut',
   MY_MAP: '/maps/my',
   MY_COURSE: '/courses/my',
-  PLACE: '/search/place',
+  PLACE: '/places',
   IMAGES: '/images',
   PRE_SIGNED_POST: '/storage/preSignedPost',
   USER_INFO: '/users/info',
