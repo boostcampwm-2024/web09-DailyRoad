@@ -10,7 +10,7 @@ export const useEditCourseMutation = () => {
     onSuccess: (data) => {
       const courseId = data?.id;
       queryClient.invalidateQueries({ queryKey: ['course', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({ queryKey: ['courseList'] });
     },
   });
 

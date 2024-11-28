@@ -10,7 +10,7 @@ export const useEditMapMutation = () => {
     onSuccess: (data) => {
       const mapId = data?.id;
       queryClient.invalidateQueries({ queryKey: ['map', mapId] });
-      queryClient.invalidateQueries({ queryKey: ['maps'] });
+      queryClient.invalidateQueries({ queryKey: ['mapList'] });
     },
   });
 
