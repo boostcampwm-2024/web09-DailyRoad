@@ -9,16 +9,16 @@ const MainListPanel = () => {
     <>
       <div className="flex w-full justify-center gap-4">
         <button
-          className={`${listTab === 'MAP' ? 'bg-c_bg_blue' : ''}`}
+          className={`${listTab === 'MAP' ? 'bg-c_bg_blue' : ''} rounded-md p-2`}
           onClick={() => setListTab('MAP')}
         >
-          지도
+          지도리스트
         </button>
         <button
           className={`${listTab === 'COURSE' ? 'bg-c_bg_blue' : ''}`}
           onClick={() => setListTab('COURSE')}
         >
-          코스
+          코스리스트
         </button>
       </div>
       {listTab === 'MAP' ? <MapListPanel /> : <CourseListPanel />}

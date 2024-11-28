@@ -65,21 +65,13 @@ const SearchPanel = ({ mapData }: SearchPanelProps) => {
           </Box>
           <AddPlaceButton onClick={openFormModal} />
         </BaseWrapper>
-        {mapData.places.length ? (
+
+        {mapData.places.length && (
           <PlaceListPanel
             places={mapData.places}
             isDeleteMode={true}
             isDraggable={mode === 'MAP' ? false : true}
           />
-        ) : (
-          <BaseWrapper
-            position=""
-            top=""
-            left=""
-            className="pointer-events-none w-1/2 bg-transparent bg-none"
-          >
-            {''}
-          </BaseWrapper>
         )}
       </SideContainer>
       <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
