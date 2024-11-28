@@ -80,9 +80,27 @@ export class SearchService {
     const bulkOperations = [];
 
     places.forEach((place: Place) => {
+      const esPlaceDto = {
+        id: place.id,
+        name: place.name,
+        location: {
+          lat: place.latitude,
+          lon: place.longitude,
+        },
+        googlePlaceId: place.googlePlaceId,
+        category: place.category,
+        description: place.description,
+        detailPageUrl: place.detailPageUrl,
+        thumbnailUrl: place.thumbnailUrl,
+        rating: place.rating,
+        formattedAddress: place.formattedAddress,
+        createdAt: place.createdAt.toISOString(),
+        updatedAt: place.updatedAt.toISOString(),
+        deletedAt: place.deletedAt?.toISOString() || null,
+      };
       bulkOperations.push(
         { update: { _index: ElasticSearchConfig.PLACE_INDEX, _id: place.id } },
-        { doc: place, doc_as_upsert: true },
+        { doc: esPlaceDto, doc_as_upsert: true },
       );
     });
 
