@@ -45,7 +45,6 @@ export const useMarker = (props: MarkerProps) => {
       return;
     }
 
-    console.log(color?.toLocaleLowerCase(), category);
     contentDiv.innerHTML = order
       ? `
     <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black;">${order}</div>
