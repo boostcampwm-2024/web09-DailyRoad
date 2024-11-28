@@ -120,6 +120,7 @@ const PlaceListPanel = ({
           color={place.color}
           title={place.name}
           order={isDraggable ? index + 1 : undefined}
+          address={place.formed_address}
         />
       ))}
       {isDraggable && <Polyline points={points} />}

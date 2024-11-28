@@ -88,6 +88,7 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
                     order={place.order}
                     title={place.name}
                     description={place.comment}
+                    address={place.formed_address}
                   />
                 </div>
               ))}

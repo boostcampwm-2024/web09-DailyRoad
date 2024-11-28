@@ -78,6 +78,7 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
                     title={place.name}
                     color={place.color}
                     description={place.comment}
+                    address={place.formed_address}
                   />
                 </div>
               ))}

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import SearchIcon from './SearchIcon';
-import { useStore } from '@/store/useStore';
 
 type SearchBarProps = {
   onSearch: (query: string) => void;

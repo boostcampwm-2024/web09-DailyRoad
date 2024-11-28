@@ -49,6 +49,8 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
                         lat: place.location.latitude,
                         lng: place.location.longitude,
                       }}
+                      category={place.category}
+                      address={place.formed_address}
                     />
                   )}
                 </React.Fragment>
