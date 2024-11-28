@@ -49,6 +49,7 @@ export const createGoogleMapSlice: StateCreator<
     const map = get().googleMap;
     if (map) {
       map.panTo({ lat, lng });
+      map.setZoom(18);
     }
   },
 

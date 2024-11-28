@@ -26,6 +26,7 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
     },
   });
 
+  const moveTo = useStore((state) => state.moveTo);
   const isEmptyResults = (data?: { pages: Place[][] }) =>
     !data?.pages || data.pages.every((page) => page.length === 0);
 
@@ -49,8 +50,6 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
       );
     }
   }, [data, isEmpty]);
-
-  const moveTo = useStore((state) => state.moveTo);
 
   return (
     <div className="max-h-[600px]">

@@ -10,6 +10,7 @@ export const useAddPlaceMutation = () => {
     onSuccess: (data) => {
       const id = data?.id;
       queryClient.invalidateQueries({ queryKey: ['map', id] });
+      queryClient.invalidateQueries({ queryKey: ['mapList'] });
     },
   });
 
