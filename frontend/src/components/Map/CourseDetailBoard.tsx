@@ -3,7 +3,7 @@ import Box from '@/components/common/Box';
 import DashBoardHeader from '@/components/common/DashBoardHeader';
 import { Course, Map } from '@/types';
 import PlaceItem from '@/components/Place/PlaceItem';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PlaceDetailPanel from '@/components/Place/PlaceDetailPanel';
 import { useStore } from '@/store/useStore';
 import SideContainer from '@/components/common/SideContainer';
@@ -23,6 +23,8 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
 
   const activePlace = useStore((state) => state.place);
   const user = useStore((state) => state.user);
+  const googleMap = useStore((state) => state.googleMap);
+  const moveTo = useStore((state) => state.moveTo);
 
   const customPlace = useMemo(
     () => places.find((place) => place.id === activePlace.id),
@@ -38,7 +40,12 @@ const CourseDetailBoard = ({ courseData }: MapDetailBoardProps) => {
 
   const isOwner = user?.id === courseData.user.id;
 
-  console.log(points, 'points');
+  useEffect(() => {
+    if (places.length > 0 && googleMap) {
+      moveTo(places[0].location.latitude, places[0].location.longitude);
+    }
+  }, [places, googleMap]);
+
   return (
     <SideContainer>
       <BaseWrapper position="" top="" left="" className="w-1/2">

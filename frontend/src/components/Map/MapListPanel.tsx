@@ -5,6 +5,7 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { MapItemType, MapList } from '@/types';
 
 import MapItem from '@/components/Map/MapItem';
+import Box from '../common/Box';
 
 const MapListPanel = () => {
   const { data, isFetchingNextPage, hasNextPage, ref } =
@@ -20,8 +21,8 @@ const MapListPanel = () => {
     });
 
   return (
-    <>
-      <div className="scrollbar-thumb-rounded-lg grid h-full grid-cols-5 gap-8 overflow-y-auto p-20 px-40 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
+    <Box className="scrollbar-thumb-rounded-lg max-h-[700px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
+      <div className="grid h-full grid-cols-5 gap-8 p-20 px-40">
         {data?.pages.map((page, index) => (
           <React.Fragment key={index}>
             {page.maps.map((map: MapItemType) => (
@@ -31,7 +32,7 @@ const MapListPanel = () => {
         ))}
       </div>
       <div ref={ref} className="h-1" />
-    </>
+    </Box>
   );
 };
 
