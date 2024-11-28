@@ -107,4 +107,5 @@ const categoryObj = {
   맛집: 'restaurant',
   카페: 'cafe',
   기본: 'pin',
+  숙소: 'pin',
 };
