@@ -32,7 +32,7 @@ const Modal = ({
     }
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'visible';
       window.removeEventListener('keydown', handleEscKeyPress);
     };
   }, [isOpen, handleEscKeyPress]);
