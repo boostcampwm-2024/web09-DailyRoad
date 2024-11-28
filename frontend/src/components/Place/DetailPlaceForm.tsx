@@ -15,7 +15,7 @@ import {
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
 import { useParams } from 'react-router-dom';
-import { useAddPlaceToCourseMutation } from '@/hooks/api/useAddPlaceToCourseMutation';
+import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
 
 type DetailPlaceFormProps = {
   oncloseModal: () => void;
@@ -38,7 +38,7 @@ const DetailPlaceForm = ({
   const id = Number(useParams().id);
 
   const addPlaceMutation = useAddPlaceMutation();
-  const addPlaceToCourseMutation = useAddPlaceToCourseMutation();
+  const addPlaceToCourseMutation = usePutPlaceToCourseMutation();
 
   const placeMarker: CustomPlace = {
     placeId: place.id,
