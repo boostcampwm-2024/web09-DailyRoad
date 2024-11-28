@@ -47,7 +47,7 @@ export const useMarker = (props: MarkerProps) => {
 
     contentDiv.innerHTML = order
       ? `
-    <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black;">${order}</div>
+    <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black; transform: translate(0, -4px);">${order}</div>
     `
       : `<img width='36' height='36' src="https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png" style="filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));"/>`;
 
