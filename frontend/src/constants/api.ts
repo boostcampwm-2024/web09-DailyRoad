@@ -20,7 +20,7 @@ export const END_POINTS = {
 
   COURSES: '/courses',
   COURSE: (courseId: number) => `/courses/${courseId}`,
-  ADD_PLACE_TO_COURSE: (courseId: number) => `/courses/${courseId}/places`,
+  PUT_PLACE_TO_COURSE: (courseId: number) => `/courses/${courseId}/places`,
   EDIT_COURSE_INFO: (courseId: number) => `/courses/${courseId}/info`,
   EDIT_COURSE_VISIBILITY: (courseId: number) =>
     `/courses/${courseId}/visibility`,
