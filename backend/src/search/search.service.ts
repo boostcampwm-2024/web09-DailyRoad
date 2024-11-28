@@ -43,7 +43,7 @@ export class SearchService {
     latitude?: number,
     longitude?: number,
     page: number = 1,
-    size: number = 10,
+    size: number = 5,
   ) {
     const searched = await this.elasticSearchQuery.searchPlace(
       query,
