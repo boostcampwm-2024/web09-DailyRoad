@@ -45,7 +45,7 @@ export const addPlaceToMap = async ({
   return { ...data, id };
 };
 
-export const addPlaceToCourse = async ({
+export const putPlaceToCourse = async ({
   id,
   places,
 }: {
@@ -53,7 +53,7 @@ export const addPlaceToCourse = async ({
   places: PlaceWithOrder[];
 }) => {
   const { data } = await axiosInstance.put<CoursePlace[]>(
-    END_POINTS.ADD_PLACE_TO_COURSE(id),
+    END_POINTS.PUT_PLACE_TO_COURSE(id),
     { places },
   );
   return { ...data, id };

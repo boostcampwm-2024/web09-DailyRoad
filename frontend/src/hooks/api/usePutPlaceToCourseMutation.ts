@@ -1,16 +1,16 @@
-import { addPlaceToCourse } from '@/api/place';
+import { putPlaceToCourse } from '@/api/place';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const useAddPlaceToCourseMutation = () => {
+export const usePutPlaceToCourseMutation = () => {
   const queryClient = useQueryClient();
 
-  const addPlaceToCourseMutation = useMutation({
-    mutationFn: addPlaceToCourse,
+  const putPlaceToCourseMutation = useMutation({
+    mutationFn: putPlaceToCourse,
     onSuccess: (data) => {
       const id = data?.id;
       queryClient.invalidateQueries({ queryKey: ['course', id] });
     },
   });
 
-  return addPlaceToCourseMutation;
+  return putPlaceToCourseMutation;
 };

@@ -1,9 +1,10 @@
 import { useStore } from '@/store/useStore';
-import { Place } from '@/types';
+import { CustomPlace, Place } from '@/types';
 
 import DeletePlaceButton from './DeletePlaceButton';
 type PlaceItemProps = {
   place: Place;
+  places?: (Place & CustomPlace)[];
   isDetailPage?: boolean;
   itemMode?: 'default' | 'delete' | 'create';
 };
@@ -11,6 +12,7 @@ type PlaceItemProps = {
 const PlaceItem = ({
   place,
   isDetailPage,
+  places = [],
   itemMode = 'default',
 }: PlaceItemProps) => {
   const activePlace = useStore((state) => state.place);
@@ -45,7 +47,9 @@ const PlaceItem = ({
           ⭐️{place.rating}
         </div>
       </div>
-      {itemMode === 'delete' && <DeletePlaceButton placeId={place.id} />}
+      {itemMode === 'delete' && (
+        <DeletePlaceButton places={places} placeId={place.id} />
+      )}
     </article>
   );
 };
