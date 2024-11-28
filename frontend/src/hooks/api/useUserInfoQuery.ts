@@ -1,12 +1,12 @@
 import { getUserInfo } from '@/api/auth';
 import { User } from '@/types';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 
 export const useUserInfoQuery = () => {
-  if (!localStorage.getItem('ACCESS_TOKEN_KEY')) return null;
-  const { data: userInfo } = useSuspenseQuery<User, Error>({
+  const { data, refetch, error } = useQuery<User, Error>({
     queryKey: ['user'],
     queryFn: getUserInfo,
+    enabled: Boolean(localStorage.getItem('ACCESS_TOKEN_KEY')),
   });
-  return userInfo;
+  return { data, refetch, error };
 };

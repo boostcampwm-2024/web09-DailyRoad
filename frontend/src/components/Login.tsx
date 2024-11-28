@@ -1,5 +1,6 @@
+import { useUserInfoQuery } from '@/hooks/api/useUserInfoQuery';
 import { useStore } from '@/store/useStore';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 type LoginProps = {
   children: React.ReactNode;
@@ -7,13 +8,15 @@ type LoginProps = {
 
 const Login = ({ children }: LoginProps) => {
   const login = useStore((state) => state.logIn);
-  console.log(
-    localStorage.getItem('ACCESS_TOKEN_KEY'),
-    'localStorage.getItem("ACCESS_TOKEN")',
-  );
-  useEffect(() => {
+  const { data } = useUserInfoQuery();
+  const setUser = useStore((state) => state.setUser);
+
+  useLayoutEffect(() => {
     if (localStorage.getItem('ACCESS_TOKEN_KEY')) {
       login();
+      if (data) {
+        setUser(data);
+      }
     }
   }, []);
 
