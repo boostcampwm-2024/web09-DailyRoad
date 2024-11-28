@@ -12,7 +12,7 @@ export class SearchController {
     @Query('latitude') latitude?: number,
     @Query('longitude') longitude?: number,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
-    @Query('limit', new ParseOptionalNumberPipe(10)) limit?: number,
+    @Query('limit', new ParseOptionalNumberPipe(5)) limit?: number,
   ) {
     return await this.searchService.searchPlace(
       query,
