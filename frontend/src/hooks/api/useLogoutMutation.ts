@@ -16,6 +16,7 @@ export const useLogOutMutation = () => {
       localStorage.removeItem(`ACCESS_TOKEN_KEY`);
       queryClient.clear();
       logout();
+      addToast('로그아웃 되었습니다.', '', 'success');
       navigate('/');
     },
     onError: () => {
