@@ -10,6 +10,7 @@ const LoginButtons = () => {
   const isLogged = useStore((state) => state.isLogged);
   const setUser = useStore((state) => state.setUser);
   const logIn = useStore((state) => state.logIn);
+  const logOut = useStore((state) => state.logOut);
   const addToast = useStore((state) => state.addToast);
   const data = useUserInfoQuery();
 
@@ -18,11 +19,19 @@ const LoginButtons = () => {
     if (isLogged && data) {
       setUser(data);
     }
+    if (isLogged && !data) {
+      addToast(
+        '사용자 정보를 불러오지 못했습니다. 다시 로그인해주세요.',
+        '',
+        'error',
+      );
+      logOut();
+    }
   }, [isLogged, data]);
 
   const handleLogin = async () => {
     try {
-      const redirectUri = await getRedirectUri();
+      const redirectUri: string | null = await getRedirectUri();
       if (redirectUri) {
         console.log('Redirect URI:', redirectUri);
         window.location.href = redirectUri;

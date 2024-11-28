@@ -5,6 +5,7 @@ import { axiosInstance } from './axiosInstance';
 
 interface ErrorResponseData {
   message: string;
+  code: string;
 }
 
 export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
@@ -43,10 +44,17 @@ export const handleTokenError = async (
   if (!originRequest) throw error;
   const { data, status } = error.response!;
   console.log(data, status);
+
   if (status === 401 && data.message === '만료된 토큰입니다.') {
     const { token: accessToken } = await postTokenRefresh();
     originRequest.headers.Authorization = `Bearer ${accessToken}`;
     localStorage.setItem('ACCESS_TOKEN_KEY', accessToken);
     return axiosInstance(originRequest);
+  }
+
+  if (data.code === 'E500') {
+    console.log('유효하지 않은 토큰입니다.');
+    localStorage.removeItem('ACCESS_TOKEN_KEY');
+    throw new Error('로그인이 필요합니다.');
   }
 };
