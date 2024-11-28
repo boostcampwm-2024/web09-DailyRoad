@@ -12,9 +12,9 @@ export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
     console.log(config);
     return config;
   }
+  console.log('checkAndSetToken', config);
   const accessToken = localStorage.getItem(`ACCESS_TOKEN_KEY`);
   if (!accessToken) {
-    window.location.href = ROUTES.ROOT;
     throw new Error('토큰이 유효하지 않습니다');
   }
 

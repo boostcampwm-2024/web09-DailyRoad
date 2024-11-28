@@ -21,13 +21,16 @@ export const postLogIn = async (code: string) => {
 
 export const getUserInfo = async () => {
   const { data } = await axiosInstance.get<User>(END_POINTS.USER_INFO);
+
   return data;
 };
 
 export const getRedirectUri = async () => {
   const { data } = await axiosInstance.get<string>(
     END_POINTS.GOOGLE_REDIRECT_URI,
+    { useAuth: false },
   );
+
   return data;
 };
 
