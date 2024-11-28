@@ -80,7 +80,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
 }
 
 export const clustererOptions = {
-  algorithm: new SuperClusterViewportAlgorithm({ maxZoom: 15 }),
+  algorithm: new SuperClusterViewportAlgorithm({ maxZoom: 18 }),
   renderer: {
     render: clusterMarkerRender,
   },
