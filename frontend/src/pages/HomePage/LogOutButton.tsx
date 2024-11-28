@@ -8,7 +8,7 @@ const LogOutButton = () => {
     logoutMutation.mutate();
     logout();
   };
-  return <button onClick={onClick}>LogOutButton</button>;
+  return <button onClick={onClick}>로그아웃</button>;
 };
 
 export default LogOutButton;
