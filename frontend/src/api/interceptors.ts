@@ -13,7 +13,6 @@ export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
   if (!config.useAuth || !config.headers || config.headers.Authorization) {
     return config;
   }
-  console.log('checkAndSetToken', config);
   const accessToken = localStorage.getItem(`ACCESS_TOKEN_KEY`);
   if (!accessToken) {
     throw new Error('토큰이 유효하지 않습니다');
@@ -42,7 +41,6 @@ export const handleTokenError = async (
   const originRequest = error.config;
   if (!originRequest) throw error;
   const { data, status } = error.response!;
-  console.log(data, status);
 
   if (status === 401 && data.message === '만료된 토큰입니다.') {
     const { token: accessToken } = await postTokenRefresh();

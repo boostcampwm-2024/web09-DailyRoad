@@ -18,7 +18,6 @@ const LoginButtons = () => {
     try {
       const redirectUri: string | null = await getRedirectUri();
       if (redirectUri) {
-        console.log('Redirect URI:', redirectUri);
         window.location.href = redirectUri;
       } else {
         console.error('Redirect URI is undefined or null');
