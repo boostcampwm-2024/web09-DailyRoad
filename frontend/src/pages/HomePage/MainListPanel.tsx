@@ -1,28 +1,27 @@
+import React, { useState } from 'react';
 import CourseListPanel from '@/components/Map/CourseListPanel';
 import MapListPanel from '@/components/Map/MapListPanel';
+import ListToggleButtons from '@/components/common/ListToggleButtons';
 import { CreateMapType } from '@/types';
-import { useState } from 'react';
 
 const MainListPanel = () => {
   const [listTab, setListTab] = useState<CreateMapType>('MAP');
+
   return (
-    <>
-      <div className="flex w-full justify-center gap-4">
-        <button
-          className={`${listTab === 'MAP' ? 'bg-c_bg_blue' : ''} rounded-md p-2`}
-          onClick={() => setListTab('MAP')}
-        >
-          지도리스트
-        </button>
-        <button
-          className={`${listTab === 'COURSE' ? 'bg-c_bg_blue' : ''}`}
-          onClick={() => setListTab('COURSE')}
-        >
-          코스리스트
-        </button>
+    <div className="flex w-full flex-col items-center">
+      <ListToggleButtons
+        options={[
+          { value: 'MAP', label: '지도' },
+          { value: 'COURSE', label: '코스' },
+        ]}
+        selected={listTab}
+        onSelect={(value) => setListTab(value as CreateMapType)}
+      />
+
+      <div className="mt-4">
+        {listTab === 'MAP' ? <MapListPanel /> : <CourseListPanel />}
       </div>
-      {listTab === 'MAP' ? <MapListPanel /> : <CourseListPanel />}
-    </>
+    </div>
   );
 };
 
