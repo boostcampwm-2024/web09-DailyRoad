@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -24,6 +24,7 @@ module.exports = {
         c_marker_GREEN: '#7FC782',
         c_marker_BLUE: '#80A6FF',
         c_marker_PURPLE: '#DD80FF',
+        c_brand_BLUE: '#00A3FF',
       },
 
       animation: {
