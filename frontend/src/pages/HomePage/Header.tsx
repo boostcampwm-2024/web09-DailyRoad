@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import logo from '../../../public/logo.svg';
+import logo from '/logo.svg';
 import LoginButtons from './LoginButtons';
 
 const Header = () => {
