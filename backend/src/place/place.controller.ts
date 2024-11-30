@@ -1,4 +1,13 @@
-import { Controller, Get, Query, UseGuards, BadRequestException, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+  BadRequestException,
+  Post,
+  Body,
+  Param,
+} from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
@@ -8,15 +17,13 @@ import { UnavailableIn } from '@src/common/decorator/UnavaliableIn';
 
 @Controller('places')
 export class PlaceController {
-  constructor(private readonly placeService: PlaceService) {
-  }
+  constructor(private readonly placeService: PlaceService) {}
 
   @Throttle({ default: { limit: 60, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   @Post()
   @UnavailableIn('lightweight')
   async importPlace(@Body() createPlaceDto: CreatePlaceRequest) {
-
     return this.placeService.addPlace(createPlaceDto);
   }
 
