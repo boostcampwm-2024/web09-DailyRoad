@@ -6,7 +6,7 @@ const SideContainer = ({
   className?: string;
 }) => (
   <div
-    className={`pointer-events-none absolute left-0 top-0 flex h-full w-[600px] ${className}`}
+    className={`pointer-events-none absolute left-0 top-0 flex h-full w-[700px] ${className}`}
   >
     {children}
   </div>
