@@ -116,6 +116,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
               src={banner.imageUrl}
               alt={`Banner ${index}`}
               className={styles.bannerImage}
+              onClick={() => window.open(banner.redirectUrl, '_blank')}
             />
           </div>
         ))}
