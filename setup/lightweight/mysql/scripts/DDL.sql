@@ -34,8 +34,8 @@ CREATE TABLE USER
 CREATE TABLE PLACE
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
-    google_place_id   CHAR(50) UNIQUE NOT NULL,
-    name              VARCHAR(255)    NOT NULL,
+    google_place_id   CHAR(50) UNIQUE,
+    name              VARCHAR(255) NOT NULL,
     thumbnail_url     VARCHAR(255),
     rating            DECIMAL(3, 2),
     longitude         DECIMAL(10, 7), -- 경도
@@ -46,7 +46,7 @@ CREATE TABLE PLACE
     detail_page_url   VARCHAR(255),
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at        TIMESTAMP       NULL
+    deleted_at        TIMESTAMP    NULL
 );
 
 -- MAP 테이블
