@@ -1,8 +1,8 @@
 # Production 환경  ES 및 Kibana 설정
 
 1. `.env` 설정 (`sample_env` 참고)
-2. `docker compose -f docker-compose.production.yml up setup`
-3. 2가 끝난 이후 `docker compose -f docker-compose.production.yml up -d`
+2. `docker compose up setup`
+3. 2가 끝난 이후 `docker compose up -d`
 
 ## 디렉토리 구조
 
