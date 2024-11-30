@@ -1,5 +1,4 @@
 import { useStore } from '@/store/useStore';
-import { add } from 'lodash';
 import { useEffect, useState } from 'react';
 
 type MarkerCustomProps = {

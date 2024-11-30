@@ -1,4 +1,3 @@
-import { ROUTES } from '@/constants/routes';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { postTokenRefresh } from './auth';
 import { axiosInstance } from './axiosInstance';

@@ -1,6 +1,6 @@
 import { getUserInfo } from '@/api/auth';
 import { User } from '@/types';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const useUserInfoQuery = () => {
   const { data, refetch, error } = useQuery<User, Error>({
