@@ -9,11 +9,13 @@ export DEBIAN_FRONTEND=noninteractive
 sudo ./install_docker.sh
 
 # MySQL 설정 스크립트 실행
+cp .env mysql/
 cd mysql || exit
 sudo ./setup-mysql.sh
 cd ..
 
 # Elasticsearch 설정 스크립트 실행
+cp .env elasticsearch/
 cd elasticsearch || exit
 sudo ./setup-elasticsearch.sh
 cd ..
