@@ -11,3 +11,9 @@ sudo ./install_docker.sh
 # MySQL 설정 스크립트 실행
 cd mysql || exit
 sudo ./setup-mysql.sh
+cd ..
+
+# Elasticsearch 설정 스크립트 실행
+cd elasticsearch || exit
+sudo ./setup-elasticsearch.sh
+cd ..

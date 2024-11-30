@@ -1,0 +1,82 @@
+services:
+  setup:
+    profiles:
+      - setup
+    build:
+      context: .
+    init: true
+    user: root
+    volumes:
+      - ./index/place-index.json:/usr/share/elasticsearch/place-index.json
+      - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
+      - ./init-es.prod.sh:/usr/share/elasticsearch/init-es.prod.sh
+    command: >
+      /bin/bash -c '
+        until curl -s -XGET "http://elasticsearch:9200/_cluster/health" -u "elastic:${ELASTIC_PASSWORD}" | grep "\"status\":\"green\"" > /dev/null; do
+          echo "Waiting for Elasticsearch to be ready..."
+          sleep 5
+        done &&
+        curl -X POST "http://elasticsearch:9200/_security/role/custom_role" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{
+                  \"cluster\": [\"all\"],
+                  \"indices\": [
+                    {
+                      \"names\": [\"*\"],
+                      \"privileges\": [\"all\"]
+                    }
+                  ],
+                  \"applications\": [
+                    {
+                      \"application\": \"kibana-.kibana\",
+                      \"privileges\": [\"all\"],
+                      \"resources\": [\"*\"]
+                    }
+                  ],
+                  \"run_as\": [\"*\"]
+                }" &&
+      
+        curl -X POST "http://elasticsearch:9200/_security/user/${CUSTOM_USERNAME}" -H "Content-Type: application/json" -u elastic:${ELASTIC_PASSWORD} -d "{\"password\": \"${ELASTIC_PASSWORD}\", \"roles\": [\"custom_role\", \"kibana_system\"]}" &&
+        chmod +x /usr/share/elasticsearch/init-es.prod.sh &&
+        /usr/share/elasticsearch/init-es.prod.sh
+      '
+    environment:
+      - CUSTOM_USERNAME=${CUSTOM_USERNAME}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - ./index/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.16.0
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - SERVER_NAME=kibana
+      - ELASTICSEARCH_USERNAME=${CUSTOM_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
+volumes:
+  esdata:
+    driver: local
