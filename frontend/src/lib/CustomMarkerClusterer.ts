@@ -1,6 +1,4 @@
 import {
-  Cluster,
-  ClusterStats,
   Marker,
   MarkerClusterer,
   MarkerClustererEvents,
