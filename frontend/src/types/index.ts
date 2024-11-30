@@ -52,17 +52,14 @@ export type Course = {
   places: CoursePlace[];
 };
 
-export type MapList = {
-  maps: MapItemType[];
+export type PaginatedList<T, K extends string> = {
+  [P in K]: T[];
+} & {
   totalPages: number;
   currentPage: number;
 };
-
-export type CourseList = {
-  courses: MapItemType[];
-  totalPages: number;
-  currentPage: number;
-};
+export type MapList = PaginatedList<MapItemType, 'maps'>;
+export type CourseList = PaginatedList<MapItemType, 'courses'>;
 
 export type CreateMapType = 'MAP' | 'COURSE';
 
