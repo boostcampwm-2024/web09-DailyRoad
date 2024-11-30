@@ -40,7 +40,8 @@ export const deleteLogOut = async () => {
 };
 
 export const postTokenRefresh = async () => {
-  const { data } =
-    await axiosInstance.post<TokenRefrechResponse>('/oauth/refresh');
+  const { data } = await axiosInstance.post<TokenRefrechResponse>(
+    END_POINTS.TOKEN_REFRESH,
+  );
   return data;
 };

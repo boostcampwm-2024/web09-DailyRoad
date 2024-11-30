@@ -4,7 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 export const useGooglePlaceQuery = (query: string) => {
   if (!query) return [];
   const { data } = useSuspenseQuery<GooglePlaceResponse[], Error>({
-    queryKey: ['googlePlace'],
+    queryKey: ['googlePlace', query],
     queryFn: () => getGooglePlace(query),
   });
   return data;

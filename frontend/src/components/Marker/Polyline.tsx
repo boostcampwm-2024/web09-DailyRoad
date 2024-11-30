@@ -1,11 +1,11 @@
-import { usePoyline } from '@/hooks/usePolyline';
+import { usePolyline } from '@/hooks/usePolyline';
 
 type PolylineProps = {
   points: google.maps.LatLngLiteral[];
 };
 
 const Polyline = ({ points }: PolylineProps) => {
-  const polyline = usePoyline(points);
+  const polyline = usePolyline(points);
   return <></>;
 };
 

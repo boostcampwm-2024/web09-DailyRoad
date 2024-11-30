@@ -4,21 +4,22 @@ import { getCourseList } from '@/api/course';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { CourseList, MapItemType } from '@/types';
 
-import MapItem from '@/components/Map/MapItem';
 import CourseItem from './CourseItem';
 
 const CourseListPanel = () => {
+  const infiniteScrollConfig = {
+    queryKey: ['courseList'],
+    queryFn: ({ pageParam }: { pageParam: number }) => getCourseList(pageParam),
+    getNextPageParam: (lastPage: CourseList) => {
+      return lastPage.currentPage < lastPage.totalPages
+        ? lastPage.currentPage + 1
+        : undefined;
+    },
+    fetchWithoutQuery: true,
+  };
+
   const { data, isFetchingNextPage, hasNextPage, ref } =
-    useInfiniteScroll<CourseList>({
-      queryKey: ['courseList'],
-      queryFn: ({ pageParam }) => getCourseList(pageParam),
-      getNextPageParam: (lastPage) => {
-        return lastPage.currentPage < lastPage.totalPages
-          ? lastPage.currentPage + 1
-          : undefined;
-      },
-      fetchWithoutQuery: true,
-    });
+    useInfiniteScroll<CourseList>(infiniteScrollConfig);
 
   return (
     <>
