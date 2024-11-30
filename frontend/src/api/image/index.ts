@@ -26,6 +26,14 @@ const validateFile = (file: File, extension: string | null) => {
   );
 };
 
+const WEBP_QUALITY = 0.8;
+const WEBP_MIME_TYPE = 'image/webp';
+
+const convertToWebP = (blob: Blob, originalFileName: string): File => {
+  const webpFileName = originalFileName.replace(/\.[^/.]+$/, '.webp');
+  return new File([blob], webpFileName, { type: WEBP_MIME_TYPE });
+};
+
 const resizeImage = async (
   file: File,
   width: number,
@@ -53,17 +61,15 @@ const resizeImage = async (
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            const webpFileName = file.name.replace(/\.[^/.]+$/, '.webp');
-            const webpFile = new File([blob], webpFileName, {
-              type: 'image/webp',
-            });
-            resolve(webpFile);
+            resolve(convertToWebP(blob, file.name));
           } else {
-            reject(new Error('Blob Conversion Error'));
+            reject(
+              new Error('이미지를 WebP 형식으로 변환하는데 실패했습니다.'),
+            );
           }
         },
-        'image/webp',
-        0.8,
+        WEBP_MIME_TYPE,
+        WEBP_QUALITY,
       );
     };
     img.onerror = (error) => reject(error);
