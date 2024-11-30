@@ -1,0 +1,106 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "filter": {
+        "synonym_filter": {
+          "type": "synonym",
+          "synonyms_path": "synonyms.txt"
+        },
+        "suggest_filter": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 50
+        }
+      },
+      "analyzer": {
+        "nori_with_synonym": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["lowercase", "nori_readingform", "synonym_filter"]
+        },
+        "suggest_index_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "suggest_filter"]
+        },
+        "suggest_search_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "googlePlaceId": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          },
+          "suggest": {
+            "type": "completion",
+            "analyzer": "suggest_index_analyzer",
+            "search_analyzer": "suggest_search_analyzer"
+          }
+        },
+        "analyzer": "nori_with_synonym"
+      },
+      "thumbnailUrl": {
+        "type": "text",
+        "index": false
+      },
+      "rating": {
+        "type": "scaled_float",
+        "scaling_factor": 100
+      },
+      "location": {
+        "type": "geo_point"
+      },
+      "formattedAddress": {
+        "type": "text",
+        "fields": {
+          "suggest": {
+            "type": "completion",
+            "analyzer": "suggest_index_analyzer",
+            "search_analyzer": "suggest_search_analyzer"
+          }
+        },
+        "analyzer": "nori_with_synonym"
+      },
+      "category": {
+        "type": "keyword",
+        "index": true
+      },
+      "description": {
+        "type": "text"
+      },
+      "detailPageUrl": {
+        "type": "text",
+        "index": false
+      },
+      "createdAt": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "updatedAt": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "deletedAt": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis",
+        "null_value": null
+      }
+    }
+  }
+}
