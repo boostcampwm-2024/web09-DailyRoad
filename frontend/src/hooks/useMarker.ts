@@ -62,6 +62,7 @@ export const useMarker = (props: MarkerProps) => {
     newMarker.map = map;
     setMarker(newMarker);
     addMarker(newMarker);
+    console.log(newMarker, 'add new marker');
 
     return () => {
       newMarker.map = null;

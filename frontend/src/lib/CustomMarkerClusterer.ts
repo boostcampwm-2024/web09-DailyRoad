@@ -12,10 +12,30 @@ import { clusterMarkerRender } from './clusterMarkerRender';
 
 export class CustomMarkerClusterer extends MarkerClusterer {
   lastGroupMarkers: Marker[];
+  markerLatLngSet: Set<string>;
   constructor(options: MarkerClustererOptions) {
     super(options);
     this.lastGroupMarkers = [];
+    this.markerLatLngSet = new Set();
   }
+
+  public addMarker(
+    marker: google.maps.marker.AdvancedMarkerElement,
+    noDraw?: boolean,
+  ): void {
+    const markerLatLng = `${marker.position?.lat}${marker.position?.lng}`;
+    if (this.markerLatLngSet.has(markerLatLng)) {
+      return;
+    }
+
+    this.markers.push(marker);
+    this.markerLatLngSet.add(markerLatLng);
+
+    if (!noDraw) {
+      this.render();
+    }
+  }
+
   public render(): void {
     const map = this.getMap();
     if (map instanceof google.maps.Map && map.getProjection()) {
@@ -53,6 +73,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
               // The marker:
               // - was previously rendered because it is from a cluster with 1 marker,
               // - should no more be rendered as it is not in singleMarker.
+              console.log('cluster.marker removed', cluster.marker);
               MarkerUtils.setMap(cluster.marker!, null);
             }
           } else {
@@ -64,6 +85,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
         this.clusters = clusters;
         this.renderClusters();
         // Delayed removal of the markers of the former groups.
+        console.log('groupMarkers', groupMarkers);
         setTimeout(() => {
           groupMarkers.forEach((marker) => {
             MarkerUtils.setMap(marker, null);
