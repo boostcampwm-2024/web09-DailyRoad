@@ -5,7 +5,7 @@ import Box from '@/components/common/Box';
 
 type ColorSelectorProps = {
   activeColor: MarkerColor | null;
-  setActiveColor: (color: MarkerColor | null) => void;
+  setActiveColor: (color: MarkerColor) => void;
 };
 
 const ColorSelector = ({ activeColor, setActiveColor }: ColorSelectorProps) => {

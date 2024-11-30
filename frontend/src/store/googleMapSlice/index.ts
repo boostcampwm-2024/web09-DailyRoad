@@ -15,10 +15,10 @@ import {
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
   markerClusterer: MarkerClusterer | null;
+  markers: google.maps.marker.AdvancedMarkerElement[];
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
   moveTo: (lat: number, lng: number) => void;
-  findPlaces: (query: string) => void;
   addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => void;
   removeMarker: (marker: google.maps.marker.AdvancedMarkerElement) => void;
 };
@@ -31,7 +31,7 @@ export const createGoogleMapSlice: StateCreator<
 > = (set, get) => ({
   googleMap: null,
   markerClusterer: null,
-  markerId: 1,
+  markers: [],
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
   initializeMap: async (container: HTMLElement) => {
@@ -42,6 +42,7 @@ export const createGoogleMapSlice: StateCreator<
       map,
       ...clustererOptions,
     });
+
     set({ googleMap: map, markerClusterer });
   },
 
@@ -49,33 +50,19 @@ export const createGoogleMapSlice: StateCreator<
     const map = get().googleMap;
     if (map) {
       map.panTo({ lat, lng });
-      map.setZoom(18);
+      map.setZoom(17);
     }
-  },
-
-  findPlaces: async (query: string) => {
-    if (!query) {
-      return;
-    }
-    const Place = getPlaceClass();
-    const request: google.maps.places.SearchByTextRequest = {
-      textQuery: query,
-      language: 'ko',
-      region: 'KR',
-      fields: ['location', 'displayName'],
-      maxResultCount: 7,
-    };
-    const { places } = await Place.searchByText(request);
-    return places;
   },
 
   addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => {
-    const { markerClusterer } = get();
+    const { markerClusterer, markers } = get();
     markerClusterer?.addMarker(marker);
+    set({ markers: [...markers, marker] });
   },
 
   removeMarker: (marker: google.maps.marker.AdvancedMarkerElement) => {
-    const { markerClusterer } = get();
+    const { markerClusterer, markers } = get();
     markerClusterer?.removeMarker(marker);
+    set({ markers: markers.filter((m) => m !== marker) });
   },
 });

@@ -4,7 +4,7 @@ import CheckIcon from '@/components/Place/CheckIcon';
 type ColorItemProps = {
   color: MarkerColor;
   activeColor: MarkerColor | null;
-  setActiveColor: (color: MarkerColor | null) => void;
+  setActiveColor: (color: MarkerColor) => void;
 };
 
 const ColorItem = ({ color, activeColor, setActiveColor }: ColorItemProps) => {
