@@ -11,9 +11,7 @@ import {
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 process.env.NODE_ENV =
-  process.env.NODE_ENV && process.env.NODE_ENV.trim().toLowerCase() === 'prod'
-    ? 'prod'
-    : 'develop';
+  process.env.NODE_ENV ? process.env.NODE_ENV.trim().toLowerCase() : 'develop';
 
 async function bootstrap() {
   initializeTransactionalContext();
