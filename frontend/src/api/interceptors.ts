@@ -2,6 +2,8 @@ import { ROUTES } from '@/constants/routes';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { postTokenRefresh } from './auth';
 import { axiosInstance } from './axiosInstance';
+import { USER_ERROR_MESSAGE } from '@/constants/api';
+import { CustomError } from './CustomError';
 
 interface ErrorResponseData {
   message: string;
@@ -10,7 +12,6 @@ interface ErrorResponseData {
 
 export const checkAndSetToken = (config: InternalAxiosRequestConfig) => {
   if (!config.useAuth || !config.headers || config.headers.Authorization) {
-    console.log(config);
     return config;
   }
   console.log('checkAndSetToken', config);
@@ -29,12 +30,11 @@ export const handleAPIError = (error: AxiosError<ErrorResponseData>) => {
   if (!error.response) throw error;
 
   const { data, status } = error.response;
+  const code = Number(data.code.slice(1));
+  const userMessage =
+    USER_ERROR_MESSAGE[data.code as keyof typeof USER_ERROR_MESSAGE];
 
-  if (status >= 300) {
-    throw new Error(data.message);
-  }
-
-  throw new Error('알 수 없는 오류가 발생했습니다');
+  throw new CustomError({ code, status, message: data.message, userMessage });
 };
 
 export const handleTokenError = async (
@@ -57,4 +57,5 @@ export const handleTokenError = async (
     localStorage.removeItem('ACCESS_TOKEN_KEY');
     throw new Error('로그인이 필요합니다.');
   }
+  throw error;
 };
