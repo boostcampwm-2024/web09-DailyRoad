@@ -10,8 +10,9 @@ import MapPage from '@/pages/MapCreation/MapPage';
 
 import RedirectPage from '@/pages/RedirectPage';
 import NotFound from '@/pages/NotFound';
-import * as Lazy from './lazyPages';
 import Loading from '@/pages/MapDetail/Loading';
+
+import { LazyCoursePages, LazyMapPages } from './lazyPages';
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: ':id',
-            element: <Lazy.MapDetailPage />,
+            element: <LazyMapPages.Detail />,
           },
         ],
       },
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: ':id',
-            element: <Lazy.CourseDetailPage />,
+            element: <LazyCoursePages.Detail />,
           },
         ],
       },
@@ -63,7 +64,7 @@ const router = createBrowserRouter([
             path: 'map/:id',
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Lazy.MapCreateMapPage />
+                <LazyMapPages.Create />
               </Suspense>
             ),
           },
@@ -71,7 +72,7 @@ const router = createBrowserRouter([
             path: 'course/:id',
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Lazy.MapCreateCoursePage />
+                <LazyCoursePages.Create />
               </Suspense>
             ),
           },
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
             path: 'map/:id',
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Lazy.MapEditPage />
+                <LazyMapPages.Edit />
               </Suspense>
             ),
           },
@@ -93,7 +94,7 @@ const router = createBrowserRouter([
             path: 'course/:id',
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Lazy.CourseEditPage />
+                <LazyCoursePages.Edit />
               </Suspense>
             ),
           },
