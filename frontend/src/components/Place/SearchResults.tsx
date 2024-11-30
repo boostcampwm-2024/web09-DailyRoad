@@ -1,5 +1,5 @@
 import { getPlace } from '@/api/place';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { CustomPlace, Place } from '@/types';
 import PlaceItem from './PlaceItem';
 import Marker from '@/components/Marker/Marker';
@@ -32,21 +32,16 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
 
   const isEmpty = isEmptyResults(data);
 
-  const placesSet = useMemo(
+  const existingPlaceIds = useMemo(
     () => new Set(places.map((place) => place.id)),
     [places],
-  );
-
-  console.log(
-    places.map((place) => place.id),
-    'SearchResults',
   );
 
   useEffect(() => {
     if (!isEmpty && data) {
       moveTo(
-        data.pages[0][0].location.latitude,
-        data.pages[0][0].location.longitude,
+        data.pages[data.pages.length - 1][0].location.latitude,
+        data.pages[data.pages.length - 1][0].location.longitude,
       );
     }
   }, [data, isEmpty]);
@@ -61,7 +56,7 @@ const SearchResults = ({ query, places }: SearchResultsProps) => {
               {page.map((place: Place) => (
                 <React.Fragment key={place.id}>
                   <PlaceItem key={place.id} place={place} />
-                  {!placesSet.has(place.id) && (
+                  {!existingPlaceIds.has(place.id) && (
                     <Marker
                       title={place.name}
                       key={place.google_place_id}

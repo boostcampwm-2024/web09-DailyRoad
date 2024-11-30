@@ -36,6 +36,7 @@ export const END_POINTS = {
   IMAGES: '/images',
   PRE_SIGNED_POST: '/storage/preSignedPost',
   USER_INFO: '/users/info',
+  TOKEN_REFRESH: 'oauth/refresh',
 };
 
 export const IMAGE_EXTENSIONS = new Set([
