@@ -13,6 +13,7 @@ const useDeletePlaceMutation = (mode: CreateMapType) => {
     onSuccess: (data) => {
       const id = data?.id;
       queryClient.invalidateQueries({ queryKey: [queryKey, id] });
+      queryClient.invalidateQueries({ queryKey: ['mapList'] });
     },
   });
   return deleteMutation;
