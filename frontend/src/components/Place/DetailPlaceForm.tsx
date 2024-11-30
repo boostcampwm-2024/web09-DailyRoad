@@ -1,7 +1,7 @@
 import { useStore } from '@/store/useStore';
 import PlaceItem from './PlaceItem';
 import TextInputArea from '../common/TextInputArea';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Box from '../common/Box';
 
 import DashBoardHeader from '../common/DashBoardHeader';
@@ -14,28 +14,27 @@ import {
 } from '@/types';
 import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
 import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
-import { useParams } from 'react-router-dom';
 import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
 
 type DetailPlaceFormProps = {
   oncloseModal: () => void;
   placeList: CoursePlace[];
   mode: CreateMapType;
+  id: number;
 };
 
 const DetailPlaceForm = ({
   oncloseModal,
   placeList,
   mode,
+  id,
 }: DetailPlaceFormProps) => {
   const place = useStore((state) => state.place);
   const setPlace = useStore((state) => state.setPlace);
   const addToast = useStore((state) => state.addToast);
 
   const [description, setDescription] = useState('');
-  const [activeColor, setActiveColor] = useState<MarkerColor | null>(null);
-
-  const id = Number(useParams().id);
+  const [activeColor, setActiveColor] = useState<MarkerColor>('RED');
 
   const addPlaceMutation = useAddPlaceMutation();
   const addPlaceToCourseMutation = usePutPlaceToCourseMutation();
@@ -46,18 +45,21 @@ const DetailPlaceForm = ({
     comment: description,
   };
 
-  const newPlaceList = [
-    ...placeList.map((place) => ({
-      placeId: place.id,
-      comment: place.comment,
-      order: place.order + 1,
-    })),
-    {
-      placeId: place.id,
-      comment: placeMarker.comment,
-      order: placeList.length + 1,
-    },
-  ];
+  const newPlaceList = useMemo(
+    () => [
+      ...placeList.map((place) => ({
+        placeId: place.id,
+        comment: place.comment,
+        order: place.order + 1,
+      })),
+      {
+        placeId: place.id,
+        comment: placeMarker.comment,
+        order: placeList.length + 1,
+      },
+    ],
+    [placeList],
+  );
   const onSubmit = () => {
     if (mode === 'MAP') {
       addPlaceMutation.mutate(
@@ -105,10 +107,12 @@ const DetailPlaceForm = ({
             aria-labelledby="review-heading"
           />
         </Box>
-        <ColorSelector
-          activeColor={activeColor}
-          setActiveColor={setActiveColor}
-        />
+        {mode === 'MAP' && (
+          <ColorSelector
+            activeColor={activeColor}
+            setActiveColor={setActiveColor}
+          />
+        )}
         <Box>
           <button
             onClick={onSubmit}

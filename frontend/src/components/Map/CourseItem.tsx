@@ -15,7 +15,11 @@ const CourseItem = ({ courseItem }: CourseItemProps) => {
           {courseItem.thumbnailUrl.startsWith('https://example') ? (
             <MapThumbnail className="h-full w-full" />
           ) : (
-            <img src={courseItem.thumbnailUrl} className="object-cover"></img>
+            <img
+              alt={`${courseItem.title} 코스 썸네일`}
+              src={courseItem.thumbnailUrl}
+              className="object-cover"
+            ></img>
           )}
         </div>
         <p className="text-sm">{courseItem.title}</p>

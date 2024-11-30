@@ -6,7 +6,6 @@ import { useCallback, useMemo, useState } from 'react';
 import Marker from '../Marker/Marker';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
-import { useParams } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import Polyline from '../Marker/Polyline';
 
@@ -14,15 +13,16 @@ type PlaceListPanelProps = {
   places: (Place & CustomPlace)[];
   isDraggable?: boolean;
   isDeleteMode?: boolean;
+  id: number;
 };
 
 const PlaceListPanel = ({
   places,
   isDeleteMode = false,
   isDraggable = false,
+  id,
 }: PlaceListPanelProps) => {
   const [isDeleteModeActive, setIsDeleteModeActive] = useState(false);
-  const id = Number(useParams().id);
   const putPlaceToCourseMutation = usePutPlaceToCourseMutation();
   const addToast = useStore((state) => state.addToast);
 
