@@ -3,7 +3,6 @@ import { StateCreator } from 'zustand';
 import { StoreState } from '@/types';
 import {
   getGoogleMapClass,
-  getPlaceClass,
   loadGoogleMapsApi,
 } from '@/lib/googleMapsAPI-loader';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';

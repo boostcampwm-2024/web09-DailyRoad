@@ -1,5 +1,4 @@
 import {
-  Marker,
   SuperClusterViewportAlgorithm,
   SuperClusterViewportOptions,
 } from '@googlemaps/markerclusterer';
@@ -9,5 +8,3 @@ export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
     super(options);
   }
 }
-
-const createMarkerProxy = (markers: Marker[], onchange: () => void) => {};
