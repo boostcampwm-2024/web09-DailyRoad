@@ -5,8 +5,8 @@ import { Category } from '@src/place/place.category.enum';
 
 @Entity()
 export class Place extends BaseEntity {
-  @Column({ unique: true })
-  googlePlaceId: string;
+  @Column({ unique: true, nullable: true })
+  googlePlaceId?: string;
 
   @Column()
   name: string;
