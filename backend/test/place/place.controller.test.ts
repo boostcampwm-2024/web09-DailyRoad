@@ -89,11 +89,12 @@ describe('PlaceController', () => {
 
   describe('장소 검색', () => {
     it('페이지, 사이즈를 설정하지 않았을 경우 기본값을 사용하여 장소를 반환한다', async () => {
-      const serviceResult = await placeService.getPlaces('test', 1, 5);
+      const query = 'test';
+      const serviceResult = await placeService.getPlaces(query, 1, 5);
 
       const response = await request(app.getHttpServer())
         .get('/places')
-        .query({ query: 'test' })
+        .query({ query })
         .expect(200);
 
       expect(response.body).toEqual(serviceResult);
@@ -113,7 +114,8 @@ describe('PlaceController', () => {
       await placeService.addPlace(defaultPlace1);
       await placeService.addPlace(defaultPlace2);
 
-      const serviceResult = await placeService.getPlaces('test', 2, 1);
+      const query = 'test';
+      const serviceResult = await placeService.getPlaces(query, 2, 1);
 
       const response = await request(app.getHttpServer())
         .get('/places')
