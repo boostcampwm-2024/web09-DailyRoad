@@ -59,11 +59,11 @@ fi
 
 # 초기 사용자 및 권한 설정
 echo "Setting up initial users and permissions..."
-docker-compose up setup
+sudo docker-compose up setup
 
 # ELK 스택 시작
 echo "Starting ELK stack..."
-docker-compose up -d
+sudo docker-compose up -d
 
 echo "Waiting for Elasticsearch to be ready..."
 until curl -s -o /dev/null -w "%{http_code}" -u elastic:"${ELASTIC_PASSWORD}" http://localhost:9200 | grep -q "200"; do
@@ -104,6 +104,6 @@ echo "Kibana is ready."
 
 
 # ELK 스택 상태 확인
-docker-compose ps
+sudo docker-compose ps
 
 echo "ELK stack setup completed. Access Kibana at http://localhost:5601 with the default user credentials."
