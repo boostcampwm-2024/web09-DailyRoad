@@ -18,7 +18,8 @@ const DeletePlaceButton = ({ placeId, places }: DeletePlaceButtonProps) => {
   const putPlaceToCourseMutation = usePutPlaceToCourseMutation();
   const addToast = useStore((state) => state.addToast);
 
-  const onClickMapMode = () => {
+  const onClickMapMode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     deletePlaceMutation.mutate(
       { id, placeId },
       {
@@ -39,7 +40,8 @@ const DeletePlaceButton = ({ placeId, places }: DeletePlaceButtonProps) => {
     [places],
   );
 
-  const onClickCourseMode = () => {
+  const onClickCourseMode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     putPlaceToCourseMutation.mutate(
       { id, places: newPlaces },
       {
