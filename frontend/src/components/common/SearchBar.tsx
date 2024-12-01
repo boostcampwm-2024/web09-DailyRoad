@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 interface SearchBarProps {
   onSearch: (value: string) => void;
+  query?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, query }) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     <div className="relative flex h-14 w-[600px] items-center justify-between overflow-hidden rounded-[10.67px] border-[1.33px] border-[#00a3ff] bg-[#f9f9f9] px-4">
       <input
         type="text"
-        placeholder="검색어를 입력해주세요"
+        placeholder={query || '검색어를 입력해주세요'}
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
