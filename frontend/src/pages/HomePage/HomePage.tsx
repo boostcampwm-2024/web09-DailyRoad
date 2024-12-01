@@ -20,12 +20,16 @@ const Homepage = () => {
     }
   };
 
+  const handleSearch = (keyword: string) => {
+    window.location.href = `/search?query=${keyword}`;
+  };
+
   return (
     <>
       <Header />
       <div className={'flex w-full flex-col items-center justify-center'}>
         <div className="mb-4 flex w-[1080px] flex-col items-center justify-center p-4">
-          <SearchBar onSearch={(keyword) => alert(keyword)}></SearchBar>
+          <SearchBar onSearch={handleSearch}></SearchBar>
           <BannerSlider className={'m-10 flex h-[426px] w-full'}></BannerSlider>
           <button
             onClick={onClick}
