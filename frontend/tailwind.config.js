@@ -30,6 +30,7 @@ module.exports = {
       animation: {
         slideInUp: 'slideInUp 0.5s ease-out forwards',
         fadeOut: 'fadeOut 0.5s ease-out forwards',
+        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
     keyframes: {
@@ -40,6 +41,10 @@ module.exports = {
       fadeOut: {
         '0%': { opacity: '1' },
         '100%': { opacity: '0' },
+      },
+      pulse: {
+        '0%, 100%': { opacity: 1 },
+        '50%': { opacity: 0.5 },
       },
     },
   },

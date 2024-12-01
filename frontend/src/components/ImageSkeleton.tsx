@@ -15,7 +15,6 @@ const ImageWithSkeleton = ({
   height,
 }: ImageWithSkeletonProps) => {
   const [loaded, setLoaded] = useState(false);
-  const [showSkeleton, setShowSkeleton] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -23,15 +22,11 @@ const ImageWithSkeleton = ({
     img.src = src;
 
     img.onload = () => {
-      setShowSkeleton(false);
-      setTimeout(() => {
-        setLoaded(true);
-      }, 3000);
+      setLoaded(true);
     };
 
     img.onerror = () => {
       setError(true);
-      setShowSkeleton(false);
     };
   }, [src]);
 
@@ -49,9 +44,15 @@ const ImageWithSkeleton = ({
 
   return (
     <div className="h-20 w-20 flex-shrink-0">
-      {!loaded && <div className="h-full w-full animate-pulse bg-slate-400" />}
+      {!loaded && (
+        <div className="h-full w-full animate-pulse rounded bg-c_button_gray"></div>
+      )}
       {loaded && (
-        <img className="h-full w-full object-cover" src={src} alt={alt} />
+        <img
+          className="h-full w-full rounded object-cover"
+          src={src}
+          alt={alt}
+        />
       )}
     </div>
   );
