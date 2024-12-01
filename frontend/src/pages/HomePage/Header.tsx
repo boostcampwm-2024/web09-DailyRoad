@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import logo from '/logo.svg';
+import logo from '../../assets/logo.svg';
 import LoginButtons from './LoginButtons';
 import { Link } from 'react-router-dom';
 
