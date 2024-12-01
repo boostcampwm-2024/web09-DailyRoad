@@ -13,6 +13,7 @@ import NotFound from '@/pages/NotFound';
 import Loading from '@/pages/MapDetail/Loading';
 
 import { LazyCoursePages, LazyMapPages } from './lazyPages';
+import SearchPage from '@/pages/SearchPage/SearchPage';
 
 const router = createBrowserRouter([
   {
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: 'search',
+        element: <SearchPage />,
       },
       {
         path: 'auth/callback',
