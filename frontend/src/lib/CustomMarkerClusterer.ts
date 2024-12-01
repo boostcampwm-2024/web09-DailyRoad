@@ -1,4 +1,5 @@
 import {
+  ClusterStats,
   Marker,
   MarkerClusterer,
   MarkerClustererEvents,
@@ -17,11 +18,20 @@ export class CustomMarkerClusterer extends MarkerClusterer {
     this.markerLatLngSet = new Set();
   }
 
+  public onAdd(): void {
+    const map = this.getMap();
+    if (!map) return;
+    this.idleListener = map.addListener('idle', () => {
+      this.render();
+    });
+    this.render();
+  }
+
   public addMarker(
     marker: google.maps.marker.AdvancedMarkerElement,
     noDraw?: boolean,
   ): void {
-    const markerLatLng = `${marker.position?.lat}${marker.position?.lng}`;
+    const markerLatLng = `${marker.position?.lat} ${marker.position?.lng}`;
     if (this.markerLatLngSet.has(markerLatLng)) {
       return;
     }
@@ -32,6 +42,29 @@ export class CustomMarkerClusterer extends MarkerClusterer {
     if (!noDraw) {
       this.render();
     }
+  }
+
+  public removeMarker(
+    marker: google.maps.marker.AdvancedMarkerElement,
+    noDraw?: boolean,
+  ): boolean {
+    const index = this.markers.indexOf(marker);
+    if (index === -1) {
+      // Marker is not in our list of markers, so do nothing:
+      return false;
+    }
+
+    const markerLatLng = `${marker.position?.lat} ${marker.position?.lng}`;
+    this.markerLatLngSet.delete(markerLatLng);
+
+    MarkerUtils.setMap(marker, null);
+    this.markers.splice(index, 1); // Remove the marker from the list of managed markers
+
+    if (!noDraw) {
+      this.render();
+    }
+
+    return true;
   }
 
   public render(): void {
@@ -47,7 +80,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
         map,
         mapCanvasProjection: this.getProjection(),
       });
-
+      console.log(changed, 'changed');
       // Allow algorithms to return flag on whether the clusters/markers have changed.
       if (changed || changed === undefined) {
         // Accumulate the markers of the clusters composed of a single marker.
@@ -71,7 +104,6 @@ export class CustomMarkerClusterer extends MarkerClusterer {
               // The marker:
               // - was previously rendered because it is from a cluster with 1 marker,
               // - should no more be rendered as it is not in singleMarker.
-              console.log('cluster.marker removed', cluster.marker);
               MarkerUtils.setMap(cluster.marker!, null);
             }
           } else {
@@ -83,7 +115,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
         this.clusters = clusters;
         this.renderClusters();
         // Delayed removal of the markers of the former groups.
-        console.log('groupMarkers', groupMarkers);
+
         setTimeout(() => {
           groupMarkers.forEach((marker) => {
             MarkerUtils.setMap(marker, null);
@@ -96,6 +128,39 @@ export class CustomMarkerClusterer extends MarkerClusterer {
         this,
       );
     }
+  }
+
+  protected renderClusters(): void {
+    // Generate stats to pass to renderers.
+    const stats = new ClusterStats(this.markers, this.clusters);
+
+    const map = this.getMap() as google.maps.Map;
+
+    this.clusters.forEach((cluster) => {
+      if (cluster.markers?.length === 1) {
+        cluster.marker = cluster.markers[0];
+      } else {
+        // Generate the marker to represent the group.
+        cluster.marker = this.renderer.render(cluster, stats, map);
+        // Make sure all individual markers are removed from the map.
+        cluster.markers?.forEach((marker) => MarkerUtils.setMap(marker, null));
+        if (this.onClusterClick) {
+          cluster.marker.addListener(
+            'click',
+            /* istanbul ignore next */
+            (event: google.maps.MapMouseEvent) => {
+              google.maps.event.trigger(
+                this,
+                MarkerClustererEvents.CLUSTER_CLICK,
+                cluster,
+              );
+              this.onClusterClick(event, cluster, map);
+            },
+          );
+        }
+      }
+      MarkerUtils.setMap(cluster.marker, map);
+    });
   }
 }
 
