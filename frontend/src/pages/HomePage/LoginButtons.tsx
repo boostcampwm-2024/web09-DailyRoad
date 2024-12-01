@@ -45,19 +45,20 @@ const LoginButtons = () => {
   }, [isLogged, data]);
 
   return (
-    <div className="flex justify-between gap-1">
+    <>
       {!isLogged ? (
-        <button className="" onClick={handleLogin}>
-          구글 로그인
-        </button>
-      ) : user ? (
-        <>
-          <UserProfile user={user} />
-          <LogOutButton />
-        </>
-      ) : null}
-    </div>
+        <div className="flex justify-between gap-5">
+          <button onClick={handleLogin}>구글 로그인</button>
+        </div>
+      ) : (
+        user && (
+          <div className="flex justify-between gap-5">
+            <UserProfile user={user} />
+            <LogOutButton />
+          </div>
+        )
+      )}
+    </>
   );
 };
-
 export default LoginButtons;
