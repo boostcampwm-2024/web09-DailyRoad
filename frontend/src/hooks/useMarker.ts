@@ -61,11 +61,10 @@ export const useMarker = (props: MarkerProps) => {
     newMarker.map = map;
     setMarker(newMarker);
     addMarker(newMarker);
-    console.log(newMarker, 'add new marker');
 
     return () => {
-      newMarker.map = null;
       setMarker(null);
+      google.maps.event.clearInstanceListeners(newMarker);
       removeMarker(newMarker);
     };
   }, [map, order]);
@@ -90,14 +89,10 @@ export const useMarker = (props: MarkerProps) => {
       infoWindow.open({ anchor: marker, map });
       moveTo(position?.lat as number, position?.lng as number);
     });
+
     google.maps.event.addListener(map, 'click', () => {
       infoWindow.close();
     });
-
-    return () => {
-      google.maps.event.clearInstanceListeners(marker);
-      google.maps.event.clearInstanceListeners(map);
-    };
   }, [marker, onClick]);
   return marker;
 };
