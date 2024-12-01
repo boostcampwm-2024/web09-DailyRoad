@@ -11,7 +11,7 @@ interface BannerSliderProps {
 
 const BannerSlider: React.FC<BannerSliderProps> = ({
   className,
-  interval = 5000,
+  interval = 3000,
 }) => {
   const [banners, setBanners] = useState<Banner[]>([]);
 
@@ -37,7 +37,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
     <div className={className}>
       <Slider {...settings} className={'h-full w-full'}>
         {banners.map((banner, index) => (
-          <div key={index}>
+          <div key={index} className={'cursor-pointer'}>
             <img
               src={banner.imageUrl}
               alt={`Banner ${index}`}
