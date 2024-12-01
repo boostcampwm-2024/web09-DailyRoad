@@ -30,10 +30,11 @@ export const createMap = async (baseMapData: Omit<BaseMap, 'mode'>) => {
   return data.id;
 };
 
-export const getMapList = async (pageParam: number) => {
+export const getMapList = async (pageParam: number, query?: string) => {
   const { data } = await axiosInstance.get<MapList>(END_POINTS.MAPS, {
     params: {
       page: pageParam,
+      query,
     },
     useAuth: false,
   });

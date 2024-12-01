@@ -1,10 +1,9 @@
 import Footer from '@/pages/HomePage/Footer';
 import Header from '@/pages/HomePage/Header';
-
-import MainListPanel from '../HomePage/MainListPanel';
 import SearchBar from '@/components/common/SearchBar';
 import { useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
+import SearchListPanel from '@/pages/SearchPage/SearchListPanel';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -22,7 +21,7 @@ const SearchPage = () => {
         <div className="mb-4 flex w-[1080px] flex-col items-center justify-center p-4">
           <SearchBar onSearch={handleSearch} query={searchKeyword}></SearchBar>
         </div>
-        <MainListPanel />
+        <SearchListPanel query={query} />
       </div>
       <Footer />
     </>

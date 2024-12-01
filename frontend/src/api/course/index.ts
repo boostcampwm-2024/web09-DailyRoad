@@ -33,10 +33,11 @@ export const getCourse = async (courseId: number) => {
   return data;
 };
 
-export const getCourseList = async (pageParam: number) => {
+export const getCourseList = async (pageParam: number, query?: string) => {
   const { data } = await axiosInstance.get<CourseList>(END_POINTS.COURSES, {
     params: {
       page: pageParam,
+      query,
     },
     useAuth: false,
   });
