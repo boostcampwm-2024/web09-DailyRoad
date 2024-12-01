@@ -84,8 +84,8 @@ const PlaceListPanel = ({
               {places.map((place, index) => (
                 <Draggable
                   isDragDisabled={!isDraggable}
-                  key={place.google_place_id.toString()}
-                  draggableId={place.id.toString()}
+                  key={place.id?.toString()}
+                  draggableId={place.id?.toString()}
                   index={index}
                 >
                   {(provided, snapshot) => (
