@@ -10,15 +10,17 @@ import {
   clustererOptions,
   CustomMarkerClusterer,
 } from '@/lib/CustomMarkerClusterer';
+import { CustomSuperClusterAlgorithm } from '@/lib/CustomSuperCluseterAlgorithm';
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
   markerClusterer: MarkerClusterer | null;
-  markers: google.maps.marker.AdvancedMarkerElement[];
+
   setGoogleMap: (map: google.maps.Map) => void;
   initializeMap: (container: HTMLElement) => void;
   moveTo: (lat: number, lng: number) => void;
   addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => void;
+
   removeMarker: (marker: google.maps.marker.AdvancedMarkerElement) => void;
 };
 
@@ -30,16 +32,18 @@ export const createGoogleMapSlice: StateCreator<
 > = (set, get) => ({
   googleMap: null,
   markerClusterer: null,
-  markers: [],
   setGoogleMap: (map: google.maps.Map) => set({ googleMap: map }),
 
   initializeMap: async (container: HTMLElement) => {
     await loadGoogleMapsApi();
     const GoogleMap = getGoogleMapClass();
     const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
+
+    const { algorithm, ...restClustererOptions } = clustererOptions;
     const markerClusterer = new CustomMarkerClusterer({
       map,
-      ...clustererOptions,
+      algorithm: new CustomSuperClusterAlgorithm({ maxZoom: 18 }),
+      ...restClustererOptions,
     });
 
     set({ googleMap: map, markerClusterer });
@@ -54,14 +58,12 @@ export const createGoogleMapSlice: StateCreator<
   },
 
   addMarker: (marker: google.maps.marker.AdvancedMarkerElement) => {
-    const { markerClusterer, markers } = get();
+    const { markerClusterer } = get();
     markerClusterer?.addMarker(marker);
-    set({ markers: [...markers, marker] });
   },
 
   removeMarker: (marker: google.maps.marker.AdvancedMarkerElement) => {
-    const { markerClusterer, markers } = get();
+    const { markerClusterer } = get();
     markerClusterer?.removeMarker(marker);
-    set({ markers: markers.filter((m) => m !== marker) });
   },
 });
