@@ -6,10 +6,15 @@ import { CourseList, MapItemType } from '@/types';
 
 import CourseItem from './CourseItem';
 
-const CourseListPanel = () => {
+interface CourseListPanelProps {
+  query?: string;
+}
+
+const CourseListPanel: React.FC<CourseListPanelProps> = ({ query }) => {
   const infiniteScrollConfig = {
     queryKey: ['courseList'],
-    queryFn: ({ pageParam }: { pageParam: number }) => getCourseList(pageParam),
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      getCourseList(pageParam, query),
     getNextPageParam: (lastPage: CourseList) => {
       return lastPage.currentPage < lastPage.totalPages
         ? lastPage.currentPage + 1

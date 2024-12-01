@@ -7,11 +7,15 @@ import { MapItemType, MapList } from '@/types';
 import MapItem from '@/components/Map/MapItem';
 import Box from '../common/Box';
 
-const MapListPanel = () => {
+interface MapListPanelProps {
+  query?: string;
+}
+
+const MapListPanel: React.FC<MapListPanelProps> = ({ query }) => {
   const { data, isFetchingNextPage, hasNextPage, ref } =
     useInfiniteScroll<MapList>({
       queryKey: ['mapList'],
-      queryFn: ({ pageParam }) => getMapList(pageParam),
+      queryFn: ({ pageParam }) => getMapList(pageParam, query),
       getNextPageParam: (lastPage) => {
         return lastPage.currentPage < lastPage.totalPages
           ? lastPage.currentPage + 1
