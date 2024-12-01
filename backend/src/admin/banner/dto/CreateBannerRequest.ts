@@ -1,4 +1,4 @@
-import { IsUrl, IsDate } from 'class-validator';
+import { IsUrl, IsDateString } from 'class-validator';
 
 export class CreateBannerRequest {
   @IsUrl()
@@ -7,9 +7,9 @@ export class CreateBannerRequest {
   @IsUrl()
   redirectUrl: string;
 
-  @IsDate()
+  @IsDateString()
   startedAt: Date;
 
-  @IsDate()
+  @IsDateString()
   endedAt: Date;
 }

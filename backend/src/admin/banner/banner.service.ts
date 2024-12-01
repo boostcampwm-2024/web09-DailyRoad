@@ -14,7 +14,7 @@ export class AdminBannerService {
   }
 
   async createBanner(createBannerRequest: CreateBannerRequest) {
-    return this.bannerRepository.create(createBannerRequest);
+    return this.bannerRepository.save(createBannerRequest);
   }
 
   async updateBannerPeriod(
