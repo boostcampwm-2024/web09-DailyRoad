@@ -1,9 +1,9 @@
-import { IsDate } from 'class-validator';
+import { IsDateString } from 'class-validator';
 
 export class UpdateBannerPeriodRequest {
-  @IsDate()
+  @IsDateString()
   startedAt: Date;
 
-  @IsDate()
+  @IsDateString()
   endedAt: Date;
 }
