@@ -18,9 +18,7 @@ export class PlaceCreateRequestFixture {
     photoReference: 'photoReference',
   };
 
-  static create(
-    customValues: Partial<AddPlaceRequest> = {},
-  ): AddPlaceRequest {
+  static create(customValues: Partial<AddPlaceRequest> = {}): AddPlaceRequest {
     const request = new AddPlaceRequest();
     const mergedValues = { ...this.default, ...customValues };
 
