@@ -48,7 +48,11 @@ const LoginButtons = () => {
     <>
       {!isLogged ? (
         <div className="flex justify-between gap-5">
-          <button onClick={handleLogin}>구글 로그인</button>
+          <button
+            className="bg-c_bg_blue text-white rounded-md p-2 px-4 h-12 w-36"
+            onClick={handleLogin}>
+            구글 로그인
+          </button>
         </div>
       ) : (
         user && (

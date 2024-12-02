@@ -6,7 +6,8 @@ type UserProfileProps = {
 
 const UserProfile = ({ user }: UserProfileProps) => {
   return (
-    <div className="flex items-center justify-between gap-2 rounded-lg border-[1px] border-c_button_gray p-2">
+    <div
+      className="flex items-center justify-between gap-4 rounded-lg border-[1px] border-c_button_gray p-2 px-4 h-12 w-36">
       <img
         alt={`${user.nickname}님의 프로필 사진`}
         className="h-8 w-8 rounded-full"
