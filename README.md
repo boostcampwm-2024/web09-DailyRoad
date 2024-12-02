@@ -1,7 +1,5 @@
 <div align='center'>
-    <img src="https://github.com/user-attachments/assets/b30a96fe-c822-499d-942c-88e7ece72fb3" width=600 alt="오늘의 길">
-<h3> 나만의 길을 따라 일상을 공유하다 🗺️ </h3>
-
+    <img src="https://github.com/user-attachments/assets/d1b124e0-682c-4665-a418-600e97d15a35" width=1000 alt="오늘의 길">
 </div>
 
 ---
