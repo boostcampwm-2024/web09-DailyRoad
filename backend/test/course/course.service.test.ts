@@ -375,7 +375,7 @@ describe('CourseService', () => {
         ),
       );
       const setPlacesOfCourseRequest = {
-        places: places.map((place, index) => ({
+        pins: places.map((place, index) => ({
           placeId: place.id,
           comment: `Comment ${index + 1}`,
         })),
@@ -386,11 +386,9 @@ describe('CourseService', () => {
         setPlacesOfCourseRequest,
       );
 
-      expect(result.places).toHaveLength(
-        setPlacesOfCourseRequest.places.length,
-      );
+      expect(result.places).toHaveLength(setPlacesOfCourseRequest.pins.length);
 
-      setPlacesOfCourseRequest.places.forEach((expectedPlace, index) => {
+      setPlacesOfCourseRequest.pins.forEach((expectedPlace, index) => {
         expect(result.places[index]).toMatchObject({
           id: expectedPlace.placeId,
           comment: expectedPlace.comment,

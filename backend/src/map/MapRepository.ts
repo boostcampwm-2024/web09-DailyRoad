@@ -45,7 +45,7 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
 
   async findMapsWithPlace(page: number, pageSize: number) {
     return await this.createQueryBuilder('map')
-      .leftJoinAndSelect('map.mapPlaces', 'mapPlace')
+      .leftJoinAndSelect('map.pins', 'mapPlace')
       .leftJoinAndSelect('map.user', 'user')
       .where('map.isPublic = :isPublic', { isPublic: true })
       .andWhere('mapPlace.id IS NOT NULL')
@@ -57,7 +57,7 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
 
   async countMapsWithPlace() {
     return await this.createQueryBuilder('map')
-      .leftJoinAndSelect('map.mapPlaces', 'mapPlace')
+      .leftJoinAndSelect('map.pins', 'mapPlace')
       .where('map.isPublic = :isPublic', { isPublic: true })
       .andWhere('mapPlace.id IS NOT NULL')
       .getCount();

@@ -171,7 +171,7 @@ describe('MapRepository', () => {
       const expectedMaps = mapEntities.slice(5, 10).map((map) => {
         return {
           ...map,
-          mapPlaces: map.pins.map((place) => {
+          pins: map.pins.map((place) => {
             return {
               color: place.color,
               createdAt: place.createdAt,

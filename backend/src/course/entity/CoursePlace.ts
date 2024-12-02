@@ -15,7 +15,7 @@ export class CoursePlace extends BaseEntity {
   @JoinColumn({ name: 'place_id' })
   place: Promise<Place>;
 
-  @ManyToOne(() => Course, {
+  @ManyToOne(() => Course, (course) => course.pins, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })
