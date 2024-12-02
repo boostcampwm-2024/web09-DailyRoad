@@ -57,7 +57,7 @@ describe('MapService 테스트', () => {
     mapRepository = new MapRepository(dataSource);
     placeRepository = new PlaceRepository(dataSource);
     userRepository = new UserRepository(dataSource);
-    mapService = new MapService(mapRepository, userRepository, placeRepository);
+    mapService = new MapService(mapRepository, placeRepository);
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [await ConfigModule.forRoot()],
@@ -83,9 +83,8 @@ describe('MapService 테스트', () => {
           provide: MapService,
           useFactory: (
             mapRepository: MapRepository,
-            userRepository: UserRepository,
             placeRepository: PlaceRepository,
-          ) => new MapService(mapRepository, userRepository, placeRepository),
+          ) => new MapService(mapRepository, placeRepository),
           inject: [MapRepository, UserRepository, PlaceRepository],
         },
         JWTHelper,
@@ -277,7 +276,7 @@ describe('MapService 테스트', () => {
       ).rejects.toThrow(MapNotFoundException);
     });
 
-    it('visibility를 업데이트 하려는 지도가 있을 경우 업데이트를 진행한다.', async () => {
+    it('visibility 를 업데이트 하려는 지도가 있을 경우 업데이트를 진행한다.', async () => {
       const privateMap = createPrivateMaps(1, fakeUser1)[0];
       await mapRepository.save(privateMap);
 
