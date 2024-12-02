@@ -102,7 +102,7 @@ export class CourseController {
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseVisibility(
     @Param('id') id: number,
-    @Body('isPublic')
+    @Body()
     updateCourseVisibilityRequest: UpdateCourseVisibilityRequest,
   ) {
     await this.courseService.updateVisibility(

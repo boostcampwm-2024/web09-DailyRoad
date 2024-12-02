@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsString,
   Validate,
-  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsNotConsecutiveDuplicatePlace } from '@src/course/pipes/IsNotConsecutiveDuplicatePlace';
@@ -19,9 +18,8 @@ export class UpdatePinsOfCourseRequestItem {
 }
 
 export class UpdatePinsOfCourseRequest {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdatePinsOfCourseRequestItem)
   @Validate(IsNotConsecutiveDuplicatePlace)
+  @Type(() => UpdatePinsOfCourseRequestItem)
+  @IsArray()
   pins: UpdatePinsOfCourseRequestItem[];
 }
