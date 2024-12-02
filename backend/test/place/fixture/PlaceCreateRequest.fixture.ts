@@ -1,5 +1,5 @@
 import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
-import { Category } from '@src/place/place.category.enum';
+import { Category } from '@src/place/enum/Category';
 
 export class PlaceCreateRequestFixture {
   static default = {

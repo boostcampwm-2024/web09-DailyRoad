@@ -1,4 +1,4 @@
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -6,7 +6,7 @@ import {
   IsUrl,
   IsOptional,
 } from 'class-validator';
-import { Course } from '../entity/course.entity';
+import { Course } from '../entity/Course';
 import { ReplaceEmptyWith } from '@src/common/decorator/ReplaceEmptyWith';
 import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 

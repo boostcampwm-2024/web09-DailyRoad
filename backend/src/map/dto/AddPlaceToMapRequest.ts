@@ -1,5 +1,5 @@
 import { IsNumber, IsString, IsEnum } from 'class-validator';
-import { Color } from '../../place/place.color.enum';
+import { Color } from '../../place/enum/Color';
 
 export class AddPlaceToMapRequest {
   @IsNumber()

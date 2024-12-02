@@ -1,5 +1,5 @@
 import { MapFixtureType } from './map.fixture.type';
-import { Map } from '@src/map/entity/map.entity';
+import { Map } from '@src/map/entity/Map';
 
 export class MapFixture {
   static createMap = ({

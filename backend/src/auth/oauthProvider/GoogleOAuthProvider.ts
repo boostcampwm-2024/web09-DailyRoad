@@ -1,11 +1,11 @@
 import { OAuthProvider } from './OAuthProvider';
-import { addBearerToken } from '../utils';
+import { addBearerToken } from '../util';
 import { AuthenticationException } from '../exception/AuthenticationException';
 import {
   isGoogleTokenResponse,
   isGoogleUserResponse,
   OAuthUserInfo,
-} from '../auth.type';
+} from '../type';
 import { ConfigService } from '@nestjs/config';
 import { OAuthProviders } from './OAuthProviders';
 

@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { Color } from '@src/place/place.color.enum';
+import { Color } from '@src/place/enum/Color';
 
 export class UpdatePlaceInMapRequest {
   @IsOptional()

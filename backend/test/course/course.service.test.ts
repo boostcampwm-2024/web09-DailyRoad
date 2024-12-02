@@ -1,11 +1,11 @@
-import { CourseRepository } from '@src/course/course.repository';
-import { CourseService } from '@src/course/course.service';
+import { CourseRepository } from '@src/course/CourseRepository';
+import { CourseService } from '@src/course/CourseService';
 import { CourseFixture } from '@test/course/fixture/course.fixture';
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 import { CourseListResponse } from '@src/course/dto/CourseListResponse';
 import { PagedCourseResponse } from '@src/course/dto/PagedCourseResponse';
-import { PlaceRepository } from '@src/place/place.repository';
-import { Course } from '@src/course/entity/course.entity';
+import { PlaceRepository } from '@src/place/PlaceRepository';
+import { Course } from '@src/course/entity/Course';
 import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundException';
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
@@ -17,7 +17,7 @@ import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlac
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { initDataSource } from '@test/config/datasource.config';
-import { CoursePlace } from '@src/course/entity/course-place.entity';
+import { CoursePlace } from '@src/course/entity/CoursePlace';
 import { DataSource, Repository } from 'typeorm';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { PlaceFixture } from '@test/place/fixture/place.fixture';

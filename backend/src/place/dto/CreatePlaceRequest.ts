@@ -9,8 +9,8 @@ import {
   IsOptional,
   IsEnum,
 } from 'class-validator';
-import { Place } from '@src/place/entity/place.entity';
-import { Category } from '@src/place/place.category.enum';
+import { Place } from '@src/place/entity/PlaceEntity';
+import { Category } from '@src/place/enum/Category';
 
 export class CreatePlaceRequest {
   @IsString()

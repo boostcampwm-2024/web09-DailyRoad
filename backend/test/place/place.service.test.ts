@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PlaceService } from '@src/place/place.service';
+import { PlaceService } from '@src/place/PlaceService';
 import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
 import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundException';
-import { PlaceRepository } from '@src/place/place.repository';
+import { PlaceRepository } from '@src/place/PlaceRepository';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { initDataSource } from '@test/config/datasource.config';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
-import { SearchService } from '@src/search/search.service';
+import { SearchService } from '@src/search/SearchService';
 import { LoggerModule, PinoLogger } from 'nestjs-pino';
 import { truncateTables } from '@test/config/utils';
 

@@ -1,4 +1,4 @@
-import { Map } from '../entity/map.entity';
+import { Map } from '../entity/Map';
 import { UserIconResponse } from '../../user/dto/UserIconResponse';
 import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
 import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';

@@ -1,5 +1,5 @@
-import { User } from '../../user/entity/user.entity';
-import { Map } from '../entity/map.entity';
+import { User } from '../../user/entity/User';
+import { Map } from '../entity/Map';
 import {
   IsString,
   IsNotEmpty,
