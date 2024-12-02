@@ -1,7 +1,7 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Color } from '@src/place/enum/Color';
 
-export class UpdatePinInMapRequest {
+export class UpdatePinInfoInMapRequest {
   @IsOptional()
   @IsEnum(Color)
   color?: Color;

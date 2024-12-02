@@ -66,7 +66,7 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
     return this.update(id, { title, description, thumbnailUrl });
   }
 
-  async updateCoursePlaceById(course: Course) {
+  async updatePins(course: Course) {
     await this.coursePlaceRepository
       .createQueryBuilder()
       .delete()
@@ -77,7 +77,7 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
       .createQueryBuilder()
       .insert()
       .into(CoursePlace)
-      .values(course.coursePlaces)
+      .values(course.pins)
       .orUpdate(['order'], ['course_id', 'place_id'])
       .execute();
   }

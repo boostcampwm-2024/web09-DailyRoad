@@ -15,7 +15,7 @@ import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
 import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
-import { UpdatePinInMapRequest } from '@src/map/dto/UpdatePinInMapRequest';
+import { UpdatePinInfoInMapRequest } from '@src/map/dto/UpdatePinInfoInMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
@@ -60,26 +60,26 @@ export class MapController {
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Post('/:id/places')
-  async addPlaceToMap(
+  async addPinToMap(
     @Param('id') id: number,
     @Body() addPinToMapRequest: AddPinToMapRequest,
   ) {
-    return await this.mapService.addPlace(id, addPinToMapRequest);
+    return await this.mapService.addPin(id, addPinToMapRequest);
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Put('/:id/places/:placeId')
-  async updatePinInMap(
+  async updatePinInfoInMap(
     @Param('id') id: number,
     @Param('placeId') placeId: number,
-    @Body() updatePinInMapRequest: UpdatePinInMapRequest,
+    @Body() updatePinInfoInMapRequest: UpdatePinInfoInMapRequest,
   ) {
-    if (updatePinInMapRequest.isEmpty()) {
+    if (updatePinInfoInMapRequest.isEmpty()) {
       throw new EmptyRequestException();
     }
 
-    await this.mapService.updatePin(id, placeId, updatePinInMapRequest);
-    return { mapId: id, placeId, ...updatePinInMapRequest };
+    await this.mapService.updatePin(id, placeId, updatePinInfoInMapRequest);
+    return { mapId: id, placeId, ...updatePinInfoInMapRequest };
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)

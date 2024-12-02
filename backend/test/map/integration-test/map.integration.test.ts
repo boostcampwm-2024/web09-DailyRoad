@@ -170,8 +170,8 @@ describe('MapController 통합 테스트', () => {
       const publicMapsWithPlace = createPublicMaps(3, fakeUser1);
       const privateMaps = createPrivateMaps(5, fakeUser1);
       publicMapsWithPlace.forEach((publicMapWithPlace) => {
-        publicMapWithPlace.mapPlaces = [];
-        publicMapWithPlace.mapPlaces.push(
+        publicMapWithPlace.pins = [];
+        publicMapWithPlace.pins.push(
           MapPlace.of(1, publicMapWithPlace, Color.RED, 'test'),
         );
       });
@@ -215,13 +215,13 @@ describe('MapController 통합 테스트', () => {
       );
       const privateMaps = createPrivateMaps(5, fakeUser1);
       publicMapsWithCoolTitleAndPlace.forEach((publicMapWithPlace) => {
-        publicMapWithPlace.mapPlaces = [];
-        publicMapWithPlace.mapPlaces.push(
+        publicMapWithPlace.pins = [];
+        publicMapWithPlace.pins.push(
           MapPlace.of(1, publicMapWithPlace, Color.RED, 'test'),
         );
       });
       publicMapsWithCoolTitle.forEach((publicMap) => {
-        publicMap.mapPlaces = [];
+        publicMap.pins = [];
       });
       const publicMaps = [
         ...publicMapsWithCoolTitle,
@@ -457,7 +457,7 @@ describe('MapController 통합 테스트', () => {
         color: 'BLUE',
       } as AddPinToMapRequest;
 
-      await mapService.addPlace(1, testPlace);
+      await mapService.addPin(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
@@ -556,7 +556,7 @@ describe('MapController 통합 테스트', () => {
         color: 'BLUE',
       } as AddPinToMapRequest;
 
-      await mapService.addPlace(1, testPlace);
+      await mapService.addPin(1, testPlace);
 
       return request(app.getHttpServer())
         .post('/maps/1/places')
@@ -635,7 +635,7 @@ describe('MapController 통합 테스트', () => {
         color: 'BLUE',
       } as AddPinToMapRequest;
 
-      await mapService.addPlace(1, testPlace);
+      await mapService.addPin(1, testPlace);
 
       payload = {
         userId: fakeUserOneInfo.id,
@@ -693,7 +693,7 @@ describe('MapController 통합 테스트', () => {
             }),
           );
           const map = await mapRepository.findById(1);
-          expect(map.mapPlaces.length).toBe(0);
+          expect(map.pins.length).toBe(0);
         });
     });
   });
@@ -712,7 +712,7 @@ describe('MapController 통합 테스트', () => {
         color: 'BLUE',
       } as AddPinToMapRequest;
 
-      await mapService.addPlace(1, testPlace);
+      await mapService.addPin(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
@@ -854,7 +854,7 @@ describe('MapController 통합 테스트', () => {
         color: 'BLUE',
       } as AddPinToMapRequest;
 
-      await mapService.addPlace(1, testPlace);
+      await mapService.addPin(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
