@@ -31,6 +31,8 @@ import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 import { truncateTables } from '@test/config/utils';
 import { MapPlace } from '@src/map/entity/MapPlace';
+import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
+import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 
 describe('MapService 테스트', () => {
   let app: INestApplication;
@@ -126,7 +128,7 @@ describe('MapService 테스트', () => {
         savedMaps.map((savedMap) => MapListResponse.from(savedMap)),
       );
 
-      const result = await mapService.searchMap(searchTitle, 1, 10);
+      const result = await mapService.searchMaps(searchTitle, 1, 10);
 
       expect(result.maps).toEqual(
         expect.arrayContaining(
@@ -178,7 +180,7 @@ describe('MapService 테스트', () => {
         fakeUserMaps.map((fakeUserMap) => MapListResponse.from(fakeUserMap)),
       );
 
-      const result = await mapService.getOwnMaps(fakeUser1.id);
+      const result = await mapService.getMyMaps(fakeUser1.id);
 
       expect(result.maps).toEqual(
         expect.arrayContaining(
@@ -190,9 +192,7 @@ describe('MapService 테스트', () => {
 
   describe('getMapById 메소드 테스트', () => {
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 없을 때 MapNotFoundException 예외를 발생시킨다.', async () => {
-      await expect(mapService.getMapById(1)).rejects.toThrow(
-        MapNotFoundException,
-      );
+      await expect(mapService.getMap(1)).rejects.toThrow(MapNotFoundException);
     });
 
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 있으면 결과를 반환한다.', async () => {
@@ -201,7 +201,7 @@ describe('MapService 테스트', () => {
       publicMapEntity.mapPlaces = [];
       const expectedMap = await MapDetailResponse.from(publicMapEntity);
 
-      const result = await mapService.getMapById(publicMapEntity.id);
+      const result = await mapService.getMap(publicMapEntity.id);
 
       expect(result).toEqual(expectedMap);
     });
@@ -248,7 +248,7 @@ describe('MapService 테스트', () => {
       updateInfo.title = 'update test title';
       updateInfo.description = 'update test description';
 
-      await expect(mapService.updateMapInfo(1, updateInfo)).rejects.toThrow(
+      await expect(mapService.updateInfo(1, updateInfo)).rejects.toThrow(
         MapNotFoundException,
       );
     });
@@ -260,7 +260,7 @@ describe('MapService 테스트', () => {
       updateInfo.title = 'update test title';
       updateInfo.description = 'update test description';
 
-      await mapService.updateMapInfo(1, updateInfo);
+      await mapService.updateInfo(1, updateInfo);
 
       const publicMapEntity = await mapRepository.findById(1);
       expect(publicMapEntity.title).toEqual(updateInfo.title);
@@ -270,16 +270,20 @@ describe('MapService 테스트', () => {
 
   describe('updateMapVisibility 메소드 테스트', () => {
     it('visibility 를 업데이트 하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
-      await expect(mapService.updateMapVisibility(1, true)).rejects.toThrow(
-        MapNotFoundException,
-      );
+      await expect(
+        mapService.updateMapVisibility(1, {
+          isPublic: true,
+        } as UpdateMapVisibilityRequest),
+      ).rejects.toThrow(MapNotFoundException);
     });
 
     it('visibility를 업데이트 하려는 지도가 있을 경우 업데이트를 진행한다.', async () => {
       const privateMap = createPrivateMaps(1, fakeUser1)[0];
       await mapRepository.save(privateMap);
 
-      await mapService.updateMapVisibility(1, true);
+      await mapService.updateMapVisibility(1, {
+        isPublic: true,
+      } as UpdateMapVisibilityRequest);
 
       const privateMapEntity = await mapRepository.findById(1);
       expect(privateMapEntity.isPublic).toEqual(true);
@@ -288,18 +292,21 @@ describe('MapService 테스트', () => {
 
   describe('addPlace 메소드 테스트', () => {
     it('장소를 추가하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
-      await expect(
-        mapService.addPlace(1, 2, 'BLUE' as Color, 'test'),
-      ).rejects.toThrow(MapNotFoundException);
+      const pinInfo = new AddPinToMapRequest(2, 'test', Color.BLUE);
+
+      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+        MapNotFoundException,
+      );
     });
 
     it('추가하려는 장소가 없을 경우 InvalidPlaceToMapException 를 발생시킨다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
+      const pinInfo = new AddPinToMapRequest(777777, 'test', Color.BLUE);
 
-      await expect(
-        mapService.addPlace(1, 777777, Color.RED, 'test'),
-      ).rejects.toThrow(InvalidPlaceToMapException);
+      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+        InvalidPlaceToMapException,
+      );
     });
 
     it('추가하려는 장소가 이미 해당 지도에 있을경우 DuplicatePlaceToMapException 에러를 발생시킨다', async () => {
@@ -312,35 +319,32 @@ describe('MapService 테스트', () => {
       publicMapEntity.addPlace(alreadyAddPlace.id, Color.RED, 'test');
       await mapRepository.save(publicMapEntity);
 
-      await expect(
-        mapService.addPlace(1, 1, Color.RED, 'test'),
-      ).rejects.toThrow(DuplicatePlaceToMapException);
+      const pinInfo = new AddPinToMapRequest(
+        alreadyAddPlace.id,
+        'test',
+        Color.BLUE,
+      );
+
+      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+        DuplicatePlaceToMapException,
+      );
     });
 
     it('장소를 추가하려는 지도가 있을 경우 장소를 추가하고 장소 정보를 다시 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const savedMap = await mapRepository.save(publicMap);
       const addPlace = await placeRepository.findById(savedMap.id);
-      const expectedResult = {
-        placeId: addPlace.id,
-        comment: 'test',
-        color: Color.RED,
-      };
+      const pinInfo = new AddPinToMapRequest(addPlace.id, 'test', Color.RED);
 
-      const result = await mapService.addPlace(
-        1,
-        expectedResult.placeId,
-        expectedResult.color,
-        expectedResult.comment,
-      );
+      const result = await mapService.addPlace(1, pinInfo);
 
-      expect(result).toEqual(expect.objectContaining(expectedResult));
+      expect(result).toEqual(expect.objectContaining(pinInfo));
     });
   });
 
   describe('deletePlace 메소드 테스트', () => {
     it('장소를 제거하려는 지도가 없을 경우 MapNotFoundException 에러를 발생시킨다.', async () => {
-      await expect(mapService.deletePlace(1, 1)).rejects.toThrow(
+      await expect(mapService.deletePin(1, 1)).rejects.toThrow(
         MapNotFoundException,
       );
     });
@@ -350,7 +354,7 @@ describe('MapService 테스트', () => {
       await mapRepository.save(publicMap);
       const expectResult = { deletedId: 1 };
 
-      const result = await mapService.deletePlace(1, 1);
+      const result = await mapService.deletePin(1, 1);
 
       expect(result).toEqual(expectResult);
     });

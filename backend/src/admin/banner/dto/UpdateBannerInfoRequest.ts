@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 
-export class UpdateBannerDetailsRequest {
+export class UpdateBannerInfoRequest {
   @IsUrl()
   imageUrl: string;
 

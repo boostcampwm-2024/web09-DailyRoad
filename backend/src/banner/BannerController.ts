@@ -6,7 +6,7 @@ export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
 
   @Get()
-  async getActiveBannerList() {
-    return await this.bannerService.getActiveBannerList();
+  async getBanners() {
+    return await this.bannerService.getActiveBanners();
   }
 }

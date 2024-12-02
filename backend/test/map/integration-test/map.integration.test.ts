@@ -30,6 +30,7 @@ import {
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { MapPlace } from '@src/map/entity/MapPlace';
+import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;
@@ -445,24 +446,18 @@ describe('MapController 통합 테스트', () => {
 
   describe('addPlaceToMap 메소드 테스트', () => {
     let publicMap: Map;
-    let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
 
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
-      testPlace = {
+      const testPlace = {
         placeId: 5,
         comment: 'Beautiful park with a lake',
         color: 'BLUE',
-      };
+      } as AddPinToMapRequest;
 
-      await mapService.addPlace(
-        1,
-        1,
-        testPlace.color as Color,
-        testPlace.comment,
-      );
+      await mapService.addPlace(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
@@ -472,7 +467,8 @@ describe('MapController 통합 테스트', () => {
     });
 
     afterEach(async () => {
-      await mapRepository.query(`ALTER TABLE MAP AUTO_INCREMENT=1;`);
+      await mapRepository.query(`ALTER TABLE MAP
+          AUTO_INCREMENT = 1;`);
       await mapRepository.delete({});
     });
 
@@ -554,12 +550,13 @@ describe('MapController 통합 테스트', () => {
 
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가지지만 해당 지도에 해당 장소가 이미 있다면 DuplicatePlaceToMapException 에러를 발생시킨다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
-      await mapService.addPlace(
-        1,
-        testPlace.placeId,
-        testPlace.color as Color,
-        testPlace.comment,
-      );
+      const testPlace = {
+        placeId: 1,
+        comment: 'Beautiful park with a lake',
+        color: 'BLUE',
+      } as AddPinToMapRequest;
+
+      await mapService.addPlace(1, testPlace);
 
       return request(app.getHttpServer())
         .post('/maps/1/places')
@@ -585,6 +582,11 @@ describe('MapController 통합 테스트', () => {
         role: fakeUser2.role,
       };
       token = jwtHelper.generateToken('24h', payload);
+      const testPlace = {
+        placeId: 1,
+        comment: 'Beautiful park with a lake',
+        color: 'BLUE',
+      } as AddPinToMapRequest;
 
       return request(app.getHttpServer())
         .post('/maps/1/places')
@@ -601,6 +603,11 @@ describe('MapController 통합 테스트', () => {
 
     it('POST /maps/:id/places 요청이 적절한 토큰과 Body를 가진다면 해당 지도에 해당 장소를 저장하고 저장된 지도의 정보를 반환한다.', async () => {
       token = jwtHelper.generateToken('24h', payload);
+      const testPlace = {
+        placeId: 1,
+        comment: 'Beautiful park with a lake',
+        color: 'BLUE',
+      } as AddPinToMapRequest;
 
       return request(app.getHttpServer())
         .post('/maps/1/places')
@@ -616,24 +623,19 @@ describe('MapController 통합 테스트', () => {
 
   describe('deletePlaceFromMap 메소드 테스트', () => {
     let payload: { userId: number; role: string };
-    let testPlace: { placeId: number; comment: string; color: string };
 
     beforeEach(async () => {
       const fakeUserOneInfo = await userRepository.findById(fakeUser1Id);
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
 
-      testPlace = {
+      const testPlace = {
         placeId: 1,
         comment: 'Beautiful park with a lake',
         color: 'BLUE',
-      };
-      await mapService.addPlace(
-        1,
-        testPlace.placeId,
-        testPlace.color as Color,
-        testPlace.comment,
-      );
+      } as AddPinToMapRequest;
+
+      await mapService.addPlace(1, testPlace);
 
       payload = {
         userId: fakeUserOneInfo.id,
@@ -698,24 +700,19 @@ describe('MapController 통합 테스트', () => {
 
   describe('updateMapInfo 메소드 테스트', () => {
     let publicMap: Map;
-    let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
 
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
 
-      testPlace = {
+      const testPlace = {
         placeId: 5,
         comment: 'Beautiful park with a lake',
         color: 'BLUE',
-      };
-      await mapService.addPlace(
-        1,
-        1,
-        testPlace.color as Color,
-        testPlace.comment,
-      );
+      } as AddPinToMapRequest;
+
+      await mapService.addPlace(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {
@@ -845,24 +842,19 @@ describe('MapController 통합 테스트', () => {
 
   describe('updateMapVisibility 메소드 테스트', () => {
     let publicMap: Map;
-    let testPlace: { placeId: number; comment: string; color: string };
     let payload: { userId: number; role: string };
 
     beforeEach(async () => {
       publicMap = createPublicMaps(1, fakeUser1)[0];
       await mapRepository.save(publicMap);
 
-      testPlace = {
+      const testPlace = {
         placeId: 5,
         comment: 'Beautiful park with a lake',
         color: 'BLUE',
-      };
-      await mapService.addPlace(
-        1,
-        1,
-        testPlace.color as Color,
-        testPlace.comment,
-      );
+      } as AddPinToMapRequest;
+
+      await mapService.addPlace(1, testPlace);
 
       const fakeUserInfo = await userRepository.findById(fakeUser1Id);
       payload = {

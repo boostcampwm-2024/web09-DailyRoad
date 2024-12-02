@@ -9,11 +9,12 @@ import {
 import { PagedCourseResponse } from '@src/course/dto/PagedCourseResponse';
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
-import { SetPlacesOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { UpdatePinsOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
 import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundException';
 import { PlaceRepository } from '@src/place/PlaceRepository';
 import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
 import { User } from '@src/user/entity/User';
+import { UpdateCourseVisibilityRequest } from '@src/course/dto/UpdateCourseVisibilityRequest';
 
 @Injectable()
 export class CourseService {
@@ -44,8 +45,7 @@ export class CourseService {
     return new PagedCourseResponse(courses, totalCount, page, pageSize);
   }
 
-  // Todo. 그룹 기능 추가
-  async getOwnCourses(userId: number, page: number = 1, pageSize: number = 10) {
+  async getMyCourses(userId: number, page: number = 1, pageSize: number = 10) {
     const [ownCourses, totalCount] = await Promise.all([
       this.courseRepository.findByUserId(userId, page, pageSize),
       this.courseRepository.countByUserId(userId),
@@ -55,7 +55,7 @@ export class CourseService {
     return new PagedCourseResponse(courses, totalCount, page, pageSize);
   }
 
-  async getCourseById(id: number) {
+  async getCourse(id: number) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
     return await CourseDetailResponse.from(course);
@@ -82,10 +82,7 @@ export class CourseService {
     return { id };
   }
 
-  async updateCourseInfo(
-    id: number,
-    updateCourseForm: UpdateCourseInfoRequest,
-  ) {
+  async updateInfo(id: number, updateCourseForm: UpdateCourseInfoRequest) {
     await this.validateCourseExistsById(id);
     const { title, description, thumbnailUrl } = updateCourseForm;
     return this.courseRepository.updateInfoById(
@@ -96,15 +93,18 @@ export class CourseService {
     );
   }
 
-  async updateCourseVisibility(id: number, isPublic: boolean) {
+  async updateVisibility(
+    id: number,
+    visibility: UpdateCourseVisibilityRequest,
+  ) {
     await this.validateCourseExistsById(id);
-    return this.courseRepository.updateIsPublicById(id, isPublic);
+    return this.courseRepository.updateIsPublicById(id, visibility.isPublic);
   }
 
   @Transactional()
-  async setPlacesOfCourse(
+  async updatePins(
     id: number,
-    setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
+    setPlacesOfCourseRequest: UpdatePinsOfCourseRequest,
   ) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
@@ -122,7 +122,7 @@ export class CourseService {
   }
 
   @Transactional()
-  async updatePlace(id: number, placeId: number, comment?: string) {
+  async updatePin(id: number, placeId: number, comment?: string) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
     course.updatePlace(placeId, comment);

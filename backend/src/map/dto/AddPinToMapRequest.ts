@@ -1,7 +1,7 @@
 import { IsNumber, IsString, IsEnum } from 'class-validator';
 import { Color } from '@src/place/enum/Color';
 
-export class AddPlaceToMapRequest {
+export class AddPinToMapRequest {
   @IsNumber()
   placeId: number;
 
@@ -10,4 +10,10 @@ export class AddPlaceToMapRequest {
 
   @IsEnum(Color)
   color: Color;
+
+  constructor(placeId: number, comment: string, color: Color) {
+    this.placeId = placeId;
+    this.comment = comment;
+    this.color = color;
+  }
 }

@@ -18,7 +18,7 @@ export class SetPlacesOfCourseRequestItem {
   comment?: string;
 }
 
-export class SetPlacesOfCourseRequest {
+export class UpdatePinsOfCourseRequest {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SetPlacesOfCourseRequestItem)

@@ -111,8 +111,8 @@ describe('PlaceController', () => {
       });
 
       jest.spyOn(searchService, 'savePlace').mockResolvedValue(undefined);
-      await placeService.addPlace(defaultPlace1);
-      await placeService.addPlace(defaultPlace2);
+      await placeService.savePlace(defaultPlace1);
+      await placeService.savePlace(defaultPlace2);
 
       const query = 'test';
       const serviceResult = await placeService.getPlaces(query, 2, 1);
@@ -160,7 +160,7 @@ describe('PlaceController', () => {
   describe('장소 조회', () => {
     it('존재하는 장소 ID로 장소 조회에 성공한다', async () => {
       const defaultPlace = PlaceCreateRequestFixture.create();
-      await placeService.addPlace(defaultPlace);
+      await placeService.savePlace(defaultPlace);
 
       const place = await placeService
         .getPlaces(undefined, 1, 5)

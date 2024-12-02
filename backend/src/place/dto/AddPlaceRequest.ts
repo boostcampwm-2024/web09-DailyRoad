@@ -12,7 +12,7 @@ import {
 import { Place } from '@src/place/entity/PlaceEntity';
 import { Category } from '@src/place/enum/Category';
 
-export class CreatePlaceRequest {
+export class AddPlaceRequest {
   @IsString()
   @IsNotEmpty()
   googlePlaceId: string;

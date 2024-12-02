@@ -13,9 +13,9 @@ import {
 import { MapService } from '@src/map/MapService';
 import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
-import { AddPlaceToMapRequest } from '@src/map/dto/AddPlaceToMapRequest';
+import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
 import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
-import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
+import { UpdatePinInMapRequest } from '@src/map/dto/UpdatePinInMapRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
@@ -27,26 +27,26 @@ export class MapController {
   constructor(private readonly mapService: MapService) {}
 
   @Get()
-  async getMapList(
+  async getMaps(
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
   ) {
     if (query) {
-      return await this.mapService.searchMap(query, page, limit);
+      return await this.mapService.searchMaps(query, page, limit);
     }
     return await this.mapService.getAllMaps(page, limit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/my')
-  async getMyMapList(@AuthUser() user: AuthUser) {
-    return await this.mapService.getOwnMaps(user.userId);
+  async getMyMaps(@AuthUser() user: AuthUser) {
+    return await this.mapService.getMyMaps(user.userId);
   }
 
   @Get('/:id')
   async getMapDetail(@Param('id') id: number) {
-    return await this.mapService.getMapById(id);
+    return await this.mapService.getMap(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -62,35 +62,30 @@ export class MapController {
   @Post('/:id/places')
   async addPlaceToMap(
     @Param('id') id: number,
-    @Body() addPlaceToMapRequest: AddPlaceToMapRequest,
+    @Body() addPinToMapRequest: AddPinToMapRequest,
   ) {
-    const { placeId, color, comment } = addPlaceToMapRequest;
-    return await this.mapService.addPlace(id, placeId, color, comment);
+    return await this.mapService.addPlace(id, addPinToMapRequest);
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Put('/:id/places/:placeId')
-  async updatePlaceInMap(
+  async updatePinInMap(
     @Param('id') id: number,
     @Param('placeId') placeId: number,
-    @Body() updatePlaceInMapRequest: UpdatePlaceInMapRequest,
+    @Body() updatePinInMapRequest: UpdatePinInMapRequest,
   ) {
-    if (updatePlaceInMapRequest.isEmpty()) {
-      throw new EmptyRequestException('수정');
+    if (updatePinInMapRequest.isEmpty()) {
+      throw new EmptyRequestException();
     }
-    const { color, comment } = updatePlaceInMapRequest;
 
-    await this.mapService.updatePlace(id, placeId, color, comment);
-    return { mapId: id, placeId, color, comment };
+    await this.mapService.updatePin(id, placeId, updatePinInMapRequest);
+    return { mapId: id, placeId, ...updatePinInMapRequest };
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
   @Delete('/:id/places/:placeId')
-  async deletePlaceFromMap(
-    @Param('id') id: number,
-    @Param('placeId') placeId: number,
-  ) {
-    return await this.mapService.deletePlace(id, placeId);
+  async deletePin(@Param('id') id: number, @Param('placeId') placeId: number) {
+    return await this.mapService.deletePin(id, placeId);
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)
@@ -100,10 +95,10 @@ export class MapController {
     @Body() updateMapInfoRequest: UpdateMapInfoRequest,
   ) {
     if (updateMapInfoRequest.isEmpty()) {
-      throw new EmptyRequestException('수정');
+      throw new EmptyRequestException();
     }
 
-    await this.mapService.updateMapInfo(id, updateMapInfoRequest);
+    await this.mapService.updateInfo(id, updateMapInfoRequest);
     return { id, ...updateMapInfoRequest };
   }
 
@@ -113,11 +108,8 @@ export class MapController {
     @Param('id') id: number,
     @Body() updateMapVisibilityRequest: UpdateMapVisibilityRequest,
   ) {
-    await this.mapService.updateMapVisibility(
-      id,
-      updateMapVisibilityRequest.isPublic,
-    );
-    return { id, isPublic: updateMapVisibilityRequest.isPublic };
+    await this.mapService.updateMapVisibility(id, updateMapVisibilityRequest);
+    return { id, ...updateMapVisibilityRequest };
   }
 
   @UseGuards(JwtAuthGuard, MapPermissionGuard)

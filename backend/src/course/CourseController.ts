@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,20 +13,21 @@ import {
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
 import { CourseService } from '@src/course/CourseService';
-import { SetPlacesOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { UpdatePinsOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
 import { CoursePermissionGuard } from '@src/course/guards/CoursePermissionGuard';
-import { UpdatePlaceInCourseRequest } from '@src/course/dto/UpdatePlaceInCourseRequest';
+import { UpdatePinInCourseRequest } from '@src/course/dto/UpdatePinInCourseRequest';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { AuthUser } from '@src/auth/decortator/AuthUser';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
+import { UpdateCourseVisibilityRequest } from '@src/course/dto/UpdateCourseVisibilityRequest';
 
 @Controller('/courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Get()
-  async getCourseList(
+  async getCourses(
     @Query('query') query?: string,
     @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
     @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
@@ -37,13 +37,13 @@ export class CourseController {
 
   @Get('/my')
   @UseGuards(JwtAuthGuard)
-  async getMyCourseList(@AuthUser() user: AuthUser) {
-    return await this.courseService.getOwnCourses(user.userId);
+  async getMyCourses(@AuthUser() user: AuthUser) {
+    return await this.courseService.getMyCourses(user.userId);
   }
 
   @Get('/:id')
   async getCourseDetail(@Param('id') id: number) {
-    return await this.courseService.getCourseById(id);
+    return await this.courseService.getCourse(id);
   }
 
   @Post()
@@ -60,29 +60,26 @@ export class CourseController {
 
   @Put('/:id/places')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
-  async setPlacesOfCourse(
+  async updatePinsOfCourse(
     @Param('id') id: number,
-    @Body() setPlacesOfCourseRequest: SetPlacesOfCourseRequest,
+    @Body() updatePinsOfCourseRequest: UpdatePinsOfCourseRequest,
   ) {
-    return await this.courseService.setPlacesOfCourse(
-      id,
-      setPlacesOfCourseRequest,
-    );
+    return await this.courseService.updatePins(id, updatePinsOfCourseRequest);
   }
 
   @Put('/:id/places/:placeId')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
-  async updatePlaceInCourse(
+  async updatePinInCourse(
     @Param('id') id: number,
     @Param('placeId') placeId: number,
-    @Body() updatePlaceInCourseRequest: UpdatePlaceInCourseRequest,
+    @Body() updatePinInCourseRequest: UpdatePinInCourseRequest,
   ) {
-    const { comment } = updatePlaceInCourseRequest;
-    if (updatePlaceInCourseRequest.isEmpty()) {
-      throw new EmptyRequestException('수정');
+    const { comment } = updatePinInCourseRequest;
+    if (updatePinInCourseRequest.isEmpty()) {
+      throw new EmptyRequestException();
     }
 
-    await this.courseService.updatePlace(id, placeId, comment);
+    await this.courseService.updatePin(id, placeId, comment);
 
     return { courseId: id, placeId: placeId, comment: comment };
   }
@@ -94,10 +91,10 @@ export class CourseController {
     @Body() updateCourseInfoRequest: UpdateCourseInfoRequest,
   ) {
     if (updateCourseInfoRequest.isEmpty()) {
-      throw new EmptyRequestException('수정');
+      throw new EmptyRequestException();
     }
 
-    await this.courseService.updateCourseInfo(id, updateCourseInfoRequest);
+    await this.courseService.updateInfo(id, updateCourseInfoRequest);
     return { id, ...updateCourseInfoRequest };
   }
 
@@ -105,14 +102,14 @@ export class CourseController {
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
   async updateCourseVisibility(
     @Param('id') id: number,
-    @Body('isPublic') isPublic: boolean,
+    @Body('isPublic')
+    updateCourseVisibilityRequest: UpdateCourseVisibilityRequest,
   ) {
-    if (typeof isPublic !== 'boolean') {
-      throw new BadRequestException('공개 여부는 boolean 타입이어야 합니다.');
-    }
-
-    await this.courseService.updateCourseVisibility(id, isPublic);
-    return { id, isPublic };
+    await this.courseService.updateVisibility(
+      id,
+      updateCourseVisibilityRequest,
+    );
+    return { id, isPublic: updateCourseVisibilityRequest };
   }
 
   @Delete('/:id')

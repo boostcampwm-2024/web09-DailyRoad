@@ -1,4 +1,4 @@
-import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { AddPlaceRequest } from '@src/place/dto/AddPlaceRequest';
 import { Category } from '@src/place/enum/Category';
 
 export class PlaceCreateRequestFixture {
@@ -19,9 +19,9 @@ export class PlaceCreateRequestFixture {
   };
 
   static create(
-    customValues: Partial<CreatePlaceRequest> = {},
-  ): CreatePlaceRequest {
-    const request = new CreatePlaceRequest();
+    customValues: Partial<AddPlaceRequest> = {},
+  ): AddPlaceRequest {
+    const request = new AddPlaceRequest();
     const mergedValues = { ...this.default, ...customValues };
 
     request.googlePlaceId = mergedValues.googlePlaceId;
