@@ -17,7 +17,11 @@ const SearchPage = () => {
   return (
     <>
       <Header />
-      <div className={'flex min-h-screen w-full flex-col items-center justify-center'}>
+      <div
+        className={
+          'flex min-h-screen w-full flex-col items-center justify-start'
+        }
+      >
         <div className="mb-4 flex w-[1080px] flex-col items-center justify-center p-4">
           <SearchBar onSearch={handleSearch} query={searchKeyword}></SearchBar>
         </div>
