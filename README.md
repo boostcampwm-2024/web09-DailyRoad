@@ -16,6 +16,8 @@
 > 개인적인 기억과 감상을 담은 지도를 통해 새로운 발견을 하고,  
 > 일상의 영감을 얻어보세요!
 >
+> <a href="https://boostcampwm-2024.github.io/web09-DailyRoad/" target='_blank'>🌈 소개 페이지를 구경해보세요!</a>
+>
 > <a href="https://forms.gle/Hkckwm6vtZxoEnxH6" target='_blank'>📝 피드백을 남겨주세요!</a>
 
 <br/>
