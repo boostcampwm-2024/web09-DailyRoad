@@ -1,4 +1,4 @@
-import { ServiceUnavailableException } from '@nestjs/common';
+import { UnavailableException } from '@src/common/exception/UnavailableException';
 
 export function UnavailableIn(env: string): MethodDecorator {
   return (
@@ -9,9 +9,7 @@ export function UnavailableIn(env: string): MethodDecorator {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
       if (process.env.NODE_ENV === env) {
-        throw new ServiceUnavailableException(
-          `현재는 지원하지 않는 서비스입니다. [${env} 환경]`,
-        );
+        throw new UnavailableException(env);
       }
 
       return originalMethod.apply(this, args);

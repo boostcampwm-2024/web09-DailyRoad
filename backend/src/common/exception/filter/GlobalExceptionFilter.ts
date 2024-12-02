@@ -44,7 +44,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     logException(this.logger, errorMessage, status);
 
     return response.status(status).json({
-      code: 9999,
+      code: 'E900',
       message: errorMessage,
     });
   }
@@ -100,7 +100,7 @@ export class UnknownExceptionFilter implements ExceptionFilter {
     }
 
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      code: -1,
+      code: 'E999',
       message: 'Internal server error',
     });
   }
