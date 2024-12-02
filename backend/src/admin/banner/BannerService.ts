@@ -33,10 +33,7 @@ export class AdminBannerService {
     return this.bannerRepository.findOne({ where: { id } });
   }
 
-  async updateInfo(
-    id: number,
-    updateDetailsRequest: UpdateBannerInfoRequest,
-  ) {
+  async updateInfo(id: number, updateDetailsRequest: UpdateBannerInfoRequest) {
     const result = await this.bannerRepository.update(id, {
       imageUrl: updateDetailsRequest.imageUrl,
       redirectUrl: updateDetailsRequest.redirectUrl,
