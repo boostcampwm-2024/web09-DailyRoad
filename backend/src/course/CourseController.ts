@@ -13,9 +13,9 @@ import {
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
 import { CourseService } from '@src/course/CourseService';
-import { UpdatePinsOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { UpdatePinsOfCourseRequest } from '@src/course/dto/UpdatePinsOfCourseRequest';
 import { CoursePermissionGuard } from '@src/course/guards/CoursePermissionGuard';
-import { UpdatePinInCourseRequest } from '@src/course/dto/UpdatePinInCourseRequest';
+import { UpdatePinInfoInCourseRequest } from '@src/course/dto/UpdatePinInfoInCourseRequest';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { AuthUser } from '@src/auth/decortator/AuthUser';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
@@ -69,13 +69,13 @@ export class CourseController {
 
   @Put('/:id/places/:placeId')
   @UseGuards(JwtAuthGuard, CoursePermissionGuard)
-  async updatePinInCourse(
+  async updatePinInfoInCourse(
     @Param('id') id: number,
     @Param('placeId') placeId: number,
-    @Body() updatePinInCourseRequest: UpdatePinInCourseRequest,
+    @Body() updatePinInfoInCourseRequest: UpdatePinInfoInCourseRequest,
   ) {
-    const { comment } = updatePinInCourseRequest;
-    if (updatePinInCourseRequest.isEmpty()) {
+    const { comment } = updatePinInfoInCourseRequest;
+    if (updatePinInfoInCourseRequest.isEmpty()) {
       throw new EmptyRequestException();
     }
 

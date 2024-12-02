@@ -9,7 +9,7 @@ import {
 import { Type } from 'class-transformer';
 import { IsNotConsecutiveDuplicatePlace } from '@src/course/pipes/IsNotConsecutiveDuplicatePlace';
 
-export class SetPlacesOfCourseRequestItem {
+export class UpdatePinsOfCourseRequestItem {
   @IsNumber()
   @IsNotEmpty()
   placeId: number;
@@ -21,7 +21,7 @@ export class SetPlacesOfCourseRequestItem {
 export class UpdatePinsOfCourseRequest {
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => SetPlacesOfCourseRequestItem)
+  @Type(() => UpdatePinsOfCourseRequestItem)
   @Validate(IsNotConsecutiveDuplicatePlace)
-  places: SetPlacesOfCourseRequestItem[];
+  pins: UpdatePinsOfCourseRequestItem[];
 }
