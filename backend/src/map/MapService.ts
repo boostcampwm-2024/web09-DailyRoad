@@ -11,7 +11,6 @@ import { MapNotFoundException } from '@src/map/exception/MapNotFoundException';
 import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceToMapException';
 import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
 import { User } from '@src/user/entity/User';
-import { UserRepository } from '@src/user/UserRepository';
 import { PlaceRepository } from '@src/place/PlaceRepository';
 import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
 import { UpdatePinInMapRequest } from '@src/map/dto/UpdatePinInMapRequest';
@@ -21,7 +20,6 @@ import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequ
 export class MapService {
   constructor(
     private readonly mapRepository: MapRepository,
-    private readonly userRepository: UserRepository,
     private readonly placeRepository: PlaceRepository,
   ) {}
 
