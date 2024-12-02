@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { User } from '../entity/user.entity';
+import { User } from '../entity/User';
 import { UserInfoWithProvider } from '../user.type';
-import { UserRole } from '../user.role';
+import { Role } from '../enum/Role';
 
 export class CreateUserRequest {
   @IsString()
@@ -16,9 +16,9 @@ export class CreateUserRequest {
   @IsNotEmpty()
   oauthId: string;
 
-  @IsEnum(UserRole)
+  @IsEnum(Role)
   @IsNotEmpty()
-  role: UserRole;
+  role: Role;
 
   @IsString()
   @IsOptional()

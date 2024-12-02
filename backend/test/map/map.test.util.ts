@@ -1,7 +1,7 @@
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 import { MapFixture } from '@test/map/fixture/map.fixture';
 import { PlaceFixture } from '@test/place/fixture/place.fixture';
-import { Map } from '@src/map/entity/map.entity';
+import { Map } from '@src/map/entity/Map';
 
 function createEntities<T>(
   createFn: (index: number, ...args: any[]) => T,

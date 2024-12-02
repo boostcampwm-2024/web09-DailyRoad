@@ -1,9 +1,9 @@
-import { MapService } from '@src/map/map.service';
+import { MapService } from '@src/map/MapService';
 import { UserFixture } from '@test/user/fixture/user.fixture';
-import { User } from '@src/user/entity/user.entity';
-import { UserRepository } from '@src/user/user.repository';
-import { PlaceRepository } from '@src/place/place.repository';
-import { MapRepository } from '@src/map/map.repository';
+import { User } from '@src/user/entity/User';
+import { UserRepository } from '@src/user/UserRepository';
+import { PlaceRepository } from '@src/place/PlaceRepository';
+import { MapRepository } from '@src/map/MapRepository';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import * as jwt from 'jsonwebtoken';
 import * as request from 'supertest';
@@ -13,8 +13,8 @@ import {
   createPublicMaps,
   createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
-import { Map } from '@src/map/entity/map.entity';
-import { Color } from '@src/place/place.color.enum';
+import { Map } from '@src/map/entity/Map';
+import { Color } from '@src/place/enum/Color';
 import {
   EMPTY_TOKEN_EXCEPTION,
   EXPIRE_TOKEN_EXCEPTION,
@@ -29,7 +29,7 @@ import {
 } from '@test/config/utils';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { MapPlace } from '@src/map/entity/map-place.entity';
+import { MapPlace } from '@src/map/entity/MapPlace';
 
 describe('MapController 통합 테스트', () => {
   let app: INestApplication;

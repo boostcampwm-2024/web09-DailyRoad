@@ -1,6 +1,6 @@
 import { PlaceFixture } from '@test/place/fixture/place.fixture';
 import { StartedMySqlContainer, MySqlContainer } from '@testcontainers/mysql';
-import { PlaceRepository } from '@src/place/place.repository';
+import { PlaceRepository } from '@src/place/PlaceRepository';
 import { initDataSource } from '@test/config/datasource.config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { truncateTables } from '@test/config/utils';

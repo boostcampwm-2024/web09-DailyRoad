@@ -1,8 +1,8 @@
-import { CourseRepository } from '@src/course/course.repository';
-import { UserRepository } from '@src/user/user.repository';
+import { CourseRepository } from '@src/course/CourseRepository';
+import { UserRepository } from '@src/user/UserRepository';
 import * as request from 'supertest';
 import { CourseFixture } from '@test/course/fixture/course.fixture';
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import {
   convertDateToSeoulTime,

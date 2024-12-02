@@ -1,7 +1,7 @@
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { MapRepository } from '@src/map/map.repository';
+import { MapRepository } from '@src/map/MapRepository';
 import { DataSource } from 'typeorm';
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 import { initDataSource } from '@test/config/datasource.config';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { MapFixture } from '@test/map/fixture/map.fixture';
@@ -12,9 +12,9 @@ import {
   createPrivateMaps,
   createPublicMaps,
 } from '@test/map/map.test.util';
-import { MapPlace } from '@src/map/entity/map-place.entity';
-import { Color } from '@src/place/place.color.enum';
-import { Place } from '@src/place/entity/place.entity';
+import { MapPlace } from '@src/map/entity/MapPlace';
+import { Color } from '@src/place/enum/Color';
+import { Place } from '@src/place/entity/PlaceEntity';
 
 describe('MapRepository', () => {
   let container: StartedMySqlContainer;

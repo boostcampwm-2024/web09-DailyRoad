@@ -1,5 +1,5 @@
-import { Place } from '../entity/place.entity';
-import { Category } from '@src/place/place.category.enum';
+import { Place } from '../entity/PlaceEntity';
+import { Category } from '@src/place/enum/Category';
 
 export class PlaceListResponse {
   constructor(

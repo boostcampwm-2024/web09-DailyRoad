@@ -1,4 +1,4 @@
-import { User } from '@src/user/entity/user.entity';
+import { User } from '@src/user/entity/User';
 
 export type MapFixtureType = {
   user: User;

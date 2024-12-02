@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { CourseService } from '../course.service';
+import { CourseService } from '../CourseService';
 import { CoursePermissionException } from '../exception/CoursePermissionException';
 import { AdminGuard } from '@src/admin/guard/AdminGuard';
 

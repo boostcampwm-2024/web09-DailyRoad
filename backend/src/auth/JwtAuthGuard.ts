@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { AuthenticationException } from './exception/AuthenticationException';
-import { extractBearerToken } from './utils';
-import { AuthUser } from './AuthUser.decorator';
+import { extractBearerToken } from './util';
+import { AuthUser } from './decortator/AuthUser';
 import { JWTHelper } from './JWTHelper';
 
 @Injectable()

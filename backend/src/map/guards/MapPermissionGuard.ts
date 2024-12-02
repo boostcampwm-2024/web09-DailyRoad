@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { MapService } from '@src/map/map.service';
+import { MapService } from '@src/map/MapService';
 import { MapPermissionException } from '@src/map/exception/MapPermissionException';
 
 @Injectable()

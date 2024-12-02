@@ -1,7 +1,7 @@
-import { MapService } from '@src/map/map.service';
-import { MapRepository } from '@src/map/map.repository';
-import { PlaceRepository } from '@src/place/place.repository';
-import { User } from '@src/user/entity/user.entity';
+import { MapService } from '@src/map/MapService';
+import { MapRepository } from '@src/map/MapRepository';
+import { PlaceRepository } from '@src/place/PlaceRepository';
+import { User } from '@src/user/entity/User';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import {
   createPlace,
@@ -9,28 +9,28 @@ import {
   createPublicMaps,
   createPublicMapsWithTitle,
 } from '@test/map/map.test.util';
-import { Map } from '@src/map/entity/map.entity';
+import { Map } from '@src/map/entity/Map';
 import { MapListResponse } from '@src/map/dto/MapListResponse';
-import { UserRepository } from '@src/user/user.repository';
+import { UserRepository } from '@src/user/UserRepository';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { initDataSource } from '@test/config/datasource.config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MapController } from '@src/map/map.controller';
+import { MapController } from '@src/map/MapController';
 import { INestApplication } from '@nestjs/common';
 import { MapNotFoundException } from '@src/map/exception/MapNotFoundException';
 import { MapDetailResponse } from '@src/map/dto/MapDetailResponse';
 import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
-import { Color } from '@src/place/place.color.enum';
+import { Color } from '@src/place/enum/Color';
 import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMapException';
 import { DuplicatePlaceToMapException } from '@src/map/exception/DuplicatePlaceToMapException';
-import { Place } from '@src/place/entity/place.entity';
+import { Place } from '@src/place/entity/PlaceEntity';
 import { ConfigModule } from '@nestjs/config';
 import { JWTHelper } from '@src/auth/JWTHelper';
 import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
 import { truncateTables } from '@test/config/utils';
-import { MapPlace } from '@src/map/entity/map-place.entity';
+import { MapPlace } from '@src/map/entity/MapPlace';
 
 describe('MapService 테스트', () => {
   let app: INestApplication;

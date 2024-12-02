@@ -5,7 +5,7 @@ import { MySqlContainer } from '@testcontainers/mysql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { initDataSource } from '@test/config/datasource.config';
-import { AppModule } from '@src/app.module';
+import { AppModule } from '@src/AppModule';
 
 interface TestSetup {
   app: INestApplication;

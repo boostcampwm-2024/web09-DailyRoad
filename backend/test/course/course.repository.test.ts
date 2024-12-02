@@ -1,8 +1,8 @@
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { CourseRepository } from '@src/course/course.repository';
+import { CourseRepository } from '@src/course/CourseRepository';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '@src/user/entity/user.entity';
-import { CoursePlace } from '@src/course/entity/course-place.entity';
+import { User } from '@src/user/entity/User';
+import { CoursePlace } from '@src/course/entity/CoursePlace';
 import { initDataSource } from '@test/config/datasource.config';
 import { CourseFixture } from '@test/course/fixture/course.fixture';
 import { UserFixture } from '@test/user/fixture/user.fixture';

@@ -1,9 +1,9 @@
-import { UserRole } from '@src/user/user.role';
+import { Role } from '@src/user/enum/Role';
 
 export type UserFixtureType = {
   provider?: string;
   nickname?: string;
   oauthId?: string;
-  role?: UserRole;
+  role?: Role;
   profileImageUrl?: string;
 };

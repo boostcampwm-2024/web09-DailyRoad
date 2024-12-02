@@ -1,7 +1,7 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { AuthorizationException } from '@src/auth/exception/AuthorizationException';
-import { UserRole } from '@src/user/user.role';
+import { Role } from '@src/user/enum/Role';
 
 @Injectable()
 export class AdminGuard extends JwtAuthGuard {
@@ -22,6 +22,6 @@ export class AdminGuard extends JwtAuthGuard {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user?.role === UserRole.ADMIN;
+    return user?.role === Role.ADMIN;
   }
 }
