@@ -27,10 +27,16 @@ const Homepage = () => {
   return (
     <>
       <Header />
-      <div className={'flex min-h-screen w-full flex-col items-center justify-center'}>
+      <div
+        className={
+          'flex min-h-screen w-full flex-col items-center justify-start'
+        }
+      >
         <div className="flex w-[1080px] flex-col items-center justify-center p-5">
           <SearchBar onSearch={handleSearch}></SearchBar>
-          <BannerSlider className={'mt-5 mb-10 flex h-100 w-full'}></BannerSlider>
+          <BannerSlider
+            className={'h-100 mb-10 mt-5 flex w-full'}
+          ></BannerSlider>
           <button
             onClick={onClick}
             className="flex h-12 w-[300px] items-center justify-center rounded-md border-[1.5px] border-c_brand_BLUE p-2 text-lg text-c_brand_BLUE"
