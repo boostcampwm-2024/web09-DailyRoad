@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CourseListPanel from '@/components/Map/CourseListPanel';
-import MapListPanel from '@/components/Map/MapListPanel';
-import ListToggleButtons from '@/components/common/ListToggleButtons';
+import CourseListPanel from '@/components/common/List/Course/CourseListPanel';
+import MapListPanel from '@/components/common/List/Map/MapListPanel';
+import ListToggleButtons from '@/components/common/List/ListToggleButtons';
 import { CreateMapType } from '@/types';
 
 interface SearchListPanelProps {
@@ -12,7 +12,7 @@ const SearchListPanel: React.FC<SearchListPanelProps> = ({ query }) => {
   const [listTab, setListTab] = useState<CreateMapType>('MAP');
 
   return (
-    <div className="flex w-full flex-col items-center">
+    <div className="flex w-[1200px] flex-col items-center">
       <ListToggleButtons
         options={[
           { value: 'MAP', label: '지도' },
@@ -22,7 +22,7 @@ const SearchListPanel: React.FC<SearchListPanelProps> = ({ query }) => {
         onSelect={(value) => setListTab(value as CreateMapType)}
       />
 
-      <div className="mt-4">
+      <div className="w-[1200px] mt-1">
         {listTab === 'MAP' ? (
           <MapListPanel query={query} />
         ) : (
