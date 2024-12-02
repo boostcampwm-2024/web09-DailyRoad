@@ -39,6 +39,9 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
         {banners.map((banner, index) => (
           <div key={index} className={'cursor-pointer'}>
             <img
+              className={
+                'box-sizing:border-box h-full w-full rounded-md border-[1.5px] border-c_border_gray'
+              }
               src={banner.imageUrl}
               alt={`Banner ${index}`}
               onClick={() => window.open(banner.redirectUrl, '_blank')}
