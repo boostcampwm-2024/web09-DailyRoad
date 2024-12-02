@@ -27,13 +27,13 @@ const Homepage = () => {
   return (
     <>
       <Header />
-      <div className={'flex w-full flex-col items-center justify-center'}>
-        <div className="mb-4 flex w-[1080px] flex-col items-center justify-center p-4">
+      <div className={'flex min-h-screen w-full flex-col items-center justify-center'}>
+        <div className="flex w-[1080px] flex-col items-center justify-center p-5">
           <SearchBar onSearch={handleSearch}></SearchBar>
-          <BannerSlider className={'m-10 flex h-[426px] w-full'}></BannerSlider>
+          <BannerSlider className={'mt-5 mb-10 flex h-100 w-full'}></BannerSlider>
           <button
             onClick={onClick}
-            className="flex h-[60px] w-[342px] items-center justify-center rounded-md border-[1.5px] border-c_brand_BLUE p-2 text-lg text-c_brand_BLUE"
+            className="flex h-12 w-[300px] items-center justify-center rounded-md border-[1.5px] border-c_brand_BLUE p-2 text-lg text-c_brand_BLUE"
           >
             나만의 지도 만들러 가기
           </button>
