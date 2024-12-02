@@ -30,7 +30,7 @@ export class Map extends BaseEntity {
     eager: true,
     cascade: true,
   })
-  mapPlaces: MapPlace[];
+  pins: MapPlace[];
 
   constructor(
     user: User,
@@ -48,43 +48,43 @@ export class Map extends BaseEntity {
   }
 
   get pinCount() {
-    return this.mapPlaces.length;
+    return this.pins.length;
   }
 
-  addPlace(placeId: number, color: Color, description: string) {
-    this.mapPlaces.push(MapPlace.of(placeId, this, color, description));
+  addPin(placeId: number, color: Color, description: string) {
+    this.pins.push(MapPlace.of(placeId, this, color, description));
   }
 
-  getPlace(placeId: number) {
-    const mapPlace = this.mapPlaces.find((p) => p.placeId === placeId);
-    if (!mapPlace) throw new PlaceInMapNotFoundException(this.id, placeId);
+  getPin(placeId: number) {
+    const pin = this.pins.find((p) => p.placeId === placeId);
+    if (!pin) throw new PlaceInMapNotFoundException(this.id, placeId);
 
-    return mapPlace;
+    return pin;
   }
 
-  async getPlacesWithComment() {
+  async getPinsWithComment() {
     return await Promise.all(
-      this.mapPlaces.map(async (mapPlace) => ({
-        place: await mapPlace.place,
-        comment: mapPlace.description,
-        color: mapPlace.color,
+      this.pins.map(async (pin) => ({
+        place: await pin.place,
+        comment: pin.description,
+        color: pin.color,
       })),
     );
   }
 
   hasPlace(placeId: number) {
-    return this.mapPlaces.some((p) => p.placeId === placeId);
+    return this.pins.some((p) => p.placeId === placeId);
   }
 
-  updatePlace(placeId: number, color?: Color, comment?: string) {
-    const updated = this.getPlace(placeId).update(color, comment);
+  updatePin(placeId: number, color?: Color, comment?: string) {
+    const updated = this.getPin(placeId).update(color, comment);
 
-    this.mapPlaces = this.mapPlaces.map((mapPlace) =>
-      mapPlace.placeId === placeId ? updated : mapPlace,
+    this.pins = this.pins.map((pin) =>
+      pin.placeId === placeId ? updated : pin,
     );
   }
 
-  deletePlace(placeId: number) {
-    this.mapPlaces = this.mapPlaces.filter((p) => p.placeId !== placeId);
+  deletePin(placeId: number) {
+    this.pins = this.pins.filter((p) => p.placeId !== placeId);
   }
 }

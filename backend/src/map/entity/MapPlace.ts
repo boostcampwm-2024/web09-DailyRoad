@@ -13,7 +13,7 @@ export class MapPlace extends BaseEntity {
   @JoinColumn({ name: 'place_id' })
   place: Promise<Place>;
 
-  @ManyToOne(() => Map, (map) => map.mapPlaces, {
+  @ManyToOne(() => Map, (map) => map.pins, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })

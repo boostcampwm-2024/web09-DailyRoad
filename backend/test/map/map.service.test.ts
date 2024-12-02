@@ -121,7 +121,7 @@ describe('MapService 테스트', () => {
       );
       const savedMaps = await mapRepository.save([...publicMapsWithTitle]);
       savedMaps.forEach((mapEntity) => {
-        mapEntity.mapPlaces = [];
+        mapEntity.pins = [];
       });
       const expectedMaps = await Promise.all(
         savedMaps.map((savedMap) => MapListResponse.from(savedMap)),
@@ -143,7 +143,7 @@ describe('MapService 테스트', () => {
       const publicMapsWithPlaces = createPublicMaps(2, fakeUser1);
       const privateMaps = createPrivateMaps(5, fakeUser1);
       publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
-        publicMapWithPlaces.mapPlaces = [
+        publicMapWithPlaces.pins = [
           MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
         ];
       });
@@ -174,7 +174,7 @@ describe('MapService 테스트', () => {
     it('유저 아이디를 파라미터로 받아서 해당 유저의 지도를 반환한다.', async () => {
       const fakeUserMaps = createPublicMaps(5, fakeUser1);
       const savedMaps = await mapRepository.save([...fakeUserMaps]);
-      savedMaps.forEach((savedMap) => (savedMap.mapPlaces = []));
+      savedMaps.forEach((savedMap) => (savedMap.pins = []));
       const expectedMaps = await Promise.all(
         fakeUserMaps.map((fakeUserMap) => MapListResponse.from(fakeUserMap)),
       );
@@ -197,7 +197,7 @@ describe('MapService 테스트', () => {
     it('파라미터로 받은 mapId 로 지도를 찾은 결과가 있으면 결과를 반환한다.', async () => {
       const publicMap = createPublicMaps(1, fakeUser1)[0];
       const publicMapEntity = await mapRepository.save(publicMap);
-      publicMapEntity.mapPlaces = [];
+      publicMapEntity.pins = [];
       const expectedMap = await MapDetailResponse.from(publicMapEntity);
 
       const result = await mapService.getMap(publicMapEntity.id);
@@ -293,7 +293,7 @@ describe('MapService 테스트', () => {
     it('장소를 추가하려는 지도가 없을 경우 MapNotFoundException 을 발생시킨다.', async () => {
       const pinInfo = new AddPinToMapRequest(2, 'test', Color.BLUE);
 
-      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+      await expect(mapService.addPin(1, pinInfo)).rejects.toThrow(
         MapNotFoundException,
       );
     });
@@ -303,7 +303,7 @@ describe('MapService 테스트', () => {
       await mapRepository.save(publicMap);
       const pinInfo = new AddPinToMapRequest(777777, 'test', Color.BLUE);
 
-      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+      await expect(mapService.addPin(1, pinInfo)).rejects.toThrow(
         InvalidPlaceToMapException,
       );
     });
@@ -314,8 +314,8 @@ describe('MapService 테스트', () => {
       const alreadyAddPlace: Place = await placeRepository.findById(
         publicMapEntity.id,
       );
-      publicMapEntity.mapPlaces = [];
-      publicMapEntity.addPlace(alreadyAddPlace.id, Color.RED, 'test');
+      publicMapEntity.pins = [];
+      publicMapEntity.addPin(alreadyAddPlace.id, Color.RED, 'test');
       await mapRepository.save(publicMapEntity);
 
       const pinInfo = new AddPinToMapRequest(
@@ -324,7 +324,7 @@ describe('MapService 테스트', () => {
         Color.BLUE,
       );
 
-      await expect(mapService.addPlace(1, pinInfo)).rejects.toThrow(
+      await expect(mapService.addPin(1, pinInfo)).rejects.toThrow(
         DuplicatePlaceToMapException,
       );
     });
@@ -335,7 +335,7 @@ describe('MapService 테스트', () => {
       const addPlace = await placeRepository.findById(savedMap.id);
       const pinInfo = new AddPinToMapRequest(addPlace.id, 'test', Color.RED);
 
-      const result = await mapService.addPlace(1, pinInfo);
+      const result = await mapService.addPin(1, pinInfo);
 
       expect(result).toEqual(expect.objectContaining(pinInfo));
     });

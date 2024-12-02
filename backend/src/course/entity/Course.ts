@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '@src/common/BaseEntity';
 import { User } from '@src/user/entity/User';
 import { CoursePlace } from '@src/course/entity/CoursePlace';
-import { SetPlacesOfCourseRequestItem } from '@src/course/dto/AddPlaceToCourseRequest';
+import { UpdatePinsOfCourseRequestItem } from '@src/course/dto/UpdatePinsOfCourseRequest';
 import { PlaceInCourseNotFoundException } from '@src/course/exception/PlaceInCourseNotFoundException';
 
 @Entity()
@@ -31,7 +31,7 @@ export class Course extends BaseEntity {
     eager: true,
     cascade: true,
   })
-  coursePlaces: CoursePlace[];
+  pins: CoursePlace[];
 
   constructor(
     user: User,
@@ -49,39 +49,37 @@ export class Course extends BaseEntity {
   }
 
   get pinCount() {
-    if (!this.coursePlaces) return 0;
-    return this.coursePlaces.length;
+    if (!this.pins) return 0;
+    return this.pins.length;
   }
 
-  setPlaces(coursePlaces: SetPlacesOfCourseRequestItem[]) {
-    this.coursePlaces = coursePlaces.map((item, index) => {
+  setPins(pins: UpdatePinsOfCourseRequestItem[]) {
+    this.pins = pins.map((item, index) => {
       return CoursePlace.of(index + 1, item.placeId, this, item.comment);
     });
   }
 
-  getPlace(placeId: number) {
-    const coursePlace = this.coursePlaces.find(
-      (coursePlace) => coursePlace.placeId === placeId,
-    );
-    if (!coursePlace) {
+  getPin(placeId: number) {
+    const pin = this.pins.find((pin) => pin.placeId === placeId);
+    if (!pin) {
       throw new PlaceInCourseNotFoundException(this.id, placeId);
     }
-    return coursePlace;
+    return pin;
   }
 
-  updatePlace(placeId: number, comment?: string) {
-    const updated = this.getPlace(placeId).update(comment);
-    this.coursePlaces = this.coursePlaces.map((coursePlace) =>
-      coursePlace.placeId === placeId ? updated : coursePlace,
+  updatePin(placeId: number, comment?: string) {
+    const updated = this.getPin(placeId).update(comment);
+    this.pins = this.pins.map((pin) =>
+      pin.placeId === placeId ? updated : pin,
     );
   }
 
-  async getPlacesWithComment() {
-    const coursePlaces = this.coursePlaces.sort((a, b) => a.order - b.order);
+  async getPinsWithComment() {
+    const pins = this.pins.sort((a, b) => a.order - b.order);
     return await Promise.all(
-      coursePlaces.map(async (coursePlace) => ({
-        place: await coursePlace.place,
-        comment: coursePlace.description,
+      pins.map(async (pin) => ({
+        place: await pin.place,
+        comment: pin.description,
       })),
     );
   }

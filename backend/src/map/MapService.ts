@@ -13,7 +13,7 @@ import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMap
 import { User } from '@src/user/entity/User';
 import { PlaceRepository } from '@src/place/PlaceRepository';
 import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
-import { UpdatePinInMapRequest } from '@src/map/dto/UpdatePinInMapRequest';
+import { UpdatePinInfoInMapRequest } from '@src/map/dto/UpdatePinInfoInMapRequest';
 import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 
 @Injectable()
@@ -104,13 +104,13 @@ export class MapService {
     return this.mapRepository.update(id, { isPublic: visibility.isPublic });
   }
 
-  async addPlace(id: number, pinInfo: AddPinToMapRequest) {
+  async addPin(id: number, pinInfo: AddPinToMapRequest) {
     const { placeId, color, comment } = pinInfo;
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
     await this.validatePlacesForMap(placeId, map);
 
-    map.addPlace(placeId, color, comment);
+    map.addPin(placeId, color, comment);
     await this.mapRepository.save(map);
 
     return {
@@ -121,10 +121,14 @@ export class MapService {
   }
 
   @Transactional()
-  async updatePin(id: number, placeId: number, pinInfo: UpdatePinInMapRequest) {
+  async updatePin(
+    id: number,
+    placeId: number,
+    pinInfo: UpdatePinInfoInMapRequest,
+  ) {
     const { color, comment } = pinInfo;
     const map = await this.getMapOrElseThrowNotFound(id);
-    map.updatePlace(placeId, color, comment);
+    map.updatePin(placeId, color, comment);
 
     return this.mapRepository.save(map);
   }
@@ -132,7 +136,7 @@ export class MapService {
   async deletePin(id: number, placeId: number) {
     const map = await this.getMapOrElseThrowNotFound(id);
 
-    map.deletePlace(placeId);
+    map.deletePin(placeId);
     await this.mapRepository.save(map);
 
     return { deletedId: placeId };

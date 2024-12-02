@@ -18,7 +18,7 @@ export class MapDetailResponse {
   ) {}
 
   static async from(map: Map) {
-    const places = (await map.getPlacesWithComment()).map((place) => {
+    const places = (await map.getPinsWithComment()).map((place) => {
       return {
         ...PlaceListResponse.from(place.place),
         comment: place.comment,

@@ -9,7 +9,7 @@ import {
 import { PagedCourseResponse } from '@src/course/dto/PagedCourseResponse';
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
-import { UpdatePinsOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { UpdatePinsOfCourseRequest } from '@src/course/dto/UpdatePinsOfCourseRequest';
 import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundException';
 import { PlaceRepository } from '@src/place/PlaceRepository';
 import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
@@ -102,18 +102,13 @@ export class CourseService {
   }
 
   @Transactional()
-  async updatePins(
-    id: number,
-    setPlacesOfCourseRequest: UpdatePinsOfCourseRequest,
-  ) {
+  async updatePins(id: number, request: UpdatePinsOfCourseRequest) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
-    await this.validatePlacesForCourse(
-      setPlacesOfCourseRequest.places.map((p) => p.placeId),
-    );
+    await this.validatePlacesForCourse(request.pins.map((pin) => pin.placeId));
 
-    course.setPlaces(setPlacesOfCourseRequest.places);
-    await this.courseRepository.updateCoursePlaceById(course);
+    course.setPins(request.pins);
+    await this.courseRepository.updatePins(course);
     const reloadedCourse = await this.courseRepository.findById(course.id);
 
     return {
@@ -125,7 +120,7 @@ export class CourseService {
   async updatePin(id: number, placeId: number, comment?: string) {
     const course = await this.getCourseOrElseThrowNotFound(id);
 
-    course.updatePlace(placeId, comment);
+    course.updatePin(placeId, comment);
     return this.courseRepository.save(course);
   }
 

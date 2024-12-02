@@ -11,8 +11,8 @@ import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
 import {
   UpdatePinsOfCourseRequest,
-  SetPlacesOfCourseRequestItem,
-} from '@src/course/dto/AddPlaceToCourseRequest';
+  UpdatePinsOfCourseRequestItem,
+} from '@src/course/dto/UpdatePinsOfCourseRequest';
 import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
@@ -316,12 +316,12 @@ describe('CourseService', () => {
 
   describe('코스에 장소를 추가할 때', () => {
     const setPlacesOfCourseRequest = {
-      places: [
+      pins: [
         {
           placeId: 1,
           comment: 'A popular place',
         },
-      ] as SetPlacesOfCourseRequestItem[],
+      ] as UpdatePinsOfCourseRequestItem[],
     } as UpdatePinsOfCourseRequest;
 
     it('코스가 존재하지 않으면 예외를 던진다', async () => {

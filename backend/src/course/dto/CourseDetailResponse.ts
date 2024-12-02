@@ -35,7 +35,7 @@ export class CourseDetailResponse {
 }
 
 export async function getPlacesResponseOfCourseWithOrder(course: Course) {
-  return (await course.getPlacesWithComment()).map((place, index) => {
+  return (await course.getPinsWithComment()).map((place, index) => {
     return {
       ...PlaceListResponse.from(place.place),
       comment: place.comment,

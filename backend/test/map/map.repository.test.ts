@@ -153,12 +153,12 @@ describe('MapRepository', () => {
       const privateMapsWithPlaces = createPrivateMaps(5, fakeUser1);
 
       publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
-        publicMapWithPlaces.mapPlaces = [
+        publicMapWithPlaces.pins = [
           MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
         ];
       });
       privateMapsWithPlaces.forEach((privateMapsWithPlaces) => {
-        privateMapsWithPlaces.mapPlaces = [
+        privateMapsWithPlaces.pins = [
           MapPlace.of(1, privateMapsWithPlaces, Color.RED, 'test'),
         ];
       });
@@ -171,7 +171,7 @@ describe('MapRepository', () => {
       const expectedMaps = mapEntities.slice(5, 10).map((map) => {
         return {
           ...map,
-          mapPlaces: map.mapPlaces.map((place) => {
+          mapPlaces: map.pins.map((place) => {
             return {
               color: place.color,
               createdAt: place.createdAt,
@@ -200,12 +200,12 @@ describe('MapRepository', () => {
         const privateMapsWithPlaces = createPrivateMaps(5, fakeUser1);
 
         publicMapsWithPlaces.forEach((publicMapWithPlaces) => {
-          publicMapWithPlaces.mapPlaces = [
+          publicMapWithPlaces.pins = [
             MapPlace.of(1, publicMapWithPlaces, Color.RED, 'test'),
           ];
         });
         privateMapsWithPlaces.forEach((privateMapsWithPlaces) => {
-          privateMapsWithPlaces.mapPlaces = [
+          privateMapsWithPlaces.pins = [
             MapPlace.of(1, privateMapsWithPlaces, Color.RED, 'test'),
           ];
         });
@@ -252,7 +252,7 @@ describe('MapRepository', () => {
         await mapRepository.save(publicFirstUsers);
         const expectedMaps = publicFirstUsers.slice(20, 25);
         expectedMaps.forEach((expectedMap) => {
-          expectedMap.mapPlaces = [];
+          expectedMap.pins = [];
         });
 
         const firstUsersFifthPage = await mapRepository.findByUserId(
