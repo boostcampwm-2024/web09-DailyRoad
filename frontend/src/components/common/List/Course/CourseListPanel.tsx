@@ -28,7 +28,9 @@ const CourseListPanel: React.FC<CourseListPanelProps> = ({ query }) => {
     <InfiniteListPanel
       data={courseItems}
       ref={ref}
-      renderItem={(course) => <CourseItem key={course.id} courseItem={course} />}
+      renderItem={(course) => (
+        <CourseItem key={course.id} courseItem={course} />
+      )}
       className="max-h-[700px] p-5"
     />
   );

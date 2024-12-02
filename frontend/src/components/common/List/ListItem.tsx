@@ -8,20 +8,22 @@ type ListItemProps<T> = {
   linkPrefix: string;
 };
 
-const ListItem = <T extends {
-  id: number;
-  title: string;
-  thumbnailUrl: string;
-  user: { profileImageUrl: string; nickname: string };
-  pinCount: number
-}>({
-     item,
-     linkPrefix,
-   }: ListItemProps<T>) => {
+const ListItem = <
+  T extends {
+    id: number;
+    title: string;
+    thumbnailUrl: string;
+    user: { profileImageUrl: string; nickname: string };
+    pinCount: number;
+  },
+>({
+  item,
+  linkPrefix,
+}: ListItemProps<T>) => {
   return (
     <Link to={`/${linkPrefix}/${item.id}`}>
-      <div className="flex h-50 flex-col gap-2 rounded-md border-[1.5px] border-gray-200 p-3">
-        <div className="w-full aspect-[4/3] overflow-hidden rounded-md bg-gray-100">
+      <div className="h-50 flex flex-col gap-2 rounded-md border-[1.5px] border-gray-200 p-3">
+        <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-gray-100">
           {item.thumbnailUrl.startsWith('https://example') ? (
             <ListItemThumbnail className="h-full w-full object-cover" />
           ) : (

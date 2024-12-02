@@ -23,8 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, query }) => {
   };
 
   return (
-    <div
-      className="relative flex h-12 w-[500px] items-center justify-between overflow-hidden rounded-md border-[1.33px] border-c_brand_BLUE bg-[#f9f9f9] px-4">
+    <div className="relative flex h-12 w-[500px] items-center justify-between overflow-hidden rounded-md border-[1.33px] border-c_brand_BLUE bg-[#f9f9f9] px-4">
       <input
         type="text"
         placeholder={query || '검색어를 입력해주세요'}

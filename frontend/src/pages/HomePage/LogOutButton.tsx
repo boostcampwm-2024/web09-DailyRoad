@@ -10,8 +10,9 @@ const LogOutButton = () => {
   };
   return (
     <button
-      className="bg-c_bg_blue text-white rounded-md p-2 px-4 h-12 w-36"
-      onClick={onClick}>
+      className="h-12 w-36 rounded-md bg-c_bg_blue p-2 px-4 text-white"
+      onClick={onClick}
+    >
       로그아웃
     </button>
   );
