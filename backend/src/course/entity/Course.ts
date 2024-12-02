@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../common/BaseEntity';
-import { User } from '../../user/entity/User';
-import { CoursePlace } from './CoursePlace';
-import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
+import { BaseEntity } from '@src/common/BaseEntity';
+import { User } from '@src/user/entity/User';
+import { CoursePlace } from '@src/course/entity/CoursePlace';
+import { SetPlacesOfCourseRequestItem } from '@src/course/dto/AddPlaceToCourseRequest';
 import { PlaceInCourseNotFoundException } from '@src/course/exception/PlaceInCourseNotFoundException';
 
 @Entity()

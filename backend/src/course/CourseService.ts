@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CourseRepository } from './CourseRepository';
-import { CreateCourseRequest } from './dto/CreateCourseRequest';
-import { CourseListResponse } from './dto/CourseListResponse';
+import { Transactional } from 'typeorm-transactional';
+import { CourseRepository } from '@src/course/CourseRepository';
+import { CourseListResponse } from '@src/course/dto/CourseListResponse';
 import {
   CourseDetailResponse,
   getPlacesResponseOfCourseWithOrder,
-} from './dto/CourseDetailResponse';
-import { CourseNotFoundException } from './exception/CourseNotFoundException';
-import { UpdateCourseInfoRequest } from './dto/UpdateCourseInfoRequest';
-import { SetPlacesOfCourseRequest } from './dto/AddPlaceToCourseRequest';
-import { PlaceRepository } from '../place/PlaceRepository';
-import { InvalidPlaceToCourseException } from './exception/InvalidPlaceToCourseException';
-import { PagedCourseResponse } from './dto/PagedCourseResponse';
-import { User } from '../user/entity/User';
-import { Transactional } from 'typeorm-transactional';
+} from '@src/course/dto/CourseDetailResponse';
+import { PagedCourseResponse } from '@src/course/dto/PagedCourseResponse';
+import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
+import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
+import { SetPlacesOfCourseRequest } from '@src/course/dto/AddPlaceToCourseRequest';
+import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundException';
+import { PlaceRepository } from '@src/place/PlaceRepository';
+import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
+import { User } from '@src/user/entity/User';
 
 @Injectable()
 export class CourseService {

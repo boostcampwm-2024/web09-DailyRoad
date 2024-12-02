@@ -7,7 +7,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsNotConsecutiveDuplicatePlace } from '../pipes/IsNotConsecutiveDuplicatePlace';
+import { IsNotConsecutiveDuplicatePlace } from '@src/course/pipes/IsNotConsecutiveDuplicatePlace';
 
 export class SetPlacesOfCourseRequestItem {
   @IsNumber()

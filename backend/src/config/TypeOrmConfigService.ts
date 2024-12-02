@@ -1,8 +1,8 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CustomNamingStrategy } from './CustomNamingStrategy';
-import { PinoTypeORMLogger } from './CustomTypeORMLogger';
+import { CustomNamingStrategy } from '@src/config/CustomNamingStrategy';
+import { PinoTypeORMLogger } from '@src/config/CustomTypeORMLogger';
 import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()

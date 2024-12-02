@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { BannerRepository } from './BannerRepository';
-import { ActiveBannerListResponse } from './dto/ActiveBannerListResponse';
+import { BannerRepository } from '@src/banner/BannerRepository';
+import { ActiveBannerListResponse } from '@src/banner/dto/ActiveBannerListResponse';
 
 @Injectable()
 export class BannerService {

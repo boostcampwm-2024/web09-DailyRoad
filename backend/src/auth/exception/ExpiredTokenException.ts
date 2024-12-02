@@ -1,5 +1,5 @@
-import { BaseException } from '@src/common/exception/BaseException';
 import { HttpStatus } from '@nestjs/common';
+import { BaseException } from '@src/common/exception/BaseException';
 
 export class ExpiredTokenException extends BaseException {
   constructor(message: string = '만료된 토큰입니다.') {

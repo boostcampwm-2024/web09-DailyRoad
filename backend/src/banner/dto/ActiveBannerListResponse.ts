@@ -1,4 +1,4 @@
-import { Banner } from '../entity/Banner';
+import { Banner } from '@src/banner/entity/Banner';
 
 export class ActiveBannerListResponse {
   constructor(

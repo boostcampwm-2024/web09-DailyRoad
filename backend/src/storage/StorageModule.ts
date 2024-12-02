@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { StorageController } from './StorageController';
-import { StorageService } from './StorageService';
+import { StorageController } from '@src/storage/StorageController';
+import { StorageService } from '@src/storage/StorageService';
 
 @Module({
   controllers: [StorageController],

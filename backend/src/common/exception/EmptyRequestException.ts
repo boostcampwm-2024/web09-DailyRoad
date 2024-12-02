@@ -1,5 +1,5 @@
-import { BaseException } from '@src/common/exception/BaseException';
 import { HttpStatus } from '@nestjs/common';
+import { BaseException } from '@src/common/exception/BaseException';
 
 export class EmptyRequestException extends BaseException {
   constructor(action: string = '작업') {

@@ -1,14 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './AppModule';
-import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { Logger, PinoLogger } from 'nestjs-pino';
+import * as cookieParser from 'cookie-parser';
+import { initializeTransactionalContext } from 'typeorm-transactional';
+import { AppModule } from '@src/AppModule';
 import {
   UnknownExceptionFilter,
   HttpExceptionFilter,
   BaseExceptionFilter,
-} from './common/exception/filter/GlobalExceptionFilter';
-import { initializeTransactionalContext } from 'typeorm-transactional';
+} from '@src/common/exception/filter/GlobalExceptionFilter';
 
 process.env.NODE_ENV = process.env.NODE_ENV
   ? process.env.NODE_ENV.trim().toLowerCase()

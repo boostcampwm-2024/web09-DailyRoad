@@ -8,11 +8,11 @@ import {
   Body,
   Param,
 } from '@nestjs/common';
-import { PlaceService } from './PlaceService';
-import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
-import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { Throttle } from '@nestjs/throttler';
+import { PlaceService } from '@src/place/PlaceService';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UnavailableIn } from '@src/common/decorator/UnavaliableIn';
 
 @Controller('places')

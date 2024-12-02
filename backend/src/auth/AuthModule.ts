@@ -1,9 +1,9 @@
 import { Module, Global } from '@nestjs/common';
-import { AuthController } from './AuthController';
-import { AuthService } from './AuthService';
-import { UserModule } from '../user/UserModule';
-import { JWTHelper } from './JWTHelper';
-import { RefreshTokenRepository } from './RefreshTokenRepository';
+import { AuthController } from '@src/auth/AuthController';
+import { AuthService } from '@src/auth/AuthService';
+import { UserModule } from '@src/user/UserModule';
+import { JWTHelper } from '@src/auth/JWTHelper';
+import { RefreshTokenRepository } from '@src/auth/RefreshTokenRepository';
 
 @Global()
 @Module({

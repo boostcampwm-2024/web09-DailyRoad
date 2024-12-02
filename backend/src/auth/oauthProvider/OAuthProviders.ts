@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { GoogleOAuthProvider } from './GoogleOAuthProvider';
-import { OAuthProvider } from './OAuthProvider';
+import { GoogleOAuthProvider } from '@src/auth/oauthProvider/GoogleOAuthProvider';
+import { OAuthProvider } from '@src/auth/oauthProvider/OAuthProvider';
 
 /**
  * 지원하는 OAuth 제공자의 이름을 정의합니다.

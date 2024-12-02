@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '@src/common/BaseEntity';
 import { Place } from '@src/place/entity/PlaceEntity';
-import { Map } from './Map';
+import { Map } from '@src/map/entity/Map';
 import { Color } from '@src/place/enum/Color';
 
 @Entity()

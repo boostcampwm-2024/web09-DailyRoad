@@ -10,9 +10,9 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './AuthService';
-import { AuthenticationException } from './exception/AuthenticationException';
-import { getOAuthProviderNameByValue } from './oauthProvider/OAuthProviders';
+import { AuthService } from '@src/auth/AuthService';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
+import { getOAuthProviderNameByValue } from '@src/auth/oauthProvider/OAuthProviders';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 import { AuthUser } from '@src/auth/decortator/AuthUser';
 

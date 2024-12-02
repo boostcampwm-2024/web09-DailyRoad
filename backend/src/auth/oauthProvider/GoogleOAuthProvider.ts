@@ -1,6 +1,6 @@
-import { OAuthProvider } from './OAuthProvider';
-import { addBearerToken } from '../util';
-import { AuthenticationException } from '../exception/AuthenticationException';
+import { OAuthProvider } from '@src/auth/oauthProvider/OAuthProvider';
+import { addBearerToken } from '@src/auth/util';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
 import {
   isGoogleTokenResponse,
   isGoogleUserResponse,

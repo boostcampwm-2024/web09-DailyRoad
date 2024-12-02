@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { AppController } from './AppController';
-import { AppService } from './AppService';
-import { TypeOrmConfigService } from './config/TypeOrmConfigService';
-import { MapModule } from './map/MapModule';
-import { PlaceModule } from './place/PlaceModule';
-import { CourseModule } from './course/CourseModule';
-import { AuthModule } from './auth/AuthModule';
-import { UserModule } from './user/UserModule';
-import { BannerModule } from './banner/BannerModule';
-import { AdminModule } from './admin/AdminModule';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { TimezoneInterceptor } from './config/TimezoneInterceptor';
-import { StorageModule } from './storage/StorageModule';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { CustomLoggerModule } from './common/log/CustomLoggerModule';
-import { SearchModule } from './search/SearchModule';
-import { addTransactionalDataSource } from 'typeorm-transactional';
-import { DataSource } from 'typeorm';
-import { BatchModule } from './batch/BatchModule';
+import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+
+import { AppController } from '@src/AppController';
+import { AppService } from '@src/AppService';
+import { TypeOrmConfigService } from '@src/config/TypeOrmConfigService';
+import { TimezoneInterceptor } from '@src/config/TimezoneInterceptor';
+import { MapModule } from '@src/map/MapModule';
+import { PlaceModule } from '@src/place/PlaceModule';
+import { CourseModule } from '@src/course/CourseModule';
+import { AuthModule } from '@src/auth/AuthModule';
+import { UserModule } from '@src/user/UserModule';
+import { BannerModule } from '@src/banner/BannerModule';
+import { AdminModule } from '@src/admin/AdminModule';
+import { StorageModule } from '@src/storage/StorageModule';
+import { SearchModule } from '@src/search/SearchModule';
+import { BatchModule } from '@src/batch/BatchModule';
+import { CustomLoggerModule } from '@src/common/log/CustomLoggerModule';
 
 @Module({
   imports: [

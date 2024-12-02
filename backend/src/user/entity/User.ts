@@ -1,8 +1,8 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../common/BaseEntity';
-import { Course } from '../../course/entity/Course';
-import { Map } from '../../map/entity/Map';
-import { Role } from '../enum/Role';
+import { BaseEntity } from '@src/common/BaseEntity';
+import { Role } from '@src/user/enum/Role';
+import { Course } from '@src/course/entity/Course';
+import { Map } from '@src/map/entity/Map';
 
 @Entity()
 export class User extends BaseEntity {

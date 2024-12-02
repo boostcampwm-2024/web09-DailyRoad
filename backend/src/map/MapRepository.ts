@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, ILike } from 'typeorm';
-import { Map } from './entity/Map';
-import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
+import { Map } from '@src/map/entity/Map';
+import { SoftDeleteRepository } from '@src/common/SoftDeleteRepository';
 
 @Injectable()
 export class MapRepository extends SoftDeleteRepository<Map, number> {

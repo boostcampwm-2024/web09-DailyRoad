@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
-import { User } from './entity/User';
 import { Injectable } from '@nestjs/common';
-import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
+import { DataSource } from 'typeorm';
+import { SoftDeleteRepository } from '@src/common/SoftDeleteRepository';
+import { User } from '@src/user/entity/User';
 
 @Injectable()
 export class UserRepository extends SoftDeleteRepository<User, number> {

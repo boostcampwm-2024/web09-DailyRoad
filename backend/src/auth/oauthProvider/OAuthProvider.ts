@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { OAuthProviders } from './OAuthProviders';
+import { OAuthProviders } from '@src/auth/oauthProvider/OAuthProviders';
 import { OAuthUserInfo } from '@src/auth/type';
 import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
 

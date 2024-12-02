@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './AppService';
 import { PinoLogger } from 'nestjs-pino';
+import { AppService } from '@src/AppService';
 
 @Controller()
 export class AppController {

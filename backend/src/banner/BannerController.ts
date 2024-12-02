@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { BannerService } from './BannerService';
+import { BannerService } from '@src/banner/BannerService';
 
 @Controller('/banners')
 export class BannerController {

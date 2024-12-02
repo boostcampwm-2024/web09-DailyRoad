@@ -1,6 +1,6 @@
-import { UserIconResponse } from '../../user/dto/UserIconResponse';
-import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
-import { Course } from '../entity/Course';
+import { UserIconResponse } from '@src/user/dto/UserIconResponse';
+import { PlaceListResponse } from '@src/place/dto/PlaceListResponse';
+import { Course } from '@src/course/entity/Course';
 
 export class CourseDetailResponse {
   constructor(

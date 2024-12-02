@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
-import { Banner } from './entity/Banner';
 import { DataSource, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { SoftDeleteRepository } from '@src/common/SoftDeleteRepository';
+import { Banner } from '@src/banner/entity/Banner';
 
 @Injectable()
 export class BannerRepository extends SoftDeleteRepository<Banner, number> {

@@ -1,6 +1,7 @@
 import { Module, UseGuards } from '@nestjs/common';
-import { AdminBannerModule } from './banner/BannerModule';
 import { RouterModule } from '@nestjs/core';
+
+import { AdminBannerModule } from '@src/admin/banner/BannerModule';
 import { AdminGuard } from '@src/admin/guard/AdminGuard';
 import { AuthModule } from '@src/auth/AuthModule';
 

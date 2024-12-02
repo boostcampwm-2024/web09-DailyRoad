@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
-import { BaseEntity } from '@src/common/BaseEntity';
 import decimalNumericTransformer from '@src/config/DecimalTransformer';
+import { BaseEntity } from '@src/common/BaseEntity';
 import { Category } from '@src/place/enum/Category';
 
 @Entity()
