@@ -30,9 +30,7 @@ const Homepage = () => {
       <div className={'flex w-full flex-col items-center justify-center'}>
         <div className="mb-4 flex w-[1080px] flex-col items-center justify-center p-4">
           <SearchBar onSearch={handleSearch}></SearchBar>
-          <BannerSlider
-            className={'m-10 flex h-[426px] w-full rounded-md'}
-          ></BannerSlider>
+          <BannerSlider className={'m-10 flex h-[426px] w-full'}></BannerSlider>
           <button
             onClick={onClick}
             className="flex h-[60px] w-[342px] items-center justify-center rounded-md border-[1.5px] border-c_brand_BLUE p-2 text-lg text-c_brand_BLUE"
