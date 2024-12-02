@@ -7,7 +7,7 @@ import {
   Delete,
   Get,
 } from '@nestjs/common';
-import { AdminBannerService } from './BannerService';
+import { AdminBannerService } from '@src/admin/banner/BannerService';
 import { CreateBannerRequest } from '@src/admin/banner/dto/CreateBannerRequest';
 import { UpdateBannerPeriodRequest } from '@src/admin/banner/dto/UpdateBannerPeriodRequest';
 import { UpdateBannerDetailsRequest } from '@src/admin/banner/dto/UpdateBannerDetailsRequest';

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, ILike, Repository } from 'typeorm';
-import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
-import { Course } from './entity/Course';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SoftDeleteRepository } from '@src/common/SoftDeleteRepository';
+import { Course } from '@src/course/entity/Course';
 import { CoursePlace } from '@src/course/entity/CoursePlace';
 
 @Injectable()

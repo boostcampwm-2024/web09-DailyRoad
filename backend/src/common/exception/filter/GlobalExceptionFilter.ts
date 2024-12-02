@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import {
   ArgumentsHost,
   Catch,
@@ -5,9 +6,8 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { BaseException } from '../BaseException';
 import { PinoLogger } from 'nestjs-pino';
+import { BaseException } from '@src/common/exception/BaseException';
 
 @Catch(BaseException)
 export class BaseExceptionFilter implements ExceptionFilter {

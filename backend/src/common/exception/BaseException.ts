@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import { ExceptionType } from './type';
+import { ExceptionType } from '@src/common/exception/type';
 
 export class BaseException extends HttpException {
   readonly code: number;

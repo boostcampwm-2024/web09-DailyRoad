@@ -1,5 +1,8 @@
 import { FindManyOptions, Repository, FindOptionsWhere } from 'typeorm';
-import { SoftDeletableEntity, Key } from './SoftDeletableEntity.interface';
+import {
+  SoftDeletableEntity,
+  Key,
+} from '@src/common/SoftDeletableEntity.interface';
 
 /**
  * Soft Delete 를 지원

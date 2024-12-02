@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { PinoLogger } from 'nestjs-pino';
 import { SearchController } from '@src/search/SearchController';
 import { SearchService } from '@src/search/SearchService';
-import { PlaceModule } from '@src/place/PlaceModule';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
-import { PinoLogger } from 'nestjs-pino';
+import { PlaceModule } from '@src/place/PlaceModule';
 
 @Module({
   imports: [

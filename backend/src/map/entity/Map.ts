@@ -1,8 +1,8 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '@src/common/BaseEntity';
-import { User } from '@src/user/entity/User';
-import { MapPlace } from './MapPlace';
 import { Color } from '@src/place/enum/Color';
+import { User } from '@src/user/entity/User';
+import { MapPlace } from '@src/map/entity/MapPlace';
 import { PlaceInMapNotFoundException } from '@src/map/exception/PlaceInMapNotFoundException';
 
 @Entity()

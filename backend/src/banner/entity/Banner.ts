@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { BaseEntity } from '../../common/BaseEntity';
+import { BaseEntity } from '@src/common/BaseEntity';
 
 @Entity()
 export class Banner extends BaseEntity {

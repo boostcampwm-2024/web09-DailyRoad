@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@src/common/BaseEntity';
 import { Place } from '@src/place/entity/PlaceEntity';
-import { Course } from './Course';
+import { Course } from '@src/course/entity/Course';
 
 @Entity()
 export class CoursePlace extends BaseEntity {

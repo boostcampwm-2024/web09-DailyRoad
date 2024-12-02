@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AdminBannerRepository } from './BannerRepository';
+import { AdminBannerRepository } from '@src/admin/banner/BannerRepository';
 import { CreateBannerRequest } from '@src/admin/banner/dto/CreateBannerRequest';
 import { UpdateBannerPeriodRequest } from '@src/admin/banner/dto/UpdateBannerPeriodRequest';
 import { UpdateBannerDetailsRequest } from '@src/admin/banner/dto/UpdateBannerDetailsRequest';

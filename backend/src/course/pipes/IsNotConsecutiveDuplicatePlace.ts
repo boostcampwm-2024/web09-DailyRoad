@@ -2,8 +2,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { SetPlacesOfCourseRequestItem } from '../dto/AddPlaceToCourseRequest';
-import { ConsecutivePlaceException } from '../exception/ConsecutivePlaceException';
+import { SetPlacesOfCourseRequestItem } from '@src/course/dto/AddPlaceToCourseRequest';
+import { ConsecutivePlaceException } from '@src/course/exception/ConsecutivePlaceException';
 
 @ValidatorConstraint({ name: 'isNotConsecutiveDuplicatePlace', async: false })
 export class IsNotConsecutiveDuplicatePlace

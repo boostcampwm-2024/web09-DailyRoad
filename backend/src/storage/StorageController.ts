@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { StorageService } from './StorageService';
-import { JwtAuthGuard } from '../auth/JwtAuthGuard';
-import { PreSignedPostRequest } from './dto/PreSignedPostRequest';
 import { Throttle } from '@nestjs/throttler';
+import { StorageService } from '@src/storage/StorageService';
+import { PreSignedPostRequest } from '@src/storage/dto/PreSignedPostRequest';
+import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
 
 @Controller('storage')
 export class StorageController {

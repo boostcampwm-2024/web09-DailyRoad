@@ -10,17 +10,17 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { MapService } from './MapService';
-import { CreateMapRequest } from './dto/CreateMapRequest';
-import { UpdateMapInfoRequest } from './dto/UpdateMapInfoRequest';
-import { AddPlaceToMapRequest } from './dto/AddPlaceToMapRequest';
-import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { MapService } from '@src/map/MapService';
+import { CreateMapRequest } from '@src/map/dto/CreateMapRequest';
+import { UpdateMapInfoRequest } from '@src/map/dto/UpdateMapInfoRequest';
+import { AddPlaceToMapRequest } from '@src/map/dto/AddPlaceToMapRequest';
+import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 import { UpdatePlaceInMapRequest } from '@src/map/dto/UpdatePlaceInMapRequest';
+import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
+import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
 import { EmptyRequestException } from '@src/common/exception/EmptyRequestException';
 import { AuthUser } from '@src/auth/decortator/AuthUser';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
-import { MapPermissionGuard } from '@src/map/guards/MapPermissionGuard';
-import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 
 @Controller('/maps')
 export class MapController {

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { CourseService } from './CourseService';
-import { CourseController } from './CourseController';
-import { UserModule } from '../user/UserModule';
-import { CourseRepository } from './CourseRepository';
-import { PlaceModule } from '../place/PlaceModule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CourseService } from '@src/course/CourseService';
+import { CourseController } from '@src/course/CourseController';
+import { CourseRepository } from '@src/course/CourseRepository';
 import { CoursePlace } from '@src/course/entity/CoursePlace';
-import { AdminGuard } from '@src/admin/guard/AdminGuard';
 import { CoursePermissionGuard } from '@src/course/guards/CoursePermissionGuard';
+import { PlaceModule } from '@src/place/PlaceModule';
+import { UserModule } from '@src/user/UserModule';
+import { AdminGuard } from '@src/admin/guard/AdminGuard';
 import { AdminModule } from '@src/admin/AdminModule';
 
 @Module({

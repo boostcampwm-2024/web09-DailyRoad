@@ -1,4 +1,4 @@
-import { Place } from '../entity/PlaceEntity';
+import { Place } from '@src/place/entity/PlaceEntity';
 import { Category } from '@src/place/enum/Category';
 
 export class PlaceSearchResponse {

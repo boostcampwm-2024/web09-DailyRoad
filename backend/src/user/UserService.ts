@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from './UserRepository';
-import { CreateUserRequest } from './dto/CreateUserRequest';
+import { UserRepository } from '@src/user/UserRepository';
+import { CreateUserRequest } from '@src/user/dto/CreateUserRequest';
 import { UserIconResponse } from '@src/user/dto/UserIconResponse';
 import { UserNotFoundException } from '@src/user/exception/UserNotFoundException';
 

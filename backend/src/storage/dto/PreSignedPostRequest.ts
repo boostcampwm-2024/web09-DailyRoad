@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsImageFile } from '../validator/IsImageFile';
+import { IsImageFile } from '@src/storage/validator/IsImageFile';
 
 export class PreSignedPostRequest {
   @IsString()

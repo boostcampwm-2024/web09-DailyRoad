@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common';
-import { LoggerModule } from 'nestjs-pino';
-import { createLogger } from './LoggerConfig';
 import { ConfigService, ConfigModule } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
+import { createLogger } from '@src/common/log/LoggerConfig';
 
 @Global()
 @Module({

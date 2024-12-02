@@ -1,6 +1,6 @@
-import { Map } from '../entity/Map';
-import { UserIconResponse } from '../../user/dto/UserIconResponse';
-import { PlaceListResponse } from '../../place/dto/PlaceListResponse';
+import { Map } from '@src/map/entity/Map';
+import { UserIconResponse } from '@src/user/dto/UserIconResponse';
+import { PlaceListResponse } from '@src/place/dto/PlaceListResponse';
 import { DEFAULT_THUMBNAIL_URL } from '@src/common/consts';
 
 export class MapDetailResponse {

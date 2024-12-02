@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { AuthenticationException } from '../exception/AuthenticationException';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
 
 export const AuthUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {

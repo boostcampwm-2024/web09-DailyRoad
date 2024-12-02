@@ -1,4 +1,4 @@
-import { User } from '../../user/entity/User';
+import { User } from '@src/user/entity/User';
 import { Map } from '../entity/Map';
 import {
   IsString,

@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { DataSource, ILike, MoreThan } from 'typeorm';
-import { Place } from './entity/PlaceEntity';
-import { SoftDeleteRepository } from '../common/SoftDeleteRepository';
+import { Place } from '@src/place/entity/PlaceEntity';
+import { SoftDeleteRepository } from '@src/common/SoftDeleteRepository';
 
 @Injectable()
 export class PlaceRepository extends SoftDeleteRepository<Place, number> {

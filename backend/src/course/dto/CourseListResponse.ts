@@ -1,5 +1,5 @@
 import { UserIconResponse } from '@src/user/dto/UserIconResponse';
-import { Course } from '../entity/Course';
+import { Course } from '@src/course/entity/Course';
 
 export class CourseListResponse {
   constructor(

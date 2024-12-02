@@ -1,6 +1,6 @@
+import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ElasticSearchConfig } from '@src/config/ElasticSearchConfig';
-import { Injectable } from '@nestjs/common';
 import { ElasticSearchQueryBuilder } from '@src/search/query/builder/ElasticSearchQueryBuilder';
 
 @Injectable()

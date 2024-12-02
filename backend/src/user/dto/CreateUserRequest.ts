@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { User } from '../entity/User';
-import { UserInfoWithProvider } from '../user.type';
-import { Role } from '../enum/Role';
+import { User } from '@src/user/entity/User';
+import { UserInfoWithProvider } from '@src/user/type';
+import { Role } from '@src/user/enum/Role';
 
 export class CreateUserRequest {
   @IsString()

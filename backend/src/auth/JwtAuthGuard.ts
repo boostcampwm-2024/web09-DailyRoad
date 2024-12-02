@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { AuthenticationException } from './exception/AuthenticationException';
-import { extractBearerToken } from './util';
-import { AuthUser } from './decortator/AuthUser';
-import { JWTHelper } from './JWTHelper';
+import { AuthenticationException } from '@src/auth/exception/AuthenticationException';
+import { extractBearerToken } from '@src/auth/util';
+import { AuthUser } from '@src/auth/decortator/AuthUser';
+import { JWTHelper } from '@src/auth/JWTHelper';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

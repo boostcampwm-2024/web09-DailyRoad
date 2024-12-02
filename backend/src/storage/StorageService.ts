@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CloudFunctionsFetchException } from './exception/CloudFunctionsFetchException';
+import { CloudFunctionsFetchException } from '@src/storage/exception/CloudFunctionsFetchException';
 
 @Injectable()
 export class StorageService {
