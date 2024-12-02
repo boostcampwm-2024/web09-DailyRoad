@@ -60,20 +60,20 @@ describe('MapRepository', () => {
     );
   });
 
-  // it('공개되어 있는 지도를 검색했을 때 정확한 페이지와 페이지의 지도를 전달한다', async () => {
-  //   const fiftyPublicMaps = createPublicMaps(50, fakeUser1);
-  //   await mapRepository.save(fiftyPublicMaps);
-  //   const [page, pageSize] = [5, 5];
-  //   const expectedMaps = fiftyPublicMaps.slice(20, 25);
-  //
-  //   const fifthPageMaps = await mapRepository.findAll(page, pageSize);
-  //
-  //   expect(fifthPageMaps).toEqual(
-  //     expect.arrayContaining(
-  //       expectedMaps.map((expectedMap) => expect.objectContaining(expectedMap)),
-  //     ),
-  //   );
-  // });
+  it('공개되어 있는 지도를 검색했을 때 정확한 페이지와 페이지의 지도를 전달한다', async () => {
+    const fiftyPublicMaps = createPublicMaps(50, fakeUser1);
+    await mapRepository.save(fiftyPublicMaps);
+    const [page, pageSize] = [5, 5];
+    const expectedMaps = fiftyPublicMaps.slice(20, 25);
+
+    const fifthPageMaps = await mapRepository.findAll(page, pageSize);
+
+    expect(fifthPageMaps).toEqual(
+      expect.arrayContaining(
+        expectedMaps.map((expectedMap) => expect.objectContaining(expectedMap)),
+      ),
+    );
+  });
 
   describe('searchByTitleQuery 메소드 테스트', () => {
     it('대소문자 구분없이 제목으로 지도를 검색할 수 있다', async () => {

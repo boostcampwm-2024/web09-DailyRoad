@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdatePlaceInCourseRequest {
+export class UpdatePinInCourseRequest {
   @IsOptional()
   @IsString()
   comment?: string;

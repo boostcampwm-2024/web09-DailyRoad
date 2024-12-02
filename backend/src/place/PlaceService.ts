@@ -2,7 +2,7 @@ import { BadGatewayException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
 import { PlaceRepository } from '@src/place/PlaceRepository';
-import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { AddPlaceRequest } from '@src/place/dto/AddPlaceRequest';
 import { PlaceNotFoundException } from '@src/place/exception/PlaceNotFoundException';
 import { PlaceAlreadyExistsException } from '@src/place/exception/PlaceAlreadyExistsException';
 import { mapCategory } from '@src/place/enum/Category';
@@ -26,7 +26,7 @@ export class PlaceService {
     this.GOOGLE_API_KEY = this.configService.get(<string>'GOOGLE_MAPS_API_KEY');
   }
 
-  async addPlace(createPlaceRequest: CreatePlaceRequest) {
+  async savePlace(createPlaceRequest: AddPlaceRequest) {
     const { googlePlaceId } = createPlaceRequest;
     if (await this.placeRepository.findByGooglePlaceId(googlePlaceId)) {
       throw new PlaceAlreadyExistsException();

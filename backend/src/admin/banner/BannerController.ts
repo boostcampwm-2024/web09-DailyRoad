@@ -10,15 +10,15 @@ import {
 import { AdminBannerService } from '@src/admin/banner/BannerService';
 import { CreateBannerRequest } from '@src/admin/banner/dto/CreateBannerRequest';
 import { UpdateBannerPeriodRequest } from '@src/admin/banner/dto/UpdateBannerPeriodRequest';
-import { UpdateBannerDetailsRequest } from '@src/admin/banner/dto/UpdateBannerDetailsRequest';
+import { UpdateBannerInfoRequest } from '@src/admin/banner/dto/UpdateBannerInfoRequest';
 
 @Controller()
 export class AdminBannerController {
   constructor(private readonly bannerService: AdminBannerService) {}
 
   @Get()
-  async getAllBannerList() {
-    return await this.bannerService.getAllBannerList();
+  async getAllBanners() {
+    return await this.bannerService.getAllBanners();
   }
 
   @Post()
@@ -35,14 +35,11 @@ export class AdminBannerController {
   }
 
   @Patch('/:id/details')
-  async updateBannerDetails(
+  async updateBannerInfo(
     @Param('id') id: number,
-    @Body() updateDetailsRequest: UpdateBannerDetailsRequest,
+    @Body() updateBannerInfoRequest: UpdateBannerInfoRequest,
   ) {
-    return await this.bannerService.updateBannerDetails(
-      id,
-      updateDetailsRequest,
-    );
+    return await this.bannerService.updateInfo(id, updateBannerInfoRequest);
   }
 
   @Delete('/:id')

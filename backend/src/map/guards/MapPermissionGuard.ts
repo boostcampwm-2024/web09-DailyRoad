@@ -11,7 +11,7 @@ export class MapPermissionGuard implements CanActivate {
     const mapId = Number(request.params.id);
     const userId = Number(request.user.userId);
 
-    const map = await this.mapService.getMapById(mapId);
+    const map = await this.mapService.getMap(mapId);
     if (map.user.id !== userId) {
       throw new MapPermissionException(mapId);
     }

@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post(':provider/signIn')
-  async handleCallback(
+  async signIn(
     @Param('provider') provider: string,
     @Body('code') code: string,
     @Req() request: Request,

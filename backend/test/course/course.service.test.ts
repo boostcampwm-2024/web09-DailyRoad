@@ -10,7 +10,7 @@ import { CourseNotFoundException } from '@src/course/exception/CourseNotFoundExc
 import { CreateCourseRequest } from '@src/course/dto/CreateCourseRequest';
 import { UpdateCourseInfoRequest } from '@src/course/dto/UpdateCourseInfoRequest';
 import {
-  SetPlacesOfCourseRequest,
+  UpdatePinsOfCourseRequest,
   SetPlacesOfCourseRequestItem,
 } from '@src/course/dto/AddPlaceToCourseRequest';
 import { InvalidPlaceToCourseException } from '@src/course/exception/InvalidPlaceToCourseException';
@@ -22,6 +22,7 @@ import { DataSource, Repository } from 'typeorm';
 import { UserFixture } from '@test/user/fixture/user.fixture';
 import { PlaceFixture } from '@test/place/fixture/place.fixture';
 import { truncateTables } from '@test/config/utils';
+import { UpdateCourseVisibilityRequest } from '@src/course/dto/UpdateCourseVisibilityRequest';
 
 async function createPagedResponse(
   courses: Course[],
@@ -170,7 +171,7 @@ describe('CourseService', () => {
     );
     await courseRepository.save(ownCourses);
 
-    const result = await courseService.getOwnCourses(
+    const result = await courseService.getMyCourses(
       fakeUser1.id,
       currentPage,
       pageSize,
@@ -194,7 +195,7 @@ describe('CourseService', () => {
       });
       const savedCourse = await courseRepository.save(course);
 
-      const result = await courseService.getCourseById(savedCourse.id);
+      const result = await courseService.getCourse(savedCourse.id);
 
       expect(result.id).toEqual(savedCourse.id);
       expect(result.title).toEqual(savedCourse.title);
@@ -204,7 +205,7 @@ describe('CourseService', () => {
     it('실패하면 코스를 찾을 수 없다는 예외를 던진다', async () => {
       const courseId = 1;
 
-      const result = courseService.getCourseById(courseId);
+      const result = courseService.getCourse(courseId);
 
       await expect(result).rejects.toThrow(CourseNotFoundException);
       await expect(result).rejects.toThrow(
@@ -291,7 +292,7 @@ describe('CourseService', () => {
         thumbnailUrl: 'https://example.com/course_thumbnail.jpg',
       } as UpdateCourseInfoRequest;
 
-      const result = courseService.updateCourseInfo(courseId, updateCourseForm);
+      const result = courseService.updateInfo(courseId, updateCourseForm);
 
       await expect(result).rejects.toThrow(CourseNotFoundException);
       await expect(result).rejects.toThrow(
@@ -302,7 +303,9 @@ describe('CourseService', () => {
     it('코스 공개/비공개 여부를 수정할 때 코스가 존재하지 않으면 예외를 던진다', async () => {
       const courseId = 1;
 
-      const result = courseService.updateCourseVisibility(courseId, true);
+      const result = courseService.updateVisibility(courseId, {
+        isPublic: true,
+      } as UpdateCourseVisibilityRequest);
 
       await expect(result).rejects.toThrow(CourseNotFoundException);
       await expect(result).rejects.toThrow(
@@ -319,12 +322,12 @@ describe('CourseService', () => {
           comment: 'A popular place',
         },
       ] as SetPlacesOfCourseRequestItem[],
-    } as SetPlacesOfCourseRequest;
+    } as UpdatePinsOfCourseRequest;
 
     it('코스가 존재하지 않으면 예외를 던진다', async () => {
       const courseId = 1;
 
-      const result = courseService.setPlacesOfCourse(
+      const result = courseService.updatePins(
         courseId,
         setPlacesOfCourseRequest,
       );
@@ -343,7 +346,7 @@ describe('CourseService', () => {
       });
       const savedCourse = await courseRepository.save(course);
 
-      const result = courseService.setPlacesOfCourse(
+      const result = courseService.updatePins(
         savedCourse.id,
         setPlacesOfCourseRequest,
       );
@@ -378,7 +381,7 @@ describe('CourseService', () => {
         })),
       };
 
-      const result = await courseService.setPlacesOfCourse(
+      const result = await courseService.updatePins(
         savedCourse.id,
         setPlacesOfCourseRequest,
       );

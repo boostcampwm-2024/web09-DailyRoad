@@ -11,7 +11,7 @@ export const initDataSource = async (container: StartedMySqlContainer) => {
     username: container.getUsername(),
     password: container.getUserPassword(),
     database: container.getDatabase(),
-    entities: [__dirname + '/../../src/**/*.entity.{ts,js}'],
+    entities: [__dirname + '/../../src/**/entity/*.{ts,js}'],
     synchronize: false,
     namingStrategy: new CustomNamingStrategy(),
   });

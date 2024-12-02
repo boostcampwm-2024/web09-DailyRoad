@@ -92,7 +92,7 @@ describe('PlaceService', () => {
       await placeRepository.save(place);
       jest.spyOn(searchService, 'savePlace').mockResolvedValue(undefined);
 
-      await expect(placeService.addPlace(createPlaceRequest)).rejects.toThrow(
+      await expect(placeService.savePlace(createPlaceRequest)).rejects.toThrow(
         PlaceAlreadyExistsException,
       );
     });
@@ -105,7 +105,7 @@ describe('PlaceService', () => {
       });
       await searchService.savePlace(createPlaceRequest.toEntity());
 
-      const result = await placeService.addPlace(createPlaceRequest);
+      const result = await placeService.savePlace(createPlaceRequest);
 
       expect(result).toHaveProperty('id');
       expect(result.id).toBeDefined();

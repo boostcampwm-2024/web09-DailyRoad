@@ -11,7 +11,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { PlaceService } from '@src/place/PlaceService';
 import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
-import { CreatePlaceRequest } from '@src/place/dto/CreatePlaceRequest';
+import { AddPlaceRequest } from '@src/place/dto/AddPlaceRequest';
 import { ParseOptionalNumberPipe } from '@src/common/pipe/ParseOptionalNumberPipe';
 import { UnavailableIn } from '@src/common/decorator/UnavaliableIn';
 
@@ -23,8 +23,8 @@ export class PlaceController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UnavailableIn('lightweight')
-  async importPlace(@Body() createPlaceDto: CreatePlaceRequest) {
-    return this.placeService.addPlace(createPlaceDto);
+  async addPlace(@Body() addPlaceRequest: AddPlaceRequest) {
+    return this.placeService.savePlace(addPlaceRequest);
   }
 
   @Throttle({
@@ -38,7 +38,7 @@ export class PlaceController {
   @UseGuards(JwtAuthGuard)
   @Get('/search')
   @UnavailableIn('lightweight')
-  async searchPlacesToImport(@Query('query') query: string) {
+  async searchPlacesToAdd(@Query('query') query: string) {
     if (!query) throw new BadRequestException('검색어를 입력해 주세요.');
 
     return this.placeService.searchPlacesInGoogle(query);
@@ -56,7 +56,7 @@ export class PlaceController {
   }
 
   @Get('/:id')
-  async getSinglePlace(@Param('id') id: number) {
+  async getPlaceDetail(@Param('id') id: number) {
     return this.placeService.getPlace(id);
   }
 }

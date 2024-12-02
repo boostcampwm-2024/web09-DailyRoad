@@ -6,7 +6,7 @@ import { ActiveBannerListResponse } from '@src/banner/dto/ActiveBannerListRespon
 export class BannerService {
   constructor(private readonly bannerRepository: BannerRepository) {}
 
-  async getActiveBannerList() {
+  async getActiveBanners() {
     const banners = await this.bannerRepository.findAllActive();
     return ActiveBannerListResponse.from(banners);
   }

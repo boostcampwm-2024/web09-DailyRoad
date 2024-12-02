@@ -13,7 +13,9 @@ import { InvalidPlaceToMapException } from '@src/map/exception/InvalidPlaceToMap
 import { User } from '@src/user/entity/User';
 import { UserRepository } from '@src/user/UserRepository';
 import { PlaceRepository } from '@src/place/PlaceRepository';
-import { Color } from '@src/place/enum/Color';
+import { AddPinToMapRequest } from '@src/map/dto/AddPinToMapRequest';
+import { UpdatePinInMapRequest } from '@src/map/dto/UpdatePinInMapRequest';
+import { UpdateMapVisibilityRequest } from '@src/map/dto/UpdateMapVisibilityRequest';
 
 @Injectable()
 export class MapService {
@@ -23,7 +25,7 @@ export class MapService {
     private readonly placeRepository: PlaceRepository,
   ) {}
 
-  async searchMap(query?: string, page: number = 1, pageSize: number = 15) {
+  async searchMaps(query?: string, page: number = 1, pageSize: number = 15) {
     const maps = await this.mapRepository.searchByTitleQuery(
       query,
       page,
@@ -52,7 +54,7 @@ export class MapService {
     );
   }
 
-  async getOwnMaps(userId: number, page: number = 1, pageSize: number = 10) {
+  async getMyMaps(userId: number, page: number = 1, pageSize: number = 10) {
     const totalCount = await this.mapRepository.countByUserId(userId);
 
     const ownMaps = await this.mapRepository.findByUserId(
@@ -69,7 +71,7 @@ export class MapService {
     );
   }
 
-  async getMapById(id: number) {
+  async getMap(id: number) {
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
 
@@ -89,24 +91,23 @@ export class MapService {
     return { id };
   }
 
-  async updateMapInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
+  async updateInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
     await this.checkExists(id);
 
     const { title, description } = updateMapForm;
     return this.mapRepository.update(id, { title, description });
   }
 
-  async updateMapVisibility(id: number, isPublic: boolean) {
+  async updateMapVisibility(
+    id: number,
+    visibility: UpdateMapVisibilityRequest,
+  ) {
     await this.checkExists(id);
-    return this.mapRepository.update(id, { isPublic });
+    return this.mapRepository.update(id, { isPublic: visibility.isPublic });
   }
 
-  async addPlace(
-    id: number,
-    placeId: number,
-    color = Color.RED,
-    comment?: string,
-  ) {
+  async addPlace(id: number, pinInfo: AddPinToMapRequest) {
+    const { placeId, color, comment } = pinInfo;
     const map = await this.mapRepository.findById(id);
     if (!map) throw new MapNotFoundException(id);
     await this.validatePlacesForMap(placeId, map);
@@ -122,19 +123,15 @@ export class MapService {
   }
 
   @Transactional()
-  async updatePlace(
-    id: number,
-    placeId: number,
-    color?: Color,
-    comment?: string,
-  ) {
+  async updatePin(id: number, placeId: number, pinInfo: UpdatePinInMapRequest) {
+    const { color, comment } = pinInfo;
     const map = await this.getMapOrElseThrowNotFound(id);
     map.updatePlace(placeId, color, comment);
 
     return this.mapRepository.save(map);
   }
 
-  async deletePlace(id: number, placeId: number) {
+  async deletePin(id: number, placeId: number) {
     const map = await this.getMapOrElseThrowNotFound(id);
 
     map.deletePlace(placeId);

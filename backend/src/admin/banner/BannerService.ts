@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { AdminBannerRepository } from '@src/admin/banner/BannerRepository';
 import { CreateBannerRequest } from '@src/admin/banner/dto/CreateBannerRequest';
 import { UpdateBannerPeriodRequest } from '@src/admin/banner/dto/UpdateBannerPeriodRequest';
-import { UpdateBannerDetailsRequest } from '@src/admin/banner/dto/UpdateBannerDetailsRequest';
+import { UpdateBannerInfoRequest } from '@src/admin/banner/dto/UpdateBannerInfoRequest';
 import { BannerNotFoundException } from '@src/banner/exception/BannerNotFoundException';
 
 @Injectable()
 export class AdminBannerService {
   constructor(private readonly bannerRepository: AdminBannerRepository) {}
 
-  async getAllBannerList() {
+  async getAllBanners() {
     return await this.bannerRepository.findAll();
   }
 
@@ -33,9 +33,9 @@ export class AdminBannerService {
     return this.bannerRepository.findOne({ where: { id } });
   }
 
-  async updateBannerDetails(
+  async updateInfo(
     id: number,
-    updateDetailsRequest: UpdateBannerDetailsRequest,
+    updateDetailsRequest: UpdateBannerInfoRequest,
   ) {
     const result = await this.bannerRepository.update(id, {
       imageUrl: updateDetailsRequest.imageUrl,
