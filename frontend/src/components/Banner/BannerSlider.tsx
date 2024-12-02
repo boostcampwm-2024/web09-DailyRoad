@@ -30,6 +30,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
     speed: interval / 10,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
     autoplaySpeed: interval,
   };
 
