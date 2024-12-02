@@ -7,10 +7,10 @@ interface ToggleButtonProps {
 }
 
 const ToggleButton: React.FC<ToggleButtonProps> = ({
-                                                     options,
-                                                     selected,
-                                                     onSelect,
-                                                   }) => {
+  options,
+  selected,
+  onSelect,
+}) => {
   return (
     <div className="relative flex h-[45px] w-[700px] rounded-md bg-gray-200 shadow-inner">
       <div

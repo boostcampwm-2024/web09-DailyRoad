@@ -10,7 +10,7 @@ import SideContainer from '@/components/common/SideContainer';
 import Marker from '@/components/Marker/Marker';
 import DeleteMapButton from './DeleteMapButton';
 import EditMapButton from './EditMapButton';
-import MapThumbnail from './MapThumbnail';
+import ListItemThumbnail from '@/components/common/List/ListItemThumbnail';
 
 type MapDetailBoardProps = {
   mapData: Map;
@@ -54,7 +54,7 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
           )}
 
           {mapData.thumbnailUrl.startsWith('https://example') ? (
-            <MapThumbnail className="h-full w-full" />
+            <ListItemThumbnail className="h-full w-full" />
           ) : (
             <img src={mapData.thumbnailUrl} className="object-cover"></img>
           )}

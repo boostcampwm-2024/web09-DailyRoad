@@ -18,7 +18,7 @@ const MainListPanel = () => {
         onSelect={(value) => setListTab(value as CreateMapType)}
       />
 
-      <div className="w-[1200px] mt-1">
+      <div className="mt-1 w-[1200px]">
         {listTab === 'MAP' ? <MapListPanel /> : <CourseListPanel />}
       </div>
     </div>
