@@ -80,7 +80,7 @@ export class CustomMarkerClusterer extends MarkerClusterer {
         map,
         mapCanvasProjection: this.getProjection(),
       });
-      console.log(changed, 'changed');
+      console.log(changed, 'given changed');
       // Allow algorithms to return flag on whether the clusters/markers have changed.
       if (changed || changed === undefined) {
         // Accumulate the markers of the clusters composed of a single marker.
