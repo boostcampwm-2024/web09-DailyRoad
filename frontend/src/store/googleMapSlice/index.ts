@@ -39,13 +39,12 @@ export const createGoogleMapSlice: StateCreator<
     const GoogleMap = getGoogleMapClass();
     const map = new GoogleMap(container, INITIAL_MAP_CONFIG);
 
-    const { algorithm, ...restClustererOptions } = clustererOptions;
+    const { ...options } = clustererOptions;
     const markerClusterer = new CustomMarkerClusterer({
       map,
+      ...options,
       algorithm: new CustomSuperClusterAlgorithm({ maxZoom: 18 }),
-      ...restClustererOptions,
     });
-    console.log(algorithm);
     set({ googleMap: map, markerClusterer });
   },
 
