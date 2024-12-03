@@ -5,16 +5,12 @@ import {
   getGoogleMapClass,
   loadGoogleMapsApi,
 } from '@/lib/googleMapsAPI-loader';
-import {
-  MarkerClusterer,
-  SuperClusterAlgorithm,
-} from '@googlemaps/markerclusterer';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import {
   clustererOptions,
   CustomMarkerClusterer,
 } from '@/lib/CustomMarkerClusterer';
 import { CustomSuperClusterAlgorithm } from '@/lib/CustomSuperCluseterAlgorithm';
-import { SuperClusterAlgorithmTest } from '@/lib/SuperClusterAlgorithm';
 
 export type GoogleMapState = {
   googleMap: google.maps.Map | null;
@@ -49,7 +45,7 @@ export const createGoogleMapSlice: StateCreator<
       algorithm: new CustomSuperClusterAlgorithm({ maxZoom: 18 }),
       ...restClustererOptions,
     });
-
+    console.log(algorithm);
     set({ googleMap: map, markerClusterer });
   },
 
