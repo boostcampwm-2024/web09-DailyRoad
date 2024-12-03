@@ -78,6 +78,15 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 <br/>
 <br/>
 
+### 시스템 아키텍처
+
+---
+
+<img src="https://github.com/user-attachments/assets/d568b413-526c-4412-adbc-516aeb2bf1ef" width=1000 alt="아키텍처">
+
+<br/>
+<br/>
+
 ### 기술 스택
 
 ---
@@ -89,15 +98,6 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 | **백엔드**     | ![Node.js](https://img.shields.io/badge/Node.js-114411?logo=node.js) ![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=ffffff) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=ffffff) ![TypeORM](https://img.shields.io/badge/TypeORM-3178C6?logo=typeorm&logoColor=ffffff) ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?logo=elasticsearch&logoColor=ffffff) ![Kibana](https://img.shields.io/badge/Kibana-005571?logo=kibana&logoColor=ffffff) ![Logstash](https://img.shields.io/badge/Logstash-005571?logo=logstash&logoColor=ffffff) |
 | **배포**       | ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=ffffff) ![Nginx](https://img.shields.io/badge/nginx-014532?logo=Nginx&logoColor=009639&) ![Naver Cloud Platform](https://img.shields.io/badge/Naver%20Cloud%20Platform-03C75A?logo=naver&logoColor=ffffff)                                                                                                                                                                                                                                                                                                    |
 | **협업 도구**  | ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=ffffff) ![Notion](https://img.shields.io/badge/Notion-000000?logo=notion) ![Figma](https://img.shields.io/badge/Figma-F24E1E?logo=figma&logoColor=ffffff) ![Slack](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=ffffff)                                                                                                                                                                                                                                                                                              |
-
-<br/>
-<br/>
-
-### 시스템 아키텍처
-
----
-
-<img src="https://github.com/user-attachments/assets/d568b413-526c-4412-adbc-516aeb2bf1ef" width=1000 alt="아키텍처">
 
 <br/>
 <br/>
