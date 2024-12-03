@@ -9,7 +9,7 @@ import {
 } from '@googlemaps/markerclusterer';
 import equal from 'fast-deep-equal';
 
-export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
+export class SuperClusterAlgorithmTest extends SuperClusterViewportAlgorithm {
   constructor({ ...options }: SuperClusterViewportOptions) {
     super(options);
     this.clusters = [];
@@ -25,9 +25,10 @@ export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
       ),
     };
 
-    // let changed = !equal(this.state, state);
-    let changed = false;
+    let changed = !equal(this.state, state);
+    console.log('Origin changed', changed);
     if (!equal(input.markers, this.markers)) {
+      changed = true;
       // TODO use proxy to avoid copy?
       this.markers = [...input.markers];
 
@@ -46,18 +47,10 @@ export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
       this.superCluster.load(points);
     }
 
-    const newClusters = this.cluster(input);
-    console.log(newClusters.length, this.clusters.length);
-    //this.clusters.length !== newClusters.length
-    //!equal(this.clusters, newClusters)
-    if (this.clusters.length !== newClusters.length) {
-      this.clusters = newClusters;
-      changed = true;
-    } else {
-      changed = false;
+    if (changed) {
+      this.clusters = this.cluster(input);
+      this.state = state;
     }
-
-    this.state = state;
 
     return { clusters: this.clusters, changed };
   }

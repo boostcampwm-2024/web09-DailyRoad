@@ -54,7 +54,7 @@ export const putPlaceToCourse = async ({
 }) => {
   const { data } = await axiosInstance.put<CoursePlace[]>(
     END_POINTS.PUT_PLACE_TO_COURSE(id),
-    { places },
+    { pins: places },
   );
   return { ...data, id };
 };
