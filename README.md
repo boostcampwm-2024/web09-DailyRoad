@@ -39,8 +39,8 @@
 <br/>
 <br/>
 
-### 핵심 경험
-
+### [핵심 경험](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki)
+_더 많은 경험을 보려면 [**여기로**](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki)_  
 _더 자세히 보려면 제목을 클릭해 주세요!_
 
 ---
