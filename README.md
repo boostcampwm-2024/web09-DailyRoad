@@ -76,7 +76,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 <br/>
 
-### [테스트](https://elastic-bread-9ef.notion.site/88ba2c0d659c450e968b8fb933335170?pvs=74)
+### [테스트](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki/1.-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%9E%91%EC%84%B1-%EC%9D%B4%EC%9C%A0)
 
 <img src="https://github.com/user-attachments/assets/0f797c37-cf5c-4443-86fc-7a79e44e8858" alt="테스트 컨테이너" style="width:600px; height:auto;">
 
