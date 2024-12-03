@@ -11,6 +11,6 @@ import { SearchService } from '@src/search/SearchService';
   imports: [ConfigModule, forwardRef(() => SearchModule)],
   controllers: [PlaceController],
   providers: [PlaceService, PlaceRepository, SearchService, PinoLogger],
-  exports: [PlaceRepository],
+  exports: [PlaceService, PlaceRepository],
 })
 export class PlaceModule {}
