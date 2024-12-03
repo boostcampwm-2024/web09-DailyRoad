@@ -14,12 +14,14 @@ import { SavePlaceToElasticSearchDTO } from '@src/search/dto/SavePlaceToElasticS
 import { Place } from '@src/place/entity/PlaceEntity';
 import { Category } from '@src/place/enum/Category';
 import { PlaceService } from '@src/place/PlaceService';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SearchService {
   constructor(
     private readonly elasticSearchQuery: ElasticSearchQuery,
     private readonly elasticSearchService: ElasticsearchService,
+    private readonly configService: ConfigService,
     @Inject(forwardRef(() => PlaceService))
     private readonly placeService: PlaceService,
     private readonly logger: PinoLogger,
@@ -48,6 +50,9 @@ export class SearchService {
     page: number = 1,
     size: number = 5,
   ) {
+    if (!(await this.isElasticsearchAvailable())) {
+      return await this.placeService.getPlaces(query, page, size);
+    }
     try {
       const searched = await this.elasticSearchQuery.searchPlace(
         query,
@@ -82,7 +87,7 @@ export class SearchService {
       });
     } catch (error) {
       this.logger.error(
-        `Elasticsearch 장소 검색 중 에러로 인해 DB에서 검색합니다.: ${error}`,
+        `Elasticsearch 장소 검색 중 에러로 인해 RDB에서 검색합니다.: ${error}`,
       );
       return await this.placeService.getPlaces(query, page, size);
     }
@@ -165,5 +170,28 @@ export class SearchService {
 
   private removeDuplicates(items: string[]): string[] {
     return Array.from(new Set(items));
+  }
+
+  private async isElasticsearchAvailable(): Promise<boolean> {
+    try {
+      return await fetch(`${this.getElasticsearchNode()}/_cluster/health`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Basic ${btoa(`${this.configService.get<string>('ELASTICSEARCH_USERNAME')}:${this.configService.get<string>('ELASTICSEARCH_PASSWORD')}`)}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => data.status === 'green');
+    } catch (error) {
+      this.logger.error(`Elasticsearch 상태 확인 중 네트워크 에러: ${error}`);
+      return false;
+    }
+  }
+
+  private getElasticsearchNode(): string {
+    return (
+      this.configService.get<string>('ELASTICSEARCH_NODE') ||
+      'http://localhost:9200'
+    );
   }
 }
