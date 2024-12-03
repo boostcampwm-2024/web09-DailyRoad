@@ -47,7 +47,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 ---
 
-### [Elasticsearch 를 사용한 검색 기능 개선](https://elastic-bread-9ef.notion.site/1-ES-14063e6f4ee980b4849cdeb2283f78a7?pvs=74)
+### [Elasticsearch 를 사용한 검색 기능 개선](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki/1.-%ED%98%84-%EC%83%81%ED%99%A9-%EB%B0%8F-Elasticsearch-%EB%8F%84%EC%9E%85-%EA%B3%84%EA%B8%B0)
 <img src="https://github.com/user-attachments/assets/5249b4ba-9e2c-44f6-8172-2cde95685ccd" alt="검색 결과 비교" style="width:600px; height:auto;">
 
 > Elasticsearch를 도입해 검색 로직의 가중치를 조정하고 RDB와 동기화를 유지하여 검색 정확도를 개선했습니다.  
