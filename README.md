@@ -47,8 +47,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 ---
 
-### [Elasticsearch 를 사용한 검색 기능 개선]()
-
+### [Elasticsearch 를 사용한 검색 기능 개선](https://elastic-bread-9ef.notion.site/1-ES-14063e6f4ee980b4849cdeb2283f78a7?pvs=74)
 <img src="https://github.com/user-attachments/assets/5249b4ba-9e2c-44f6-8172-2cde95685ccd" alt="검색 결과 비교" style="width:600px; height:auto;">
 
 > Elasticsearch를 도입해 검색 로직의 가중치를 조정하고 RDB와 동기화를 유지하여 검색 정확도를 개선했습니다.  
@@ -57,7 +56,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 <br/>
 
-### [마커 클러스터링]()
+### [마커 클러스터링](https://elastic-bread-9ef.notion.site/googlemaps-markerclusterer-45fb4525303e418c86cd3d84f4771721?pvs=74)
 
 <img src="https://github.com/user-attachments/assets/421f7ad8-ff69-423a-bde3-3e37e1e32722" alt="마커 클러스터링" style="width:600px; height:auto;">
 
@@ -77,7 +76,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 <br/>
 
-### [테스트]()
+### [테스트](https://elastic-bread-9ef.notion.site/88ba2c0d659c450e968b8fb933335170?pvs=74)
 
 <img src="https://github.com/user-attachments/assets/0f797c37-cf5c-4443-86fc-7a79e44e8858" alt="테스트 컨테이너" style="width:600px; height:auto;">
 
@@ -87,7 +86,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 <br/>
 
-### [React로 래핑되지 않은 JS 라이브러리 사용]()
+### [React로 래핑되지 않은 JS 라이브러리 사용](https://elastic-bread-9ef.notion.site/Google-Maps-API-f5e948983b024e5ab2acb84101180509?pvs=74)
 
 > JS 라이브러리와 React의 결합 과정에서 높은 자유도로 인해  
 > 마커 관리 주체가 분산되는 문제를 겪었습니다.  
