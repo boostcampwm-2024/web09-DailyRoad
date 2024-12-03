@@ -16,7 +16,8 @@
 > 개인적인 기억과 감상을 담은 지도를 통해 새로운 발견을 하고,  
 > 일상의 영감을 얻어보세요!
 >
-> <a href="https://boostcampwm-2024.github.io/web09-DailyRoad/" target='_blank'>🌈 소개 페이지를 구경해보세요!</a>
+> <a href="https://boostcampwm-2024.github.io/web09-DailyRoad/" target='_blank'>🌈 소개 페이지를
+> 구경해보세요!</a>
 >
 > <a href="https://forms.gle/Hkckwm6vtZxoEnxH6" target='_blank'>📝 피드백을 남겨주세요!</a>
 
@@ -47,6 +48,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 ---
 
 ### [Elasticsearch 를 사용한 검색 기능 개선]()
+
 <img src="https://github.com/user-attachments/assets/5249b4ba-9e2c-44f6-8172-2cde95685ccd" alt="검색 결과 비교" style="width:600px; height:auto;">
 
 > Elasticsearch를 도입해 검색 로직의 가중치를 조정하고 RDB와 동기화를 유지하여 검색 정확도를 개선했습니다.  
@@ -98,7 +100,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 ---
 
-<img src="https://github.com/user-attachments/assets/d568b413-526c-4412-adbc-516aeb2bf1ef" width=1000 alt="아키텍처">
+<img src="https://github.com/user-attachments/assets/d910af3b-5169-4dd4-b5d9-6c07b0a80972" width=1000 alt="아키텍처">
 
 <br/>
 <br/>
