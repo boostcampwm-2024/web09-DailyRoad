@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { PlaceSearchResponse } from '@src/search/dto/PlaceSearchResponse';
 import { PinoLogger } from 'nestjs-pino';
@@ -13,12 +13,15 @@ import { ElasticSearchSaveException } from '@src/search/exception/ElasticSearchS
 import { SavePlaceToElasticSearchDTO } from '@src/search/dto/SavePlaceToElasticSearchDTO';
 import { Place } from '@src/place/entity/PlaceEntity';
 import { Category } from '@src/place/enum/Category';
+import { PlaceService } from '@src/place/PlaceService';
 
 @Injectable()
 export class SearchService {
   constructor(
     private readonly elasticSearchQuery: ElasticSearchQuery,
     private readonly elasticSearchService: ElasticsearchService,
+    @Inject(forwardRef(() => PlaceService))
+    private readonly placeService: PlaceService,
     private readonly logger: PinoLogger,
   ) {}
 
@@ -45,37 +48,44 @@ export class SearchService {
     page: number = 1,
     size: number = 5,
   ) {
-    const searched = await this.elasticSearchQuery.searchPlace(
-      query,
-      latitude,
-      longitude,
-      page,
-      size,
-    );
-    let result = searched.hits?.hits || [];
-    if (result.length === 0) {
-      const prefixSearched =
-        await this.elasticSearchQuery.searchPlaceWithPrefix(query);
-      result = prefixSearched.hits?.hits || [];
-    }
-    return result.map((hit: PlaceSearchHit) => {
-      const { _source } = hit;
-      return new PlaceSearchResponse(
-        _source.id,
-        _source.name,
-        {
-          latitude: _source.location.lat,
-          longitude: _source.location.lon,
-        },
-        _source.googlePlaceId,
-        _source.category as Category,
-        _source.description,
-        _source.detailPageUrl,
-        _source.thumbnailUrl,
-        _source.rating,
-        _source.formattedAddress,
+    try {
+      const searched = await this.elasticSearchQuery.searchPlace(
+        query,
+        latitude,
+        longitude,
+        page,
+        size,
       );
-    });
+      let result = searched.hits?.hits || [];
+      if (result.length === 0) {
+        const prefixSearched =
+          await this.elasticSearchQuery.searchPlaceWithPrefix(query);
+        result = prefixSearched.hits?.hits || [];
+      }
+      return result.map((hit: PlaceSearchHit) => {
+        const { _source } = hit;
+        return new PlaceSearchResponse(
+          _source.id,
+          _source.name,
+          {
+            latitude: _source.location.lat,
+            longitude: _source.location.lon,
+          },
+          _source.googlePlaceId,
+          _source.category as Category,
+          _source.description,
+          _source.detailPageUrl,
+          _source.thumbnailUrl,
+          _source.rating,
+          _source.formattedAddress,
+        );
+      });
+    } catch (error) {
+      this.logger.error(
+        `Elasticsearch 장소 검색 중 에러로 인해 DB에서 검색합니다.: ${error}`,
+      );
+      return await this.placeService.getPlaces(query, page, size);
+    }
   }
 
   async syncPlaceToElasticSearch(places: Place[]) {
