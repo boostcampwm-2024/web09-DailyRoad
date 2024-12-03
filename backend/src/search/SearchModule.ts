@@ -6,7 +6,6 @@ import { SearchController } from '@src/search/SearchController';
 import { SearchService } from '@src/search/SearchService';
 import { ElasticSearchQuery } from '@src/search/query/ElasticSearchQuery';
 import { PlaceModule } from '@src/place/PlaceModule';
-import { PlaceService } from '@src/place/PlaceService';
 
 @Module({
   imports: [
