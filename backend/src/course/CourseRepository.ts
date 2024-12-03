@@ -20,14 +20,23 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
       where: { isPublic: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
   searchByTitleQuery(title: string, page: number, pageSize: number) {
     return this.find({
-      where: { title: ILike(`%${title}%`), isPublic: true },
+      where: {
+        title: ILike(`%${title}%`),
+        isPublic: true,
+      },
       skip: (page - 1) * pageSize,
       take: pageSize,
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
@@ -36,6 +45,9 @@ export class CourseRepository extends SoftDeleteRepository<Course, number> {
       where: { user: { id: userId } },
       skip: (page - 1) * pageSize,
       take: pageSize,
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
