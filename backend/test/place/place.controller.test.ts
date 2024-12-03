@@ -1,81 +1,37 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { JwtAuthGuard } from '@src/auth/JwtAuthGuard';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
-import { initDataSource } from '@test/config/datasource.config';
-import { PlaceModule } from '@src/place/PlaceModule';
-import { PlaceRepository } from '@src/place/PlaceRepository';
 import { PlaceService } from '@src/place/PlaceService';
 import { PlaceCreateRequestFixture } from '@test/place/fixture/PlaceCreateRequest.fixture';
 import { DataSource } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import { initializeTransactionalContext } from 'typeorm-transactional';
 import { SearchService } from '@src/search/SearchService';
-import { SearchModule } from '@src/search/SearchModule';
-import { LoggerModule, PinoLogger } from 'nestjs-pino';
-import { truncateTables } from '@test/config/utils';
+import {
+  initializeIntegrationTestEnvironment,
+  truncateTables,
+} from '@test/config/utils';
+import { JWTHelper } from '@src/auth/JWTHelper';
+import { UserFixture } from '@test/user/fixture/user.fixture';
+import { User } from '@src/user/entity/User';
 
 describe('PlaceController', () => {
   let app: INestApplication;
-  let container: StartedMySqlContainer;
   let dataSource: DataSource;
   let placeService: PlaceService;
-  let placeRepository: PlaceRepository;
   let searchService: SearchService;
+  let jwtHelper: JWTHelper;
+  let token: string;
+  let fakeUser1: User;
 
   beforeAll(async () => {
-    initializeTransactionalContext();
-    container = await new MySqlContainer().withReuse().start();
-    dataSource = await initDataSource(container);
-    placeRepository = new PlaceRepository(dataSource);
-
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        PlaceModule,
-        SearchModule,
-        LoggerModule.forRoot({
-          pinoHttp: {
-            transport: {
-              target: 'pino-pretty',
-              options: {
-                singleLine: true,
-              },
-            },
-            level: 'debug',
-          },
-        }),
-      ],
-      providers: [
-        PlaceService,
-        SearchService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get: jest.fn(() => 'mocked-config-value'),
-          },
-        },
-        {
-          provide: PinoLogger,
-          useValue: {
-            error: jest.fn(),
-          },
-        },
-      ],
-    })
-      .overrideProvider(PlaceRepository)
-      .useValue(placeRepository)
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: () => true })
-      .compile();
-
-    app = module.createNestApplication();
-    app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, transform: true }),
-    );
-    await app.init();
-    placeService = module.get<PlaceService>(PlaceService);
-    searchService = module.get<SearchService>(SearchService);
+    ({ app, dataSource } = await initializeIntegrationTestEnvironment());
+    placeService = app.get<PlaceService>(PlaceService);
+    searchService = app.get<SearchService>(SearchService);
+    fakeUser1 = UserFixture.createUser({ oauthId: 'abc' });
+    jwtHelper = app.get<JWTHelper>(JWTHelper);
+    const userInfo = {
+      userId: fakeUser1.id,
+      role: fakeUser1.role,
+    };
+    token = jwtHelper.generateToken('24h', userInfo);
   });
 
   afterAll(async () => {
@@ -137,6 +93,7 @@ describe('PlaceController', () => {
 
       const res = await request(app.getHttpServer())
         .post('/places')
+        .set('Authorization', `Bearer ${token}`)
         .send(createPlaceDto);
       expect(res.status).toEqual(201);
     });
@@ -146,6 +103,7 @@ describe('PlaceController', () => {
 
       const response = await request(app.getHttpServer())
         .post('/places')
+        .set('Authorization', `Bearer ${token}`)
         .send(invalidPlaceDto)
         .expect(400);
 
