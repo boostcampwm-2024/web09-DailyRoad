@@ -35,7 +35,7 @@ const ImageWithSkeleton = ({
       <img
         className="h-20 w-20 object-cover"
         src={
-          'https://kr.object.ncloudstorage.com/ogil-public/uploads/default_thumbnail/no_Image.webp'
+          'https://kr.object.ncloudstorage.com/ogil-public/uploads/default_thumbnail/noImage.webp'
         }
         alt={'이미지 없음'}
       />
