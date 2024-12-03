@@ -58,7 +58,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 ### [마커 클러스터링]()
 
-<img src="#" alt="마커 클러스터링" style="width:600px; height:auto;">
+<img src="https://github.com/user-attachments/assets/421f7ad8-ff69-423a-bde3-3e37e1e32722" alt="마커 클러스터링" style="width:600px; height:auto;">
 
 > 지도 상 수많은 마커를 효과적으로 표현하기 위해 위해 클러스터링을 도입했습니다.  
 > 그 과정에서 마커의 과도한 렌더링과 깜빡임 문제를 만났습니다.  
@@ -87,8 +87,6 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 <br/>
 
 ### [React로 래핑되지 않은 JS 라이브러리 사용]()
-
-<img src="#" alt="관련 이미지" style="width:600px; height:auto;">
 
 > JS 라이브러리와 React의 결합 과정에서 높은 자유도로 인해  
 > 마커 관리 주체가 분산되는 문제를 겪었습니다.  
