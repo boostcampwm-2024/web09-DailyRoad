@@ -117,6 +117,7 @@ const PlaceListPanel = ({
             lng: place.location.longitude,
           }}
           category={place.category}
+          description={place.comment}
           color={place.color}
           title={place.name}
           order={isDraggable ? index + 1 : undefined}
