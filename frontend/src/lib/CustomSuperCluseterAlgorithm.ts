@@ -25,10 +25,8 @@ export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
       ),
     };
 
-    // let changed = !equal(this.state, state);
     let changed = false;
     if (!equal(input.markers, this.markers)) {
-      // TODO use proxy to avoid copy?
       this.markers = [...input.markers];
 
       const points = this.markers.map((marker) => {
@@ -47,9 +45,7 @@ export class CustomSuperClusterAlgorithm extends SuperClusterViewportAlgorithm {
     }
 
     const newClusters = this.cluster(input);
-    console.log(newClusters.length, this.clusters.length);
-    //this.clusters.length !== newClusters.length
-    //!equal(this.clusters, newClusters)
+
     if (this.clusters.length !== newClusters.length) {
       this.clusters = newClusters;
       changed = true;
