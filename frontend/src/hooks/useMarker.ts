@@ -49,7 +49,11 @@ export const useMarker = (props: MarkerProps) => {
 
     contentDiv.innerHTML = order
       ? `
-    <div style="background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: black; transform: translate(0, -4px);">${order}</div>
+      <svg width="36" height="36" viewBox="0 0 61 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.86668 52.3259C-2.95556 40.3556 -2.95556 20.948 8.86668 8.97771C20.6889 -2.99257 39.8565 -2.99257 51.6788 8.97771C63.501 20.948 63.501 40.3556 51.6788 52.3259L30.2727 74L8.86668 52.3259Z" fill="#00A3FF"/>
+<circle cx="30.3031" cy="30.1928" r="18.8988" fill="white"/>
+<text x=30 y=40 font-size=25 text-anchor="middle" fill="#00A3FF" font-weight="bold">${order}</text> 
+</svg>
     `
       : `<img width='36' height='36' src="https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png" style="filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));"/>`;
 

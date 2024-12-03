@@ -2,31 +2,32 @@ import { useStore } from '@/store/useStore';
 import { useEffect, useMemo, useState } from 'react';
 
 const POLYLINE_CONFIG = {
-  strokeColor: '#000000',
+  strokeColor: '#00A3FF',
   strokeOpacity: 1.0,
-  strokeWeight: 2,
-};
-
-const ARROW_SYMBOL = {
-  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+  strokeWeight: 3,
 };
 
 export const usePolyline = (path: google.maps.LatLngLiteral[]) => {
   const [polyline, setPolyline] = useState<google.maps.Polyline[] | null>(null);
   const map = useStore((state) => state.googleMap);
 
-  const paths = useMemo(
-    () =>
-      path.slice(0, path.length - 1).map((_, index) => {
-        return [path[index], path[index + 1]];
-      }),
-    [path],
-  );
+  const paths = useMemo(() => {
+    if (path.length < 2) {
+      return [];
+    }
+    return path
+      .slice(0, path.length - 1)
+      .map((_, index) => [path[index], path[index + 1]]);
+  }, [path]);
 
   useEffect(() => {
     if (!map) {
       return;
     }
+
+    const ARROW_SYMBOL = {
+      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    };
 
     const newPolylines = path.map((_, index) => {
       return new google.maps.Polyline({
