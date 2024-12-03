@@ -58,7 +58,7 @@ const DetailPlaceForm = ({
         order: placeList.length + 1,
       },
     ],
-    [placeList],
+    [placeList, placeMarker],
   );
   const onSubmit = () => {
     if (mode === 'MAP') {
