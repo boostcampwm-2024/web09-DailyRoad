@@ -1,31 +1,31 @@
 String keyword = "level";
-
 String key = "\"" + keyword + "\":\"";
 
 if (!params['_source'].containsKey('message')) {
-  emit("no stack");
-  return;
+    ctx._source['log_level'] = "no stack";
+    return;
 }
 
 String message = params['_source']['message'];
 if (message == null) {
-  emit("no stack");
-  return;
+    ctx._source['log_level'] = "no stack";
+    return;
 }
 
 int startIndex = message.indexOf(key);
-int key_length =key.length();
+int key_length = key.length();
 
 if (startIndex == -1) {
-  emit("no message");
-  return;
+    ctx._source['log_level'] = "no message";
+    return;
 }
 
 startIndex += key_length;
 int endIndex = message.indexOf('"', startIndex);
 if (endIndex == -1) {
-  emit("no message");
-  return;
+    ctx._source['log_level'] = "no message";
+    return;
 }
 
-emit(message.substring(startIndex, endIndex));
+String levelValue = message.substring(startIndex, endIndex);
+ctx._source['log_level'] = levelValue;

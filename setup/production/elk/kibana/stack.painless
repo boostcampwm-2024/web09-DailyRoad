@@ -1,31 +1,35 @@
 String keyword = "stack";
-
 String key = "\"" + keyword + "\":\"";
 
 if (!params['_source'].containsKey('message')) {
-  emit("no stack");
-  return;
+    // message 필드가 없으면 기본값 설정
+    ctx._source['stack_value'] = "no stack";
+    return;
 }
 
 String message = params['_source']['message'];
 if (message == null) {
-  emit("no stack");
-  return;
+    // message 필드가 null이면 기본값 설정
+    ctx._source['stack_value'] = "no stack";
+    return;
 }
 
 int startIndex = message.indexOf(key);
-int key_length =key.length();
+int key_length = key.length();
 
 if (startIndex == -1) {
-  emit("no message");
-  return;
+    // 키가 존재하지 않으면 기본값 설정
+    ctx._source['stack_value'] = "no message";
+    return;
 }
 
 startIndex += key_length;
 int endIndex = message.indexOf('"', startIndex);
 if (endIndex == -1) {
-  emit("no message");
-  return;
+    // 값의 끝을 찾지 못하면 기본값 설정
+    ctx._source['stack_value'] = "no message";
+    return;
 }
 
-emit(message.substring(startIndex, endIndex));
+// 추출된 값을 _source에 저장
+ctx._source['stack_value'] = message.substring(startIndex, endIndex);

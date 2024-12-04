@@ -2,31 +2,33 @@ def keywords = ["msg", "message", "error"];
 String key = null;
 
 if (!params['_source'].containsKey("message")) {
-  emit("[NONE] : no valid key found");
-  return;
+    // message 필드가 없으면 기본값 설정
+    ctx._source['log_message'] = "[NONE] : no valid key found";
+    return;
 }
 
 String message = params['_source']['message'];
 if (message == null) {
-  emit("[NONE] : no valid key found");
-  return;
+    // message 필드가 null이면 기본값 설정
+    ctx._source['log_message'] = "[NONE] : no valid key found";
+    return;
 }
 
 // 키 후보를 순회하며 값 추출
 for (String keyword : keywords) {
-  String candidateKey = "\"" + keyword + "\":\"";
-  int startIndex = message.indexOf(candidateKey);
-  if (startIndex != -1) { // 키를 찾으면 값 추출
-    key = candidateKey;
-    int keyLength = candidateKey.length();
-    startIndex += keyLength;
-    int endIndex = message.indexOf("\"", startIndex);
-    if (endIndex != -1) {
-      emit(message.substring(startIndex, endIndex));
-      return;
+    String candidateKey = "\"" + keyword + "\":\"";
+    int startIndex = message.indexOf(candidateKey);
+    if (startIndex != -1) { // 키를 찾으면 값 추출
+        key = candidateKey;
+        int keyLength = candidateKey.length();
+        startIndex += keyLength;
+        int endIndex = message.indexOf("\"", startIndex);
+        if (endIndex != -1) {
+            ctx._source['log_message'] = message.substring(startIndex, endIndex); // _source에 값 저장
+            return;
+        }
     }
-  }
 }
 
-// 매칭되는 키가 없을 경우 "[NONE] : message 내용" 반환
-emit("[NONE] : " + message);
+// 매칭되는 키가 없을 경우 "[NONE] : message 내용" 저장
+ctx._source['log_message'] = "[NONE] : " + message;
