@@ -11,7 +11,7 @@ export class AppController {
 
   @Get()
   async getHello() {
-    this.logger.info('Hello world');
+    this.logger.error('AppController.getHello의 에러 로그입니다.');
     return (await this.appService.getHello()) + ' Web 09 Backend';
   }
 }
