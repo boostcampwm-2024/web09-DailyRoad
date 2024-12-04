@@ -1,0 +1,86 @@
+PUT _ingest/pipeline/add_log_level_msg_and_convert_time
+{
+  "description": "Extract log level, log message, and format timestamp to Seoul timezone",
+  "processors": [
+    {
+      "script": {
+        "source": """
+          // Extract 'level'
+          String keyword = "level";
+          String key = "\"" + keyword + "\":\"";
+
+          if (!ctx.containsKey('message')) {
+              ctx.log_level = "no stack";
+          } else {
+              String message = ctx.message;
+              if (message == null) {
+                  ctx.log_level = "no stack";
+              } else {
+                  int startIndex = message.indexOf(key);
+                  int keyLength = key.length();
+
+                  if (startIndex == -1) {
+                      ctx.log_level = "no message";
+                  } else {
+                      startIndex += keyLength;
+                      int endIndex = message.indexOf('"', startIndex);
+                      if (endIndex == -1) {
+                          ctx.log_level = "no message";
+                      } else {
+                          ctx.log_level = message.substring(startIndex, endIndex);
+                      }
+                  }
+              }
+          }
+
+          // Extract 'msg' or 'message'
+          if (!ctx.containsKey('message')) {
+              ctx.log_msg = "no message";
+          } else {
+              String message = ctx.message;
+              if (message == null) {
+                  ctx.log_msg = "no message";
+              } else {
+                  int startIndex = message.indexOf("\"msg\":\"");
+                  int keyLength = "\"msg\":\"".length();
+
+                  if (startIndex == -1) {
+                      startIndex = message.indexOf("\"message\":\"");
+                      keyLength = "\"message\":\"".length();
+                  }
+
+                  if (startIndex == -1) {
+                      ctx.log_msg = "no message";
+                  } else {
+                      startIndex += keyLength;
+                      int endIndex = message.indexOf('"', startIndex);
+                      if (endIndex == -1) {
+                          ctx.log_msg = "no message";
+                      } else {
+                          ctx.log_msg = message.substring(startIndex, endIndex);
+                      }
+                  }
+              }
+          }
+
+          // Format @timestamp to Seoul timezone
+          if (ctx.containsKey('@timestamp')) {
+              String timestamp = ctx['@timestamp'];
+              def instant = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZoneId.of('Asia/Seoul'));
+              ctx['@timestamp_seoul'] = instant.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss"));
+          }
+        """
+      }
+    }
+  ]
+}
+
+PUT dailyroad-*/_settings
+{
+  "index.default_pipeline": "add_log_level_msg_and_convert_time"
+}
+
+GET dailyroad-*/_search
+{
+  "size": 1
+}
