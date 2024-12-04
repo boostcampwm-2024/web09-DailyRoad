@@ -40,8 +40,12 @@ export class MapController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/my')
-  async getMyMaps(@AuthUser() user: AuthUser) {
-    return await this.mapService.getMyMaps(user.userId);
+  async getMyMaps(
+    @AuthUser() user: AuthUser,
+    @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
+    @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
+  ) {
+    return await this.mapService.getMyMaps(user.userId, page, limit);
   }
 
   @Get('/:id')
