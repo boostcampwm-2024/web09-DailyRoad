@@ -8,7 +8,7 @@ export default defineConfig({
     fs: {
       allow: [path.resolve(__dirname)],
     },
-    port: 5200,
+    port: 5173,
   },
   resolve: {
     alias: {

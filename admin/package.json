@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "start": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "preview": "vite preview",
@@ -14,7 +15,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "tailwind-scrollbar": "^3.1.0"
+    "tailwind-scrollbar": "^3.1.0",
+    "lucide-react": "^0.462.0",
+    "axios": "^1.7.8"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
