@@ -37,8 +37,12 @@ export class CourseController {
 
   @Get('/my')
   @UseGuards(JwtAuthGuard)
-  async getMyCourses(@AuthUser() user: AuthUser) {
-    return await this.courseService.getMyCourses(user.userId);
+  async getMyCourses(
+    @AuthUser() user: AuthUser,
+    @Query('page', new ParseOptionalNumberPipe(1)) page?: number,
+    @Query('limit', new ParseOptionalNumberPipe(15)) limit?: number,
+  ) {
+    return await this.courseService.getMyCourses(user.userId, page, limit);
   }
 
   @Get('/:id')

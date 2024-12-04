@@ -45,7 +45,7 @@ export class CourseService {
     return new PagedCourseResponse(courses, totalCount, page, pageSize);
   }
 
-  async getMyCourses(userId: number, page: number = 1, pageSize: number = 10) {
+  async getMyCourses(userId: number, page: number = 1, pageSize: number = 15) {
     const [ownCourses, totalCount] = await Promise.all([
       this.courseRepository.findByUserId(userId, page, pageSize),
       this.courseRepository.countByUserId(userId),

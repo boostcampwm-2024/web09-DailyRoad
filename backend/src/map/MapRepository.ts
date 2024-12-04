@@ -39,7 +39,7 @@ export class MapRepository extends SoftDeleteRepository<Map, number> {
 
   countByUserId(userId: number) {
     return this.count({
-      where: { id: userId },
+      where: { user: { id: userId } },
     });
   }
 

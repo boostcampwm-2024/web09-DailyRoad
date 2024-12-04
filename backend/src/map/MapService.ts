@@ -52,15 +52,13 @@ export class MapService {
     );
   }
 
-  async getMyMaps(userId: number, page: number = 1, pageSize: number = 10) {
+  async getMyMaps(userId: number, page: number = 1, pageSize: number = 15) {
     const totalCount = await this.mapRepository.countByUserId(userId);
-
     const ownMaps = await this.mapRepository.findByUserId(
       userId,
       page,
       pageSize,
     );
-
     return new PagedMapResponse(
       await Promise.all(ownMaps.map(MapListResponse.from)),
       totalCount,
