@@ -85,7 +85,7 @@ export const GOOGLE_ELEMENTS = {
     categoryCode: string,
     address: string,
     description: string,
-  ) => `<div style="padding:4px; font-family: Pretendard, ui-sans-serif, system-ui;">
+  ) => `<div style="padding:4px; padding-right: 30px; font-family: Pretendard, ui-sans-serif, system-ui;">
     <div style=" display:flex; flex-direction:column; gap:0.25rem; ">
         <p style="font-size:16px; font-weight:700">${title}</p>
         <p class="${categoryCode} badge">${category ?? '장소'}</p>  
