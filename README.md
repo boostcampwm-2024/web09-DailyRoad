@@ -29,6 +29,7 @@
 ---
 
 ### 나만의 지도 공유하기
+
 <img src="https://github.com/user-attachments/assets/54234c0f-a885-48fb-a24b-9916b99af827" alt="나만의 지도 공유하기" style="width:600px; height:auto;">
 
 > 나만의 지도를 만들어 다른 사람과 공유할 수 있습니다.  
@@ -37,6 +38,7 @@
 ---
 
 ### 나만의 지도에 장소 추가하기
+
 <img src="https://github.com/user-attachments/assets/f0a10b2e-48ee-4ba3-8d24-2dfd3dc4fc3c" alt="나만의 지도에 장소 추가하기" style="width:600px; height:auto;">
 
 > 나만의 장소를 지도에 추가할 수 있습니다.
@@ -44,9 +46,10 @@
 ---
 
 ### 나만의 코스 공유하기
+
 <img src="https://github.com/user-attachments/assets/93c22b4f-72e6-408d-945a-9c5fa7de7a1d" alt="나만의 코스 공유하기" style="width:600px; height:auto;">
 
-> 자신만의 코스를 공유하거나, 공유된 코스를 탐색할 수 있습니다.  
+> 자신만의 코스를 공유하거나, 공유된 코스를 탐색할 수 있습니다.
 
 <br/>
 <br/>
@@ -65,7 +68,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 > Elasticsearch를 도입해 검색 로직의 가중치를 조정하고 RDB와 동기화를 유지하여 검색 정확도를 개선했습니다.  
 > 이를 통해 동의어 처리와 오타 교정 기능을 통해 검색 신뢰도를 높였습니다.
 >
-> 싱글 노드 환경에서의 장애 상황에 대비해 SFP 대처 로직을 추가했고,  
+> 싱글 노드 환경에서의 장애 상황에 대비해 SPOF 대처 로직을 추가했고,  
 > 그 과정에서 Fallback 처리 시간이 오래 걸리는 문제를 발견했습니다.  
 > 이를 해결하기 위해 헬스 체크를 도입하였고, 응답 시간을 **97.86% 감소(약 47배 개선)** 시키는 성과를 거두었습니다.
 
