@@ -1,5 +1,8 @@
-import { useStore } from '@/store/useStore';
 import { useEffect, useState } from 'react';
+
+import { useStore } from '@/store/useStore';
+
+import { CATEGORY_LIST, GOOGLE_ELEMENTS } from '@/constants/map';
 
 type MarkerCustomProps = {
   onClick?: (e: google.maps.MapMouseEvent) => void;
@@ -38,7 +41,7 @@ export const useMarker = (props: MarkerProps) => {
   const { position } = markerOptions;
 
   const categoryCode =
-    categoryObj[(category as keyof typeof categoryObj) ?? '기본'];
+    CATEGORY_LIST[(category as keyof typeof CATEGORY_LIST) ?? '기본'];
 
   const contentDiv = document.createElement('div');
 
@@ -48,14 +51,8 @@ export const useMarker = (props: MarkerProps) => {
     }
 
     contentDiv.innerHTML = order
-      ? `
-      <svg width="36" height="36" viewBox="0 0 61 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.86668 52.3259C-2.95556 40.3556 -2.95556 20.948 8.86668 8.97771C20.6889 -2.99257 39.8565 -2.99257 51.6788 8.97771C63.501 20.948 63.501 40.3556 51.6788 52.3259L30.2727 74L8.86668 52.3259Z" fill="#00A3FF"/>
-<circle cx="30.3031" cy="30.1928" r="18.8988" fill="white"/>
-<text x=30 y=40 font-size=25 text-anchor="middle" fill="#00A3FF" font-weight="bold">${order}</text> 
-</svg>
-    `
-      : `<img width='36' height='36' src="https://kr.object.ncloudstorage.com/ogil-public/uploads/marker/${categoryCode ?? 'pin'}_${color?.toLocaleLowerCase() ?? 'default'}.png" style="filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));"/>`;
+      ? GOOGLE_ELEMENTS.COURSE_MARKER(order)
+      : GOOGLE_ELEMENTS.MAP_MARKER(categoryCode, color?.toLocaleLowerCase());
 
     const newMarker = new google.maps.marker.AdvancedMarkerElement({
       ...markerOptions,
@@ -76,20 +73,20 @@ export const useMarker = (props: MarkerProps) => {
   useEffect(() => {
     if (!marker || !map) return;
 
-    const infoContent = `<div style="font-family: Pretendard, ui-sans-serif, system-ui;">
-    <div style="display:flex; justify-content:space-between; gap:0.25rem; align-items: center;">
-        <p>${title}</p>
-        </div>
-        <p class="${categoryCode} badge">${category ?? '장소'}</p>  
-        <p>${address}</p>
-        <p>${description}</p>
-  </div>`;
+    const infoContent = GOOGLE_ELEMENTS.INFO_WINDOW(
+      title,
+      category,
+      categoryCode,
+      address ?? '',
+      description ?? '',
+    );
 
     const infoWindow = new google.maps.InfoWindow({
       content: infoContent,
     });
 
     google.maps.event.addListener(marker, 'click', () => {
+      infoWindow.close();
       infoWindow.open({ anchor: marker, map });
       moveTo(position?.lat as number, position?.lng as number);
     });
@@ -99,12 +96,4 @@ export const useMarker = (props: MarkerProps) => {
     });
   }, [marker, onClick]);
   return marker;
-};
-
-const categoryObj = {
-  명소: 'camera',
-  맛집: 'restaurant',
-  카페: 'cafe',
-  기본: 'pin',
-  숙소: 'pin',
 };
