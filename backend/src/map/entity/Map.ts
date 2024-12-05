@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '@src/common/BaseEntity';
 import { Color } from '@src/place/enum/Color';
 import { User } from '@src/user/entity/User';
@@ -8,7 +8,8 @@ import { PlaceInMapNotFoundException } from '@src/map/exception/PlaceInMapNotFou
 @Entity()
 export class Map extends BaseEntity {
   // Todo. 오브젝트 스토리지에 실제 이미지 저장 후 수정
-  public static readonly DEFAULT_THUMBNAIL_URL = 'https://aaa.com';
+  public static readonly DEFAULT_THUMBNAIL_URL =
+    'https://kr.object.ncloudstorage.com/ogil-public/post/uploads/35af1797a54a.jpg';
 
   @ManyToOne(() => User, (user) => user.maps, { eager: true }) // Todo: onDelete -> soft delete
   @JoinColumn({ name: 'user_id' })
