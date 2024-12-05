@@ -1,10 +1,10 @@
 import { MarkerColor } from '@/types';
 
 const INITIAL_CENTER = {
-  lat: 37.5,
-  lng: 127.0,
+  lat: 37.49084668,
+  lng: 127.0334308656,
 };
-const INITIAL_ZOOM_LEVEL = 16;
+const INITIAL_ZOOM_LEVEL = 18;
 
 export const INITIAL_MAP_CONFIG = {
   center: INITIAL_CENTER,
