@@ -41,25 +41,33 @@ export const getMapList = async (pageParam: number, query?: string) => {
   return data;
 };
 
-export const getMyMapList = async () => {
-  const { data } = await axiosInstance.get<MapList>(END_POINTS.MY_MAP);
+export const getMyMapList = async (pageParam: number) => {
+  const { data } = await axiosInstance.get<MapList>(END_POINTS.MY_MAP, {
+    params: {
+      page: pageParam,
+    },
+  });
   return data;
 };
 
 export const editMapInfo = async ({
   title,
   description,
+  thumbnailUrl,
   mapId,
 }: {
   title: string;
   description: string;
+  thumbnailUrl: string;
   mapId: number;
 }) => {
+  console.log(thumbnailUrl, 'thumbnailUrl API');
   const { data } = await axiosInstance.patch<EditInfoResponse>(
     END_POINTS.EDIT_MAP_INFO(mapId),
     {
       title,
       description,
+      thumbnailUrl,
     },
   );
   return data;
@@ -86,6 +94,7 @@ export const editMap = async (data: BaseMap & { mapId: number }) => {
     editMapInfo({
       title: data.title,
       description: data.description,
+      thumbnailUrl: data.thumbnailUrl ?? '',
       mapId: data.mapId,
     }),
     editMapVisibility({ mapId: data.mapId, isPublic: data.isPublic }),
