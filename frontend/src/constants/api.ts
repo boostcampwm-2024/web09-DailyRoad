@@ -82,3 +82,14 @@ export const USER_ERROR_MESSAGE = {
   E999: '서버에 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.',
   E900: '양식이 잘못 되었습니다. 다시 확인해 주세요.',
 };
+
+export const QUERY_KEY = {
+  MAP: (id: number) => ['map', id],
+  MAPS: ['mapList'],
+  MY_MAPS: ['myMapList'],
+  COURSE: (id: number) => ['course', id],
+  COURSES: ['courseList'],
+  MY_COURSES: ['myCourseList'],
+  USER_INFO: ['user'],
+  TOKEN_REFRESH: ['tokenRefresh'],
+};

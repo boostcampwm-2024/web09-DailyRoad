@@ -1,19 +1,18 @@
-import { deletePlaceToCourse, deletePlaceToMap } from '@/api/place';
-import { CreateMapType } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const useDeletePlaceMutation = (mode: CreateMapType) => {
+import { deletePlaceToMap } from '@/api/place';
+import { QUERY_KEY } from '@/constants/api';
+
+const useDeletePlaceMutation = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = mode === 'MAP' ? deletePlaceToMap : deletePlaceToCourse;
-  const queryKey = mode === 'MAP' ? 'map' : 'course';
-
   const deleteMutation = useMutation({
-    mutationFn: mutationFn,
+    mutationFn: deletePlaceToMap,
     onSuccess: (data) => {
       const id = data?.id;
-      queryClient.invalidateQueries({ queryKey: [queryKey, id] });
-      queryClient.invalidateQueries({ queryKey: ['mapList'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY.MAP(id) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY.MAPS });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY.MY_MAPS });
     },
   });
   return deleteMutation;
