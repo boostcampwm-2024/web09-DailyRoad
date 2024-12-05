@@ -90,8 +90,8 @@ export class MapService {
   async updateInfo(id: number, updateMapForm: UpdateMapInfoRequest) {
     await this.checkExists(id);
 
-    const { title, description } = updateMapForm;
-    return this.mapRepository.update(id, { title, description });
+    const { title, description, thumbnailUrl } = updateMapForm;
+    return this.mapRepository.update(id, { title, description, thumbnailUrl });
   }
 
   async updateMapVisibility(
