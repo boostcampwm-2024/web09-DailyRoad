@@ -4,6 +4,7 @@ import { useUserInfoQuery } from '@/hooks/api/useUserInfoQuery';
 import { useEffect } from 'react';
 import { getRedirectUri } from '@/api/auth';
 import LogOutButton from './LogOutButton';
+import GoogleIcon from '@/components/common/GoogleIcon';
 
 const LoginButtons = () => {
   const user = useStore((state) => state.user);
@@ -47,11 +48,9 @@ const LoginButtons = () => {
   return (
     <>
       {!isLogged ? (
-        <div className="flex justify-between gap-5">
-          <button
-            className="h-12 w-36 rounded-md bg-c_bg_blue p-2 px-4 text-white"
-            onClick={handleLogin}
-          >
+        <div className="flex h-12 items-center justify-center gap-2 rounded-md border-[1px] border-c_button_gray p-2 px-4">
+          <GoogleIcon width={24} height={24} />
+          <button className="" onClick={handleLogin}>
             구글 로그인
           </button>
         </div>
