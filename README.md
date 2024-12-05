@@ -1,7 +1,7 @@
-## [여기서 나만의 지도를 공유해 보세요! 🚗](https://preview.dailyroad.site/)
+## [여기서 나만의 지도를 공유해 보세요! 🚗](https://dailyroad.site/)
 
 <div align="center">
-    <a href="https://preview.dailyroad.site/">
+    <a href="https://dailyroad.site/">
         <img src="https://github.com/user-attachments/assets/d1b124e0-682c-4665-a418-600e97d15a35" width="1000" alt="오늘의 길">
     </a>
 </div>
@@ -73,7 +73,7 @@ _더 자세히 보려면 제목을 클릭해 주세요!_
 
 <br/>
 
-### [로그 모니터링 시스템](https://elastic-bread-9ef.notion.site/3dd807f73d0e4aa8982abcd4b4dad8ed)
+### [로그 모니터링 시스템](https://github.com/boostcampwm-2024/web09-DailyRoad/wiki/1.-%EB%A1%9C%EA%B7%B8-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EB%8F%84%EC%9E%85-%EA%B3%84%EA%B8%B0)
 
 <img src="https://github.com/user-attachments/assets/42cf3df1-7051-4f5c-a481-b2d598de4572" alt="kibana 로그" width="600">
 <img src="https://github.com/user-attachments/assets/430569da-edf3-44f9-89c9-46fd0beb123b" alt="알림 스크린샷" width="800">
