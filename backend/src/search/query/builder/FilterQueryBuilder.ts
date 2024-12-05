@@ -17,7 +17,7 @@ const createMatchFilter = (field: string, value: string, weight: number) => ({
 });
 
 export const FilterBuilders = {
-  FILTER_TERM_NAME_KEYWORD: (query: string, weight: number = 20) =>
+  FILTER_TERM_NAME_KEYWORD: (query: string, weight: number = 50) =>
     createTermFilter('name.keyword', query, weight),
   FILTER_MATCH_NAME: (token: string, weight: number = 15) =>
     createMatchFilter('name', token, weight),
