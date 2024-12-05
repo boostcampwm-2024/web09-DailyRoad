@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { initDataSource } from '@test/config/datasource.config';
 import { AppModule } from '@src/AppModule';
+import { PinoLogger } from 'nestjs-pino';
 
 interface TestSetup {
   app: INestApplication;
@@ -22,6 +23,10 @@ export async function initializeIntegrationTestEnvironment(): Promise<TestSetup>
   })
     .overrideProvider(DataSource)
     .useValue(dataSource)
+    .overrideProvider(PinoLogger)
+    .useValue({
+      error: jest.fn(),
+    })
     .compile();
   const app = module.createNestApplication();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
@@ -44,10 +49,10 @@ export async function truncateTables(dataSource: DataSource) {
     await queryRunner.query('SET FOREIGN_KEY_CHECKS = 0;');
 
     const tables = await queryRunner.query(`
-        SELECT TABLE_NAME
-        FROM information_schema.tables
-        WHERE table_schema = DATABASE();
-    `);
+            SELECT TABLE_NAME
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE();
+        `);
 
     for (const { TABLE_NAME } of tables) {
       await queryRunner.query(`TRUNCATE TABLE \`${TABLE_NAME}\`;`);
