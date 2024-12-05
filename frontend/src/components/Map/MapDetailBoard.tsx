@@ -56,7 +56,10 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
           {mapData.thumbnailUrl.startsWith('https://example') ? (
             <ListItemThumbnail className="h-full w-full" />
           ) : (
-            <img src={mapData.thumbnailUrl} className="object-cover"></img>
+            <img
+              src={mapData.thumbnailUrl}
+              className="h-40 w-40 object-cover"
+            ></img>
           )}
           <p className="text-lg font-semibold">지도 소개</p>
           <div className="rounded-md border-[1px] border-gray-100 p-1">
@@ -65,11 +68,13 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
         </Box>
         <Box className="scrollbar-thumb-rounded-lg min-h-80 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
           {isOwner && (
-            <EditMapButton
-              text="수정"
-              to={`/create/map/${mapData.id}`}
-              className="flex justify-end px-2"
-            />
+            <div className="flex w-full justify-end">
+              <EditMapButton
+                text="수정"
+                to={`/create/map/${mapData.id}`}
+                className="w-10 px-2"
+              />
+            </div>
           )}
           {places && places.length > 0 ? (
             <>
