@@ -61,20 +61,24 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
 
   return (
     <div className={className}>
-      <Slider {...settings} className="h-full w-full">
-        {banners.map((banner, index) => (
-          <div key={index} className="cursor-pointer">
-            <img
-              className="box-sizing:border-box h-full w-full rounded-md border-[1.5px] border-c_border_gray"
-              src={banner.imageUrl}
-              alt={`Banner ${index}`}
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
-              onClick={() => handleClick(banner.redirectUrl)}
-            />
-          </div>
-        ))}
-      </Slider>
+      {banners.length > 0 ? (
+        <Slider {...settings} className="h-full w-full">
+          {banners.map((banner, index) => (
+            <div key={index} className="cursor-pointer">
+              <img
+                className="box-sizing:border-box h-full w-full rounded-md border-[1.5px] border-c_border_gray"
+                src={banner.imageUrl}
+                alt={`Banner ${index}`}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onClick={() => handleClick(banner.redirectUrl)}
+              />
+            </div>
+          ))}
+        </Slider>
+      ) : (
+        <div className="h-96 w-full animate-pulse rounded-md border-[1.5px] bg-c_textarea_gray"></div>
+      )}
     </div>
   );
 };
