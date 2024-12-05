@@ -1,10 +1,12 @@
-import { getPlace } from '@/api/place';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { CustomPlace, Place } from '@/types';
-import PlaceItem from './PlaceItem';
+import React, { useEffect, useMemo } from 'react';
+
 import Marker from '@/components/Marker/Marker';
+import PlaceItem from './PlaceItem';
+
+import { getPlace } from '@/api/place';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useStore } from '@/store/useStore';
+import { CustomPlace, Place } from '@/types';
 
 type SearchResultsProps = {
   query: string;

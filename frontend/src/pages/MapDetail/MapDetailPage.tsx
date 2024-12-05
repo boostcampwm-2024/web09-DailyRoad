@@ -1,6 +1,7 @@
+import { useParams } from 'react-router-dom';
+
 import MapDetailBoard from '@/components/Map/MapDetailBoard';
 import { useMapQuery } from '@/hooks/api/useMapQuery';
-import { useParams } from 'react-router-dom';
 
 const MapDetailPage = () => {
   const { id } = useParams();

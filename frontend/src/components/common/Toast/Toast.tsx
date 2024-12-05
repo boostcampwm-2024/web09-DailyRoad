@@ -11,6 +11,7 @@ const TOAST_STYLE = {
   error: 'bg-red-500 text-white',
   warning: 'bg-yellow-500 text-black',
   info: 'bg-blue-500 text-white',
+  default: 'bg-gray-500 text-white',
 };
 
 const Toast = ({

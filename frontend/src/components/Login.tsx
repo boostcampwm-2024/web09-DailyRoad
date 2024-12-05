@@ -1,6 +1,7 @@
+import { useLayoutEffect } from 'react';
+
 import { useUserInfoQuery } from '@/hooks/api/useUserInfoQuery';
 import { useStore } from '@/store/useStore';
-import { useLayoutEffect } from 'react';
 
 type LoginProps = {
   children: React.ReactNode;

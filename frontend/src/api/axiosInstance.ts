@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { AXIOS_BASE_URL, NETWORK } from '@/constants/api';
+
 import {
   checkAndSetToken,
   handleAPIError,

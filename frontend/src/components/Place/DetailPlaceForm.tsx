@@ -1,10 +1,14 @@
-import { useStore } from '@/store/useStore';
-import PlaceItem from './PlaceItem';
-import TextInputArea from '../common/TextInputArea';
-import { useCallback, useMemo, useState } from 'react';
-import Box from '../common/Box';
+import { useMemo, useState } from 'react';
 
-import DashBoardHeader from '../common/DashBoardHeader';
+import TextInputArea from '@/components/common/TextInputArea';
+import Box from '@/components/common/Box';
+import DashBoardHeader from '@/components/common/DashBoardHeader';
+import PlaceItem from './PlaceItem';
+
+import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
+import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
+import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
+import { useStore } from '@/store/useStore';
 import {
   CoursePlace,
   CreateMapType,
@@ -12,9 +16,6 @@ import {
   MarkerColor,
   Place,
 } from '@/types';
-import ColorSelector from '@/pages/PlaceCreation/ColorSelector';
-import { useAddPlaceMutation } from '@/hooks/api/useAddPlaceMutation';
-import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
 
 type DetailPlaceFormProps = {
   oncloseModal: () => void;

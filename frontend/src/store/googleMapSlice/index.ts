@@ -1,5 +1,6 @@
-import { INITIAL_MAP_CONFIG } from '@/constants/map';
 import { StateCreator } from 'zustand';
+
+import { INITIAL_MAP_CONFIG } from '@/constants/map';
 import { StoreState } from '@/types';
 import {
   getGoogleMapClass,

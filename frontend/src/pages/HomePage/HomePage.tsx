@@ -1,12 +1,13 @@
+import { useNavigate } from 'react-router-dom';
+
 import Footer from '@/pages/HomePage/Footer';
 import Header from '@/pages/HomePage/Header';
 
+import ArrowIcon from '@/components/common/DummyIcon';
+import BannerSlider from '@/components/Banner/BannerSlider';
 import MainListPanel from './MainListPanel';
 
 import { useStore } from '@/store/useStore';
-import { useNavigate } from 'react-router-dom';
-import BannerSlider from '@/components/Banner/BannerSlider';
-import ArrowIcon from '@/components/common/DummyIcon';
 
 const Homepage = () => {
   const addToast = useStore((state) => state.addToast);

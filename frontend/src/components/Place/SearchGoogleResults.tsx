@@ -1,5 +1,6 @@
-import { useGooglePlaceQuery } from '@/hooks/api/useGooglePlaceQuery';
 import GooglePlaceItem from './GooglePlaceItem';
+
+import { useGooglePlaceQuery } from '@/hooks/api/useGooglePlaceQuery';
 
 type SearchGoogleResultsProps = {
   query: string;

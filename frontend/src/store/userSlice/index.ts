@@ -1,5 +1,6 @@
-import { StoreState, User } from '@/types';
 import { StateCreator } from 'zustand';
+
+import { StoreState, User } from '@/types';
 
 export type AuthState = {
   isLogged: boolean;

@@ -1,5 +1,6 @@
-import { Place, StoreState } from '@/types';
 import { StateCreator } from 'zustand';
+
+import { Place, StoreState } from '@/types';
 
 export type PlaceState = {
   place: Place;

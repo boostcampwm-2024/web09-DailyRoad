@@ -1,6 +1,8 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+
 import { postTokenRefresh } from './auth';
 import { axiosInstance } from './axiosInstance';
+
 import { USER_ERROR_MESSAGE } from '@/constants/api';
 import { CustomError } from './CustomError';
 
@@ -50,7 +52,6 @@ export const handleTokenError = async (
   }
 
   if (data.code === 'E500') {
-    console.log('유효하지 않은 토큰입니다.');
     localStorage.removeItem('ACCESS_TOKEN_KEY');
     throw new Error('로그인이 필요합니다.');
   }

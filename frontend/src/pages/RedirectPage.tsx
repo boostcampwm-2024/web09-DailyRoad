@@ -1,6 +1,7 @@
-import { useLogInMutation } from '@/hooks/api/useLoginMutation';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+import { useLogInMutation } from '@/hooks/api/useLoginMutation';
 
 const RedirectPage = () => {
   const [searchParams] = useSearchParams();

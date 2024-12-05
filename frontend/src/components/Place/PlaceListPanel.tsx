@@ -1,13 +1,15 @@
-import { CustomPlace, Place } from '@/types';
-import BaseWrapper from '../common/BaseWrapper';
-import Box from '../common/Box';
-import PlaceItem from './PlaceItem';
 import { useCallback, useMemo, useState } from 'react';
-import Marker from '../Marker/Marker';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+
+import BaseWrapper from '@/components/common/BaseWrapper';
+import Box from '@/components/common/Box';
+import Marker from '@/components/Marker/Marker';
+import Polyline from '@/components/Marker/Polyline';
+import PlaceItem from './PlaceItem';
+
 import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
 import { useStore } from '@/store/useStore';
-import Polyline from '../Marker/Polyline';
+import { CustomPlace, Place } from '@/types';
 
 type PlaceListPanelProps = {
   places: (Place & CustomPlace)[];

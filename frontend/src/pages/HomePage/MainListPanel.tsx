@@ -1,9 +1,11 @@
 import { useState } from 'react';
+
 import CourseListPanel from '@/components/common/List/Course/CourseListPanel';
 import MapListPanel from '@/components/common/List/Map/MapListPanel';
 import ListToggleButtons from '@/components/common/List/ListToggleButtons';
-import { CreateMapType } from '@/types';
 import SearchBar from '@/components/common/SearchBar';
+
+import { CreateMapType } from '@/types';
 
 type Range = 'ALL' | 'MY';
 

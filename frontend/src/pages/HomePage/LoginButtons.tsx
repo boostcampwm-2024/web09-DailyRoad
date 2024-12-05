@@ -1,10 +1,12 @@
-import { useStore } from '@/store/useStore';
-import UserProfile from './UserProfile';
-import { useUserInfoQuery } from '@/hooks/api/useUserInfoQuery';
 import { useEffect } from 'react';
-import { getRedirectUri } from '@/api/auth';
-import LogOutButton from './LogOutButton';
+
 import GoogleIcon from '@/components/common/GoogleIcon';
+import UserProfile from './UserProfile';
+import LogOutButton from './LogOutButton';
+
+import { getRedirectUri } from '@/api/auth';
+import { useUserInfoQuery } from '@/hooks/api/useUserInfoQuery';
+import { useStore } from '@/store/useStore';
 
 const LoginButtons = () => {
   const user = useStore((state) => state.user);

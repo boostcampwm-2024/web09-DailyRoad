@@ -103,6 +103,11 @@ export class CustomMarkerClusterer extends MarkerClusterer {
             MarkerUtils.setMap(marker, null);
           });
         }, 25);
+        // requestAnimationFrame(() => {
+        //   groupMarkers.forEach((marker) => {
+        //     MarkerUtils.setMap(marker, null);
+        //   });
+        // });
       }
       google.maps.event.trigger(
         this,

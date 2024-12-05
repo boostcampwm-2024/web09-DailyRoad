@@ -1,5 +1,6 @@
+import { axiosInstance } from '@/api/axiosInstance';
+
 import { BaseMap, MapList, Map } from '@/types';
-import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
 type MapResponse = {
@@ -61,7 +62,6 @@ export const editMapInfo = async ({
   thumbnailUrl: string;
   mapId: number;
 }) => {
-  console.log(thumbnailUrl, 'thumbnailUrl API');
   const { data } = await axiosInstance.patch<EditInfoResponse>(
     END_POINTS.EDIT_MAP_INFO(mapId),
     {

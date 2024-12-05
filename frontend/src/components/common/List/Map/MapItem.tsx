@@ -1,6 +1,6 @@
-import { MapItemType } from '@/types';
-import React from 'react';
 import ListItem from '@/components/common/List/ListItem';
+
+import { MapItemType } from '@/types';
 
 type MapItemProps = {
   mapItem: MapItemType;

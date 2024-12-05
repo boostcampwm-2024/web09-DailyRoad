@@ -1,7 +1,9 @@
+import { useParams } from 'react-router-dom';
+
 import Authorize from '@/components/Authorize';
 import SearchPanel from '@/components/Place/SearchPanel';
+
 import { useCourseQuery } from '@/hooks/api/useCourseQuery';
-import { useParams } from 'react-router-dom';
 
 const MapCreateCoursePage = () => {
   const { id } = useParams();

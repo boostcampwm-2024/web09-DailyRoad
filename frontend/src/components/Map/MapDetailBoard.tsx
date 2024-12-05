@@ -1,16 +1,18 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import BaseWrapper from '@/components/common/BaseWrapper';
 import Box from '@/components/common/Box';
 import DashBoardHeader from '@/components/common/DashBoardHeader';
-import { Map } from '@/types';
 import PlaceItem from '@/components/Place/PlaceItem';
-import { useEffect, useMemo, useState } from 'react';
 import PlaceDetailPanel from '@/components/Place/PlaceDetailPanel';
-import { useStore } from '@/store/useStore';
 import SideContainer from '@/components/common/SideContainer';
+import ListItemThumbnail from '@/components/common/List/ListItemThumbnail';
 import Marker from '@/components/Marker/Marker';
 import DeleteMapButton from './DeleteMapButton';
 import EditMapButton from './EditMapButton';
-import ListItemThumbnail from '@/components/common/List/ListItemThumbnail';
+
+import { useStore } from '@/store/useStore';
+import { Map } from '@/types';
 
 type MapDetailBoardProps = {
   mapData: Map;
