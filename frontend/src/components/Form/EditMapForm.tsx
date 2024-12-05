@@ -26,7 +26,6 @@ const EditMapForm = ({ mapData }: EditMapFormProps) => {
   };
 
   const { mapInfo, updateMapInfo, isMapInfoValid } = useMapForm(initialMapData);
-
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     editMapMutation.mutate(

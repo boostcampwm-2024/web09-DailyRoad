@@ -1,5 +1,6 @@
-import { BaseMap } from '@/types';
 import { useCallback, useEffect, useState } from 'react';
+
+import { BaseMap } from '@/types';
 
 const defaultMapData: BaseMap = {
   title: '',
