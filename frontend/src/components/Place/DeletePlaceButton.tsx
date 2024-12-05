@@ -14,7 +14,7 @@ type DeletePlaceButtonProps = {
 const DeletePlaceButton = ({ placeId, places }: DeletePlaceButtonProps) => {
   const id = Number(useParams<string>().id);
   const mode = location.pathname.split('/')[2].toUpperCase() as CreateMapType;
-  const deletePlaceMutation = useDeletePlaceMutation(mode);
+  const deletePlaceMutation = useDeletePlaceMutation();
   const putPlaceToCourseMutation = usePutPlaceToCourseMutation();
   const addToast = useStore((state) => state.addToast);
 

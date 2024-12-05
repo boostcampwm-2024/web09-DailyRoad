@@ -44,18 +44,24 @@ export const getCourseList = async (pageParam: number, query?: string) => {
   return data;
 };
 
-export const getMyCourseList = async () => {
-  const { data } = await axiosInstance.get<CourseList>(END_POINTS.MY_COURSE);
+export const getMyCourseList = async (pageParam: number) => {
+  const { data } = await axiosInstance.get<CourseList>(END_POINTS.MY_COURSE, {
+    params: {
+      page: pageParam,
+    },
+  });
   return data;
 };
 
 export const editCourseInfo = async ({
   title,
   description,
+  thumbnailUrl,
   courseId,
 }: {
   title: string;
   description: string;
+  thumbnailUrl: string;
   courseId: number;
 }) => {
   const { data } = await axiosInstance.patch<EditInfoResponse>(
@@ -63,6 +69,7 @@ export const editCourseInfo = async ({
     {
       title,
       description,
+      thumbnailUrl,
     },
   );
   return data;
@@ -89,6 +96,7 @@ export const editCourse = async (data: BaseMap & { courseId: number }) => {
     editCourseInfo({
       title: data.title,
       description: data.description,
+      thumbnailUrl: data.thumbnailUrl ?? '',
       courseId: data.courseId,
     }),
     editCourseVisibility({ courseId: data.courseId, isPublic: data.isPublic }),
