@@ -10,7 +10,10 @@
   font-weight: 400 !important;
   animation: expand 0.5s ease-in-out !important;
 }
-
+.gm-style-iw-d {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
 .gm-style-iw-ch {
   margin: 0;
   height: 0px;
@@ -19,6 +22,11 @@
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+.gm-ui-hover-effect span {
+  margin: 0 !important;
 }
 .gm-style-iw-chr {
   height: 0px;
@@ -40,6 +48,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
+  width: 30%;
 }
 
 .pin {
