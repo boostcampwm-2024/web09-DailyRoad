@@ -1,20 +1,31 @@
 import React from 'react';
 
-import { getCourseList } from '@/api/course';
+import { getCourseList, getMyCourseList } from '@/api/course';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { CourseList } from '@/types';
 
 import CourseItem from './CourseItem';
 import InfiniteListPanel from '@/components/common/List/InfiniteListPanel';
 
-interface CourseListPanelProps {
+type CourseListPanelProps = {
   query?: string;
-}
+  Range: 'ALL' | 'MY';
+};
 
-const CourseListPanel: React.FC<CourseListPanelProps> = ({ query }) => {
+const CourseListPanel = ({ query, Range }: CourseListPanelProps) => {
+  const queryFn =
+    Range === 'MY'
+      ? ({ pageParam }: { pageParam: number }) => getMyCourseList(pageParam)
+      : ({ pageParam }: { pageParam: number }) =>
+          getCourseList(pageParam, query);
+  const queryKey =
+    Range === 'MY'
+      ? ['myCourseList', query ?? '']
+      : ['courseList', query ?? ''];
+
   const { data, ref } = useInfiniteScroll<CourseList>({
-    queryKey: ['courseList'],
-    queryFn: ({ pageParam }) => getCourseList(pageParam, query),
+    queryKey: queryKey,
+    queryFn: queryFn,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage < lastPage.totalPages
         ? lastPage.currentPage + 1
