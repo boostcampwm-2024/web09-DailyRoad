@@ -1,9 +1,3 @@
-import React from 'react';
-
-/**
- * 이미지 업로드에 쓰이는 아이콘 컴포넌트입니다.
- */
-
 const ImageIcon = () => {
   return (
     <svg

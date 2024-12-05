@@ -1,5 +1,6 @@
+import Box from '@/components/common/Box';
+
 import { useStore } from '@/store/useStore';
-import Box from '../common/Box';
 
 type AddPlaceButtonProps = {
   onClick: () => void;

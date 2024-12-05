@@ -1,6 +1,7 @@
+import { axiosInstance } from '@/api/axiosInstance';
+
 import { END_POINTS } from '@/constants/api';
 import { CoursePlace, CustomPlace, Place, PlaceWithOrder } from '@/types';
-import { axiosInstance } from '../axiosInstance';
 
 export const getPlace = async (queryString: string, pageParam: number) => {
   const { data } = await axiosInstance.get<Place[]>(END_POINTS.PLACE, {

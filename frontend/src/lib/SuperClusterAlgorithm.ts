@@ -26,7 +26,7 @@ export class SuperClusterAlgorithmTest extends SuperClusterViewportAlgorithm {
     };
 
     let changed = !equal(this.state, state);
-    console.log('Origin changed', changed);
+
     if (!equal(input.markers, this.markers)) {
       changed = true;
       // TODO use proxy to avoid copy?

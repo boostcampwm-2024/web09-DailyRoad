@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+
 import ImageIcon from '@/components/Form/ImageIcon';
+
 import { uploadImage } from '@/api/image/index';
 import { BaseMap } from '@/types';
 

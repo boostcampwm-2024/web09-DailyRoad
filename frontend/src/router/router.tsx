@@ -1,13 +1,13 @@
+import { Suspense } from 'react';
+import { createBrowserRouter } from 'react-router-dom';
+
 import ErrorBoundary from '@/components/Error/ErrorBoundary';
 import ErrorFallback from '@/components/Error/ErrorFallback';
-import { createBrowserRouter } from 'react-router-dom';
+
 import Root from './Root';
-import { Suspense } from 'react';
 import Homepage from '@/pages/HomePage/HomePage';
 import LayoutCreate from '@/LayoutCreate';
-
 import MapPage from '@/pages/MapCreation/MapPage';
-
 import RedirectPage from '@/pages/RedirectPage';
 import NotFound from '@/pages/NotFound';
 import Loading from '@/pages/MapDetail/Loading';

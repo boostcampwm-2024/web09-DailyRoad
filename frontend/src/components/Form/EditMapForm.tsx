@@ -1,12 +1,13 @@
 import React from 'react';
-import BaseWrapper from '../common/BaseWrapper';
+import { useNavigate } from 'react-router-dom';
+
+import BaseWrapper from '@/components/common/BaseWrapper';
 import FormWrapper from './FormWrapper';
-import { BaseMap, Map } from '@/types';
+
 import { useEditMapMutation } from '@/hooks/api/useEditMapMutation';
 import { useMapForm } from '@/hooks/useMapForm';
-
-import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
+import { BaseMap, Map } from '@/types';
 
 type EditMapFormProps = {
   mapData: Map;

@@ -1,5 +1,6 @@
-import { StoreState } from '@/types';
 import { StateCreator } from 'zustand';
+
+import { StoreState } from '@/types';
 
 let toastId = 0;
 
@@ -8,7 +9,7 @@ export type ToastState = {
   addToast: (
     message: string,
     attributes: string,
-    variant: 'success' | 'error' | 'warning' | 'info',
+    variant: 'success' | 'error' | 'warning' | 'info' | 'default',
   ) => number;
   removeToast: (id: number) => void;
 };
@@ -17,7 +18,7 @@ export type ToastType = {
   id: number;
   message: string;
   attributes: string;
-  variant: 'success' | 'error' | 'warning' | 'info';
+  variant: 'success' | 'error' | 'warning' | 'info' | 'default';
 };
 
 export const createToastSlice: StateCreator<StoreState, [], [], ToastState> = (

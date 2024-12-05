@@ -1,7 +1,8 @@
-import { ROUTES } from '@/constants/routes';
-import { useStore } from '@/store/useStore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { ROUTES } from '@/constants/routes';
+import { useStore } from '@/store/useStore';
 
 type AuthorizeProps = {
   children: React.ReactNode;

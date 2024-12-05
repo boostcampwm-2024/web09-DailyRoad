@@ -1,11 +1,9 @@
-import React from 'react';
+import CourseItem from './CourseItem';
+import InfiniteListPanel from '@/components/common/List/InfiniteListPanel';
 
 import { getCourseList, getMyCourseList } from '@/api/course';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { CourseList } from '@/types';
-
-import CourseItem from './CourseItem';
-import InfiniteListPanel from '@/components/common/List/InfiniteListPanel';
 
 type CourseListPanelProps = {
   query?: string;

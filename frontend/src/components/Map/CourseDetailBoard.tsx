@@ -1,16 +1,18 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import BaseWrapper from '@/components/common/BaseWrapper';
 import Box from '@/components/common/Box';
 import DashBoardHeader from '@/components/common/DashBoardHeader';
-import { Course, Map } from '@/types';
 import PlaceItem from '@/components/Place/PlaceItem';
-import { useEffect, useMemo, useState } from 'react';
 import PlaceDetailPanel from '@/components/Place/PlaceDetailPanel';
-import { useStore } from '@/store/useStore';
 import SideContainer from '@/components/common/SideContainer';
 import Marker from '@/components/Marker/Marker';
+import Polyline from '@/components/Marker/Polyline';
 import DeleteMapButton from './DeleteMapButton';
 import EditMapButton from './EditMapButton';
-import Polyline from '../Marker/Polyline';
+
+import { useStore } from '@/store/useStore';
+import { Course } from '@/types';
 
 type MapDetailBoardProps = {
   courseData: Course;

@@ -1,6 +1,4 @@
 import { Link } from 'react-router-dom';
-import PinIcon from '@/components/PinIcon';
-import ListItemThumbnail from '@/components/common/List/ListItemThumbnail';
 
 type ListItemProps<T> = {
   item: T;
@@ -38,10 +36,6 @@ const ListItem = <
           <p className="text-xs font-semibold text-gray-700">
             {item.user.nickname}
           </p>
-          {/* <PinIcon className="h-4 w-4" fill="#DC1414" />
-          <div className="flex w-5 justify-center rounded-md border-[0.5px] border-gray-400 text-xs text-gray-500">
-            <p>{item.pinCount}</p>
-          </div> */}
         </div>
       </div>
     </Link>

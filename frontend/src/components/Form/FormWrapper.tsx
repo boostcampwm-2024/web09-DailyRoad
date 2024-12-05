@@ -1,9 +1,11 @@
-import { BaseMap, CreateMapType } from '@/types';
 import ImageUploader from './ImageUploader';
-import TextInputArea from '../common/TextInputArea';
 import VisibilitySelector from './VisibilitySelector';
-import Box from '../common/Box';
-import DashBoardHeader from '../common/DashBoardHeader';
+
+import Box from '@/components/common/Box';
+import TextInputArea from '@/components/common/TextInputArea';
+import DashBoardHeader from '@/components/common/DashBoardHeader';
+
+import { BaseMap, CreateMapType } from '@/types';
 
 type FormWrapperProps = {
   header: string;

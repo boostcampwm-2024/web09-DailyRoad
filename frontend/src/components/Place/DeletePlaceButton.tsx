@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+
+import DeleteIcon from '@/components/common/DeleteIcon';
+
 import useDeletePlaceMutation from '@/hooks/api/useDeletePlaceMutation';
+import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
 import { useStore } from '@/store/useStore';
 import { CreateMapType, CustomPlace, Place } from '@/types';
-import { useParams } from 'react-router-dom';
-import DeleteIcon from '../common/DeleteIcon';
-import { usePutPlaceToCourseMutation } from '@/hooks/api/usePutPlaceToCourseMutation';
-import { useMemo } from 'react';
 
 type DeletePlaceButtonProps = {
   placeId: number;

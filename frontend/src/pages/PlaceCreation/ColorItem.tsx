@@ -1,6 +1,8 @@
+import CheckIcon from '@/components/Place/CheckIcon';
+
 import { MarkerColor } from '@/types';
 import { markerBgColor } from '@/constants/map';
-import CheckIcon from '@/components/Place/CheckIcon';
+
 type ColorItemProps = {
   color: MarkerColor;
   activeColor: MarkerColor | null;

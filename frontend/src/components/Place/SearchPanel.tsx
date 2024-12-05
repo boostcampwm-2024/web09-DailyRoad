@@ -1,21 +1,22 @@
 import { useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 
 import BaseWrapper from '@/components/common/BaseWrapper';
 import Box from '@/components/common/Box';
 import DashBoardHeader from '@/components/common/DashBoardHeader';
+import Modal from '@/components/common/Modal/Modal';
 
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 import AddPlaceButton from './AddPlaceButton';
 import SideContainer from '../common/SideContainer';
 import DetailPlaceForm from './DetailPlaceForm';
-import { useOverlay } from '@/hooks/useOverlay';
-import Modal from '@/components/common/Modal/Modal';
-import type { Course, CoursePlace, CreateMapType, Map } from '@/types';
-import PlaceListPanel from './PlaceListPanel';
-import { useLocation, useParams } from 'react-router-dom';
 import SearchGoogleResults from './SearchGoogleResults';
 import SearchModeButtons from './SearchModeButtons';
+import PlaceListPanel from './PlaceListPanel';
+
+import { useOverlay } from '@/hooks/useOverlay';
+import type { Course, CoursePlace, CreateMapType, Map } from '@/types';
 
 type SearchPanelProps = {
   mapData: Map | Course;

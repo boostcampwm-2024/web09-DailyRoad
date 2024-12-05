@@ -1,7 +1,8 @@
-import { axiosInstance } from '../axiosInstance';
-import { PreSignedURLResponse } from '../../types';
+import { axiosInstance } from '@/api/axiosInstance';
+
+import { PreSignedURLResponse } from '@/types';
 import { END_POINTS, IMAGE_EXTENSIONS } from '@/constants/api';
-import { IMAGE_HEIGHT, IMAGE_WIDTH, THREE_MB } from '../../constants/api';
+import { IMAGE_HEIGHT, IMAGE_WIDTH, THREE_MB } from '@/constants/api';
 
 const generatePreSignedPost = async (dirName: string, extension: string) => {
   const { data } = await axiosInstance.post<PreSignedURLResponse>(

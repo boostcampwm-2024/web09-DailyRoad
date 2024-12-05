@@ -1,5 +1,6 @@
-import { MapItemType } from '@/types';
 import ListItem from '@/components/common/List/ListItem';
+
+import { MapItemType } from '@/types';
 
 type CourseItemProps = {
   courseItem: MapItemType;

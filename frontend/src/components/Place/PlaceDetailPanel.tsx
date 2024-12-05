@@ -1,9 +1,9 @@
-import { CustomPlace, Place } from '@/types';
-import BaseWrapper from '../common/BaseWrapper';
-import DashBoardHeader from '../common/DashBoardHeader';
-import Box from '../common/Box';
+import BaseWrapper from '@/components/common/BaseWrapper';
+import PrevIcon from '@/components/common/PrevIcon';
+import Box from '@/components/common/Box';
 import PlaceItem from './PlaceItem';
-import PrevIcon from '../common/PrevIcon';
+
+import { CustomPlace, Place } from '@/types';
 
 type PlaceDetailPanelProps = {
   place: Place & CustomPlace;

@@ -1,11 +1,14 @@
-import FormWrapper from './FormWrapper';
-import BaseWrapper from '../common/BaseWrapper';
 import { useNavigate } from 'react-router-dom';
+
+import BaseWrapper from '@/components/common/BaseWrapper';
+import FormWrapper from './FormWrapper';
+
 import { useAddMapMutation } from '@/hooks/api/useAddMapMutation';
 import { useMapForm } from '@/hooks/useMapForm';
+import { useStore } from '@/store/useStore';
+
 import { CreateMapType } from '@/types';
 import { ROUTES } from '@/constants/routes';
-import { useStore } from '@/store/useStore';
 
 const CreateBaseMapForm = () => {
   const { mapInfo, updateMapInfo, isMapInfoValid } = useMapForm();

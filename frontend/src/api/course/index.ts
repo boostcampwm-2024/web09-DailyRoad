@@ -1,5 +1,6 @@
+import { axiosInstance } from '@/api/axiosInstance';
+
 import { BaseMap, Course, CourseList } from '@/types';
-import { axiosInstance } from '../axiosInstance';
 import { END_POINTS } from '@/constants/api';
 
 type CourseResponse = {

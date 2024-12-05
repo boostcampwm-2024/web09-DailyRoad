@@ -1,8 +1,9 @@
+import DeletePlaceButton from './DeletePlaceButton';
+import ImageWithSkeleton from '../ImageSkeleton';
+
 import { useStore } from '@/store/useStore';
 import { CustomPlace, Place } from '@/types';
 
-import DeletePlaceButton from './DeletePlaceButton';
-import ImageWithSkeleton from '../ImageSkeleton';
 type PlaceItemProps = {
   place: Place;
   places?: (Place & CustomPlace)[];

@@ -1,7 +1,8 @@
+import Box from '@/components/common/Box';
+import ColorItem from './ColorItem';
+
 import { MARKER_COLORS } from '@/constants/map';
 import { MarkerColor } from '@/types';
-import ColorItem from './ColorItem';
-import Box from '@/components/common/Box';
 
 type ColorSelectorProps = {
   activeColor: MarkerColor | null;
