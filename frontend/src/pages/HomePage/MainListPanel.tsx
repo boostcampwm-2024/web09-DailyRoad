@@ -30,7 +30,6 @@ const MainListPanel = () => {
         <div></div>
       )}
       <div className="absolute left-[-100px] top-40 flex flex-col gap-1">
-        <p className="text-xl font-semibold">전체 목록</p>
         <div
           className={`${listTab === 'MAP' ? 'text-c_bg_blue' : 'text-c_strong_black'} cursor-pointer text-lg font-semibold transition-all duration-200 hover:text-c_bg_blue`}
           onClick={() => setListTab('MAP')}
