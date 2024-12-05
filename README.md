@@ -28,14 +28,25 @@
 
 ---
 
-### 나만의 지도 만들기
+### 나만의 지도 공유하기
+<img src="https://github.com/user-attachments/assets/54234c0f-a885-48fb-a24b-9916b99af827" alt="나만의 지도 공유하기" style="width:600px; height:auto;">
 
-> 장소 검색하기  
-> 핀 추가하기
+> 나만의 지도를 만들어 다른 사람과 공유할 수 있습니다.  
+> 다양한 경험과 추억을 기록하고 공유하세요.
 
-### 나만의 코스 만들기
+---
 
-> 경로 표시
+### 나만의 지도에 장소 추가하기
+<img src="https://github.com/user-attachments/assets/f0a10b2e-48ee-4ba3-8d24-2dfd3dc4fc3c" alt="나만의 지도에 장소 추가하기" style="width:600px; height:auto;">
+
+> 나만의 장소를 지도에 추가할 수 있습니다.
+
+---
+
+### 나만의 코스 공유하기
+<img src="https://github.com/user-attachments/assets/93c22b4f-72e6-408d-945a-9c5fa7de7a1d" alt="나만의 코스 공유하기" style="width:600px; height:auto;">
+
+> 자신만의 코스를 공유하거나, 공유된 코스를 탐색할 수 있습니다.  
 
 <br/>
 <br/>
