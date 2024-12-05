@@ -58,7 +58,7 @@ const SearchPanel = ({ mapData }: SearchPanelProps) => {
           <AddPlaceButton onClick={openFormModal} />
         </BaseWrapper>
 
-        {mapData.places.length && (
+        {mapData.places.length > 0 && (
           <PlaceListPanel
             places={mapData.places}
             isDeleteMode={true}
