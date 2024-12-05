@@ -12,7 +12,7 @@ type PlaceDetailPanelProps = {
 
 const PlaceDetailPanel = ({ place, onClosed }: PlaceDetailPanelProps) => {
   return (
-    <BaseWrapper position="" left="" top="" className="w-1/2">
+    <BaseWrapper position="" left="" top="" className="h-auto w-1/2">
       <Box>
         <button onClick={onClosed}>
           <PrevIcon />
@@ -23,8 +23,10 @@ const PlaceDetailPanel = ({ place, onClosed }: PlaceDetailPanelProps) => {
         <PlaceItem place={place} isDetailPage={false} />
       </Box>
       <Box>
-        <p>한줄평</p>
-        <p>{place.comment}</p>
+        <p className="font-semibold">한줄평</p>
+        <div className="flex items-center justify-center text-c_placeholder_gray">
+          <p>{place.comment ?? '한줄평이 없습니다.'}</p>
+        </div>
       </Box>
     </BaseWrapper>
   );
