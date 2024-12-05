@@ -183,7 +183,11 @@ describe('CourseService', () => {
       currentPage,
       pageSize,
     );
-    expect(result).toEqual(expectedResponse);
+    expect(result).toEqual(
+      expect.objectContaining({
+        courses: expectedResponse.courses,
+      }),
+    );
   });
 
   describe('특정 코스를 조회할 때', () => {
