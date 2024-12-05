@@ -1,33 +1,55 @@
-import React, { useState, useRef } from 'react';
+import { useState } from 'react';
 import CourseListPanel from '@/components/common/List/Course/CourseListPanel';
 import MapListPanel from '@/components/common/List/Map/MapListPanel';
 import ListToggleButtons from '@/components/common/List/ListToggleButtons';
 import { CreateMapType } from '@/types';
+import SearchBar from '@/components/common/SearchBar';
+
+type Range = 'ALL' | 'MY';
 
 const MainListPanel = () => {
   const [listTab, setListTab] = useState<CreateMapType>('MAP');
-  const panelRef = useRef<HTMLDivElement>(null);
+  const [range, setRange] = useState<'ALL' | 'MY'>('ALL');
+  const [query, setQuery] = useState('');
 
-  const handleTabSelect = (value: CreateMapType) => {
-    setListTab(value);
-    if (panelRef.current) {
-      panelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
+  const panelProps = { Range: range, ...(query && { query }) };
+  const mapLabel = listTab === 'MAP' ? '지도' : '코스';
   return (
-    <div className="flex w-[1200px] flex-col items-center">
+    <div className="relative flex w-3/4 flex-col items-center">
       <ListToggleButtons
         options={[
-          { value: 'MAP', label: '지도' },
-          { value: 'COURSE', label: '코스' },
+          { value: 'ALL', label: `모든 ${mapLabel} 보기` },
+          { value: 'MY', label: `내가 만든 ${mapLabel} 보기` },
         ]}
-        selected={listTab}
-        onSelect={(value) => handleTabSelect(value as CreateMapType)}
+        selected={range}
+        onSelect={(value) => setRange(value as Range)}
       />
-
-      <div ref={panelRef} className="mt-1 w-[1200px]">
-        {listTab === 'MAP' ? <MapListPanel /> : <CourseListPanel />}
+      {range === 'ALL' ? (
+        <SearchBar onSearch={(query) => setQuery(query)}></SearchBar>
+      ) : (
+        <div></div>
+      )}
+      <div className="absolute left-[-100px] top-40 flex flex-col gap-1">
+        <p className="text-xl font-semibold">전체 목록</p>
+        <div
+          className={`${listTab === 'MAP' ? 'text-c_bg_blue' : 'text-c_strong_black'} cursor-pointer text-lg font-semibold transition-all duration-200 hover:text-c_bg_blue`}
+          onClick={() => setListTab('MAP')}
+        >
+          지도
+        </div>
+        <div
+          className={`${listTab === 'COURSE' ? 'text-c_bg_blue' : 'text-c_strong_black'} cursor-pointer text-lg font-semibold transition-all duration-200 hover:text-c_bg_blue`}
+          onClick={() => setListTab('COURSE')}
+        >
+          코스
+        </div>
+      </div>
+      <div className="mt-1 w-full">
+        {listTab === 'MAP' ? (
+          <MapListPanel {...panelProps} />
+        ) : (
+          <CourseListPanel {...panelProps} />
+        )}
       </div>
     </div>
   );
