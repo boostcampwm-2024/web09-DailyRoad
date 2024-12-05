@@ -50,9 +50,10 @@ export const createGoogleMapSlice: StateCreator<
 
   moveTo: (lat: number, lng: number) => {
     const map = get().googleMap;
+    const currentZoom = map?.getZoom() as number;
     if (map) {
       map.panTo({ lat, lng });
-      map.setZoom(17);
+      map.setZoom(currentZoom > 17 ? currentZoom : 17);
     }
   },
 
