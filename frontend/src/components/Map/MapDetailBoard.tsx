@@ -72,7 +72,7 @@ const MapDetailBoard = ({ mapData }: MapDetailBoardProps) => {
               <EditMapButton
                 text="수정"
                 to={`/create/map/${mapData.id}`}
-                className="w-10 px-2"
+                className="w-auto px-2"
               />
             </div>
           )}
