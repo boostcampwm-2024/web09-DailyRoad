@@ -35,7 +35,7 @@ echo "Docker 배포 진행 중..."
   docker rm "$CONTAINER_NAME" || echo "기존 컨테이너 삭제 실패" &&
   docker image prune -f &&
   docker container prune -f &&
-  docker run -d --name "$CONTAINER_NAME" -p 8080:8080 "$IMAGE_NAME" &&
+  docker run -d --name "$CONTAINER_NAME" --add-host host.docker.internal:host-gateway -p 8080:8080 "$IMAGE_NAME"
   echo "새 컨테이너 실행 성공."
 } > "$DEPLOY_LOG_FILE" 2>&1
 
